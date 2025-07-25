@@ -15,7 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <Folder Include="Database\Interfaces\" />
+    <Folder Include="Database\Repositories\" />
   </ItemGroup>
 
 </Project>

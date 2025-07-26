@@ -1,13 +1,11 @@
-﻿using Dapper.Contrib.Extensions;
-
-namespace BookStoreApi.Database.Models
+﻿namespace BookStoreApi.RequestHandler.Admin.Responses.Category
 {
-    public class Authors
+    public class RCategory
     {
-        [Key]
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
+        public string? Url { get; set; }
+        public int? MainCategoryId { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }

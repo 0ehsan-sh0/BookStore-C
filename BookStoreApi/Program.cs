@@ -1,3 +1,5 @@
+using BookStoreApi.Database.Interfaces;
+using BookStoreApi.Database.Repositories;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,6 +37,7 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 builder.Services.AddSingleton(typeof(BookStoreApi.Database.DapperUtility));
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 var app = builder.Build();
 

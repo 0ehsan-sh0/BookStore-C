@@ -2,6 +2,8 @@
 
 namespace BookStoreApi.Database.Models
 {
+    [Table("Comments")]
+
     public class CommentInfo
     {
         [Key]

@@ -2,9 +2,8 @@
 
 namespace BookStoreApi.Database.Models
 {
-    [Table("Translators")]
-
-    public class Translator
+    [Table("Authors")]
+    public class Author
     {
         [Key]
         public int Id { get; set; }

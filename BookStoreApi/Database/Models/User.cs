@@ -2,6 +2,8 @@
 
 namespace BookStoreApi.Database.Models
 {
+    [Table("Users")]
+
     public class User
     {
         [Key]

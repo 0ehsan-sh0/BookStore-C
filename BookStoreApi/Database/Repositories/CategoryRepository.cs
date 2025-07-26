@@ -1,0 +1,70 @@
+﻿using BookStoreApi.Database.Interfaces;
+using BookStoreApi.Database.Models;
+using BookStoreApi.RequestHandler.Admin.QueryObjects.Category;
+using BookStoreApi.RequestHandler.Admin.Responses.Category;
+using Dapper;
+using Dapper.Contrib.Extensions;
+using System.Data;
+
+namespace BookStoreApi.Database.Repositories
+{
+    public class CategoryRepository(DapperUtility dapperUtility) : ICategoryRepository
+    {
+        public async Task<int> CreateAsync(Category category)
+        {
+            using var connection = dapperUtility.GetConnection();
+            int result = await connection.InsertAsync<Category>(category);
+            return result;
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            string sql = "Update C set DeletedAt = GETDATE() FROM Categories C WHERE Id = @id";
+            using var connection = dapperUtility.GetConnection();
+            int result = await connection.ExecuteAsync(sql, new { id });
+            if (result == 1) return true;
+            return false;
+        }
+
+        public async Task<(List<Category> categories, CPaginationInfo info)> GetAllAsync(QCategoryGetAll query)
+        {
+            string sql = "Category_Get_All";
+            using var connection = dapperUtility.GetConnection();
+
+            using var multi = await connection.QueryMultipleAsync(
+                sql,
+                new { query.PageNumber, query.PageSize },
+                commandType: CommandType.StoredProcedure);
+
+            var categories = (await multi.ReadAsync<Category>()).ToList();
+            var pagination = await multi.ReadFirstOrDefaultAsync<CPaginationInfo>();
+
+            return (categories, pagination!);
+        }
+
+        public async Task<Category?> GetByIdAsync(int id)
+        {
+            string sql = "Category_Get_One";
+            using var connection = dapperUtility.GetConnection();
+            var result = await connection.QueryFirstOrDefaultAsync<Category>(sql, new { id }, commandType: CommandType.StoredProcedure);
+            return result;
+        }
+
+        public async Task<Category?> GetByUrlAsync(string Url)
+        {
+            string sql = "Category_Get_By_Url";
+            using var connection = dapperUtility.GetConnection();
+            var result = await connection.QueryFirstOrDefaultAsync<Category>(sql, new { Url }, commandType: CommandType.StoredProcedure);
+            return result;
+        }
+
+        public async Task<Category?> UpdateAsync(Category c)
+        {
+            string sql = "Update Categories set Name = @name,Url = @Url,MainCategoryId = @MainCategoryId FROM Categories WHERE Id = @Id";
+            using var connection = dapperUtility.GetConnection();
+            bool result = await connection.ExecuteAsync(sql, new { c.Name, c.Url, c.MainCategoryId, c.Id }) >= 0;
+            if (result) return await GetByIdAsync(c.Id);
+            return null;
+        }
+    }
+}

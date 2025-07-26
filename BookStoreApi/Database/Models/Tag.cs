@@ -2,6 +2,8 @@
 
 namespace BookStoreApi.Database.Models
 {
+    [Table("Tags")]
+
     public class Tag
     {
         [Key]

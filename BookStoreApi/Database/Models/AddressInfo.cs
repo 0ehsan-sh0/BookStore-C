@@ -2,6 +2,7 @@
 
 namespace BookStoreApi.Database.Models
 {
+    [Table("Addresses")]
     public class AddressInfo
     {
         [Key]

@@ -72,9 +72,19 @@ namespace BookStoreApi.Database.Repositories
 
         public async Task<Category?> UpdateAsync(Category c)
         {
-            string sql = "Update Categories set Name = @name,Url = @Url,MainCategoryId = @MainCategoryId FROM Categories WHERE Id = @Id";
+            string sql = @"Update C
+                           set Name = @name,Url = @Url,MainCategoryId = @MainCategoryId
+                           FROM Categories C
+                           WHERE Id = @Id and DeletedAt IS NULL";
             using var connection = dapperUtility.GetConnection();
-            bool result = await connection.ExecuteAsync(sql, new { c.Name, c.Url, c.MainCategoryId, c.Id }) >= 0;
+            var parameters = new
+            {
+                c.Name,
+                c.Url,
+                c.MainCategoryId,
+                c.Id
+            };
+            bool result = await connection.ExecuteAsync(sql, parameters) >= 0;
             if (result) return await GetByIdAsync(c.Id);
             return null;
         }

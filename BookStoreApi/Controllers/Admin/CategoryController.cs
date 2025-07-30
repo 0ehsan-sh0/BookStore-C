@@ -24,7 +24,7 @@ namespace BookStoreApi.Controllers.Admin
                 Pagination = pagination
             };
 
-            return Ok(response);
+            return SuccessResponse("اطلاعات با موفقیت دریافت شد", response);
         }
 
         [HttpGet("{id:int}")]
@@ -32,7 +32,7 @@ namespace BookStoreApi.Controllers.Admin
         {
             var category = await bLLCategory.GetByIdAsync(id);
             if (category is null) return ErrorResponse("دسته بندی یافت نشد", null);
-            return Ok(category.ToRCategory());
+            return SuccessResponse("اطلاعات با موفقیت دریافت شد", category);
         }
 
         [HttpPost]

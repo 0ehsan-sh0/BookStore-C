@@ -1,11 +1,7 @@
-﻿using Dapper.Contrib.Extensions;
-
-namespace BookStoreApi.Database.Models
+﻿namespace BookStoreApi.Database.Models
 {
-    [Table("Addresses")]
     public class AddressInfo
     {
-        [Key]
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;

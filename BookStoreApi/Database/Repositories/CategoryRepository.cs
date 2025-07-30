@@ -3,7 +3,6 @@ using BookStoreApi.Database.Models;
 using BookStoreApi.RequestHandler.Admin.QueryObjects.Category;
 using BookStoreApi.RequestHandler.Admin.Responses.Category;
 using Dapper;
-using Dapper.Contrib.Extensions;
 using System.Data;
 
 namespace BookStoreApi.Database.Repositories
@@ -13,8 +12,21 @@ namespace BookStoreApi.Database.Repositories
         public async Task<int> CreateAsync(Category category)
         {
             using var connection = dapperUtility.GetConnection();
-            int result = await connection.InsertAsync<Category>(category);
-            return result;
+
+            var sql = @"
+            INSERT INTO Categories (Name, Url, MainCategoryId)
+            VALUES (@Name, @Url, @MainCategoryId);
+            SELECT CAST(SCOPE_IDENTITY() as int);";
+
+            var parameters = new
+            {
+                category.Name,
+                category.Url,
+                category.MainCategoryId
+            };
+
+            int insertedId = await connection.ExecuteScalarAsync<int>(sql, parameters);
+            return insertedId;
         }
 
         public async Task<bool> DeleteAsync(int id)

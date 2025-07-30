@@ -1,8 +1,6 @@
-﻿using Dapper.Contrib.Extensions;
-
+﻿
 namespace BookStoreApi.Database.Models
 {
-    [Table("BookTags")]
 
     public class BookTag
     {

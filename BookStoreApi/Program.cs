@@ -45,6 +45,9 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddSingleton(typeof(BookStoreApi.Database.DapperUtility));
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<BLLCategory>();
+builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
+builder.Services.AddScoped<BLLAuthor>();
+
 
 var app = builder.Build();
 

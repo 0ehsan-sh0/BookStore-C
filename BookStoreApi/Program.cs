@@ -1,3 +1,5 @@
+
+using BookStoreApi.BusinessLogicLayer.Admin;
 using BookStoreApi.Database.Interfaces;
 using BookStoreApi.Database.Repositories;
 using Microsoft.OpenApi.Models;
@@ -6,7 +8,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.SuppressModelStateInvalidFilter = true;
+    });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -38,6 +44,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 builder.Services.AddSingleton(typeof(BookStoreApi.Database.DapperUtility));
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<BLLCategory>();
 
 var app = builder.Build();
 

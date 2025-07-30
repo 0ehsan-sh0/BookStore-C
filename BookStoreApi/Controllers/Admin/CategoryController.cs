@@ -1,4 +1,4 @@
-﻿using BookStoreApi.Database.Interfaces;
+﻿using BookStoreApi.BusinessLogicLayer.Admin;
 using BookStoreApi.RequestHandler.Admin.Mappers;
 using BookStoreApi.RequestHandler.Admin.QueryObjects.Category;
 using BookStoreApi.RequestHandler.Admin.Requests.Category;
@@ -9,12 +9,12 @@ namespace BookStoreApi.Controllers.Admin
 {
     [Route("api/admin/[controller]")]
     [ApiController]
-    public class CategoryController(ICategoryRepository repo) : ControllerBase
+    public class CategoryController(BLLCategory bLLCategory) : ApiResponseHelper
     {
         [HttpGet]
         public async Task<IActionResult> GetAllAsync([FromQuery] QCategoryGetAll query)
         {
-            var (categories, pagination) = await repo.GetAllAsync(query);
+            var (categories, pagination) = await bLLCategory.GetAllAsync(query);
 
             var rCategories = categories.Select(c => c.ToRCategory()).ToList();
 
@@ -30,87 +30,49 @@ namespace BookStoreApi.Controllers.Admin
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetByIdAsync([FromRoute] int id)
         {
-            var category = await repo.GetByIdAsync(id);
-            if (category is null) return NotFound();
+            var category = await bLLCategory.GetByIdAsync(id);
+            if (category is null) return ErrorResponse("دسته بندی یافت نشد", null);
             return Ok(category.ToRCategory());
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateCategoryRequest createCategoryRequest)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var (isValid, errors) = ModelStateValidation();
+            if (!isValid)
+                return ErrorResponse("اطلاعات به درستی وارد نشده است", errors, 400);
 
-            var category = createCategoryRequest.ToCategory();
+            var (message, category, status) = await bLLCategory.Create(createCategoryRequest);
 
-            if (category.MainCategoryId is int parentId)
-            {
-                var existingCategory = await repo.GetByIdAsync(parentId);
-                if (existingCategory is null)
-                    return NotFound();
-            }
-
-            var urlCategory = await repo.GetByUrlAsync(category.Url);
-            if (urlCategory is not null) return BadRequest(new
-            {
-                errors = new
-                {
-                    Url = new[] { "لینک وارد شده تکراری است" }
-                }
-            });
-
-            int id = await repo.CreateAsync(category);
-            category = await repo.GetByIdAsync(id);
-
-            return Created($"api/admin/category/{id}", category!.ToRCategory());
+            return status == 201
+                ? SuccessResponse(message, category, status)
+                : ErrorResponse(message, category, status);
         }
 
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCategoryRequest UCategory)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var (isValid, errors) = ModelStateValidation();
+            if (!isValid) return ErrorResponse("اطلاعات به درستی وارد نشده است", errors, 400);
 
-            var category = await repo.GetByIdAsync(id);
-            if (category is null)
-                return NotFound();
+            var (message, category, status) = await bLLCategory.Update(id, UCategory);
 
-            if (UCategory.MainCategoryId is int parentId)
-            {
-                var existingCategory = await repo.GetByIdAsync(parentId);
-                if (existingCategory is null)
-                    return NotFound();
-            }
-
-            var urlCategory = await repo.GetByUrlAsync(category.Url);
-            if (urlCategory is not null)
-            {
-                if (!(urlCategory.Url == UCategory.Url))
-                    return BadRequest(new
-                    {
-                        errors = new
-                        {
-                            Url = new[] { "لینک وارد شده تکراری است" }
-                        }
-                    });
-            }
-
-            category = await repo.UpdateAsync(UCategory.ToCategory(id));
-
-            return Ok(category!.ToRCategory());
+            return status == 200
+                ? SuccessResponse(message, category, status)
+                : ErrorResponse(message, null, status);
         }
 
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var (isValid, errors) = ModelStateValidation();
+            if (!isValid) return ErrorResponse("اطلاعات به درستی وارد نشده است", errors, 400);
 
-            var existingCategory = await repo.GetByIdAsync(id);
-            if (existingCategory is null)
-                return NotFound();
+            var (message, status) = await bLLCategory.Delete(id);
 
-            var category = await repo.DeleteAsync(id);
-            if (!category) return NotFound();
-
-            return NoContent();
+            return status == 204
+                ? SuccessResponse(message, null, status)
+                : ErrorResponse(message, null, status);
         }
     }
 }

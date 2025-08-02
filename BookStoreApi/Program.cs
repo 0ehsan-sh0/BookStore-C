@@ -47,6 +47,8 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<BLLCategory>();
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 builder.Services.AddScoped<BLLAuthor>();
+builder.Services.AddScoped<ITranslatorRepository, TranslatorRepository>();
+builder.Services.AddScoped<BLLTranslator>();
 
 
 var app = builder.Build();

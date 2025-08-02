@@ -9,12 +9,12 @@ namespace BookStoreApi.Controllers.Admin
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthorController(BLLAuthor bLLAuthor) : ApiResponseHelper
+    public class AuthorController(BLLAuthor bLL) : ApiResponseHelper
     {
         [HttpGet]
         public async Task<IActionResult> GetAllAsync([FromQuery] QAuthorGetAll query)
         {
-            var (Authors, pagination) = await bLLAuthor.GetAllAsync(query);
+            var (Authors, pagination) = await bLL.GetAllAsync(query);
 
             var rAuthors = Authors.Select(c => c.ToRAuthor()).ToList();
 
@@ -30,8 +30,8 @@ namespace BookStoreApi.Controllers.Admin
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetByIdAsync([FromRoute] int id)
         {
-            var author = await bLLAuthor.GetByIdAsync(id);
-            if (author is null) return ErrorResponse("دسته بندی یافت نشد", null);
+            var author = await bLL.GetByIdAsync(id);
+            if (author is null) return ErrorResponse("نویسنده یافت نشد", null);
             return SuccessResponse("اطلاعات با موفقیت دریافت شد", author);
         }
 
@@ -42,7 +42,7 @@ namespace BookStoreApi.Controllers.Admin
             if (!isValid)
                 return ErrorResponse("اطلاعات به درستی وارد نشده است", errors, 400);
 
-            var (message, author, status) = await bLLAuthor.Create(createAuthorRequest);
+            var (message, author, status) = await bLL.Create(createAuthorRequest);
 
             return status == 201
                 ? SuccessResponse(message, author, status)
@@ -55,7 +55,7 @@ namespace BookStoreApi.Controllers.Admin
             var (isValid, errors) = ModelStateValidation();
             if (!isValid) return ErrorResponse("اطلاعات به درستی وارد نشده است", errors, 400);
 
-            var (message, author, status) = await bLLAuthor.Update(id, UAuthor);
+            var (message, author, status) = await bLL.Update(id, UAuthor);
             return status == 200
                 ? SuccessResponse(message, author, status)
                 : ErrorResponse(message, null, status);
@@ -67,7 +67,7 @@ namespace BookStoreApi.Controllers.Admin
             var (isValid, errors) = ModelStateValidation();
             if (!isValid) return ErrorResponse("اطلاعات به درستی وارد نشده است", errors, 400);
 
-            var (message, status) = await bLLAuthor.Delete(id);
+            var (message, status) = await bLL.Delete(id);
 
             return status == 204
                 ? SuccessResponse(message, null, status)

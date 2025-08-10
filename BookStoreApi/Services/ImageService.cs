@@ -2,9 +2,9 @@
 
 namespace BookStoreApi.Services
 {
-    public class ImageService
+    public static class ImageService
     {
-        private static readonly string publicPath = "wwwroot/images";
+        public static string publicPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
 
         private static string GenerateGUID(string format = "jpeg")
         {
@@ -27,9 +27,8 @@ namespace BookStoreApi.Services
         // Add more as needed (e.g., WebP, BMP)
     };
 
-        private static async Task<(bool IsValid, byte[]? CleanImage, string? MimeType)> InspectAndSanitizeAsync(Stream uploadedStream)
+        private static async Task<(bool IsValid, byte[]? CleanImage, string? MimeType, int Height, int Width)> InspectAndSanitizeAsync(Stream uploadedStream)
         {
-            // Copy original stream to MemoryStream so we can rewind and inspect
             using var memoryStream = new MemoryStream();
             await uploadedStream.CopyToAsync(memoryStream);
             memoryStream.Position = 0;
@@ -43,32 +42,36 @@ namespace BookStoreApi.Services
                 headerBytes.Take(kvp.Value.Length).SequenceEqual(kvp.Value));
 
             if (matchedMime.Key == null)
-                return (false, null, null); // Invalid magic bytes
+                return (false, null, null, 0, 0);
 
-            // 2. Sanitize via re-encoding (ImageSharp)
+            // 2. Sanitize + get dimensions
             try
             {
-                using var image = await Image.LoadAsync(memoryStream); // Load actual image
+                using var image = await Image.LoadAsync(memoryStream);
+                int height = image.Height;
+                int width = image.Width;
+
                 using var sanitizedStream = new MemoryStream();
                 if (matchedMime.Key == "image/jpeg" || matchedMime.Key == "image/gif")
-                    await image.SaveAsJpegAsync(sanitizedStream); // Or .SaveAsPngAsync() based on input
-                else await image.SaveAsPngAsync(sanitizedStream);
+                    await image.SaveAsJpegAsync(sanitizedStream);
+                else
+                    await image.SaveAsPngAsync(sanitizedStream);
 
-                return (true, sanitizedStream.ToArray(), matchedMime.Key);
+                return (true, sanitizedStream.ToArray(), matchedMime.Key, height, width);
             }
             catch
             {
-                return (false, null, null); // Not a valid image even if magic bytes passed
+                return (false, null, null, 0, 0);
             }
         }
 
-        public static async Task<(string message, string? url, int status)> SaveImageAsync(IFormFile file, string subFolder = "")
+        public static async Task<(string message, Models.ImageInfo? information, int status)> SaveImageAsync(IFormFile file, string subFolder = "")
         {
             if (file == null || file.Length == 0)
                 return ("فایلی ارسال نشده", null, 400);
 
             using var stream = file.OpenReadStream();
-            var (isValid, cleanImageBytes, mimeType) = await InspectAndSanitizeAsync(stream);
+            var (isValid, cleanImageBytes, mimeType, height, width) = await InspectAndSanitizeAsync(stream);
 
             if (!isValid)
                 return ("فرمت عکس نامعتبر و یا عکس خراب است", null, 400);
@@ -83,7 +86,53 @@ namespace BookStoreApi.Services
             await File.WriteAllBytesAsync(path, cleanImageBytes!);
 
             string urlPath = $"/images/{(string.IsNullOrWhiteSpace(subFolder) ? "" : subFolder + "/")}{imageId}";
-            return ("عکس با موفقیت ذخیره شد", urlPath, 201);
+            int relativePathLength = subFolder.Length + 6;
+            return ("عکس با موفقیت ذخیره شد", new Models.ImageInfo
+            {
+                Height = height.ToString(), // Image dimensions can be set later if needed
+                Width = width.ToString(),
+                StoredFileName = imageId[6..],
+                RelativePath = urlPath.Substring(8, relativePathLength),
+                FileSize = file.Length.ToString(),
+                MimeType = mimeType
+            }, 201);
+        }
+
+        public static async Task<(string message, int deletedCount)> DeleteImagesAsync(List<string> relativePaths)
+        {
+            if (relativePaths == null || relativePaths.Count == 0)
+                return ("لیست تصاویر برای حذف خالی است", 0);
+
+            int deletedCount = 0;
+
+            foreach (var relativePath in relativePaths)
+            {
+                try
+                {
+                    // Compose the full physical path based on relativePath and subFolder
+                    // If relativePath is something like "d8/c2/xxxx.jpeg" or includes subfolder already:
+                    // Adjust logic as needed for your input format.
+                    string fullPath = Path.Combine(publicPath, relativePath);
+
+                    if (File.Exists(fullPath))
+                    {
+                        File.Delete(fullPath);
+                        deletedCount++;
+                    }
+                    // Optionally, log if file not found
+                }
+                catch (Exception ex)
+                {
+                    // Log the error (ex) if you have a logging framework
+                    // For now just skip and continue
+                }
+            }
+
+            string msg = deletedCount == relativePaths.Count
+                ? "تمام تصاویر با موفقیت حذف شدند."
+                : $"تعداد {deletedCount} از {relativePaths.Count} تصویر حذف شدند.";
+
+            return (msg, deletedCount);
         }
     }
 }

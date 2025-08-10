@@ -1,8 +1,6 @@
-﻿
-namespace BookStoreApi.Database.Models
+﻿namespace BookStoreApi.RequestHandler.Admin.Responses.Book
 {
-
-    public class Book
+    public class RBook
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
@@ -19,5 +17,6 @@ namespace BookStoreApi.Database.Models
         public int AuthorId { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
+
     }
 }

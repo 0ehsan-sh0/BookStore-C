@@ -76,6 +76,14 @@ namespace BookStoreApi.Database.Repositories
             throw new NotImplementedException();
         }
 
+        public async Task<Book?> GetByISBNAsync(string isbn)
+        {
+            string sql = "Book_Get_By_ISBN";
+            using var connection = dapperUtility.GetConnection();
+            var result = await connection.QueryFirstOrDefaultAsync<Book>(sql, new { isbn }, commandType: CommandType.StoredProcedure);
+            return result;
+        }
+
         public Task<Book?> UpdateAsync(Book bookWithId)
         {
             throw new NotImplementedException();

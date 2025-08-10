@@ -9,7 +9,7 @@ namespace BookStoreApi.BusinessLogicLayer.Admin
 {
     public class BLLAuthor(IAuthorRepository repo)
     {
-        public async Task<(List<Author> categories, APaginationInfo pagination)> GetAllAsync(QAuthorGetAll query)
+        public async Task<(List<Author> authors, APaginationInfo pagination)> GetAllAsync(QAuthorGetAll query)
         {
             return await repo.GetAllAsync(query);
         }
@@ -19,7 +19,7 @@ namespace BookStoreApi.BusinessLogicLayer.Admin
             return await repo.GetByIdAsync(id);
         }
 
-        public async Task<(string message, Author? category, int status)> Create(CreateAuthorRequest createAuthorRequest)
+        public async Task<(string message, Author? author, int status)> Create(CreateAuthorRequest createAuthorRequest)
         {
             var author = createAuthorRequest.ToAuthor();
 
@@ -29,7 +29,7 @@ namespace BookStoreApi.BusinessLogicLayer.Admin
             return ("نویسنده با موفقیت اضافه شد", author, 201);
         }
 
-        public async Task<(string message, Author? category, int status)> Update(int id, UpdateAuthorRequest UAuthor)
+        public async Task<(string message, Author? author, int status)> Update(int id, UpdateAuthorRequest UAuthor)
         {
             var author = await repo.GetByIdAsync(id);
             if (author is null)

@@ -98,7 +98,7 @@ namespace BookStoreApi.Services
             }, 201);
         }
 
-        public static async Task<(string message, int deletedCount)> DeleteImagesAsync(List<string> relativePaths)
+        public static (string message, int deletedCount) DeleteImagesAsync(List<string> relativePaths)
         {
             if (relativePaths == null || relativePaths.Count == 0)
                 return ("لیست تصاویر برای حذف خالی است", 0);

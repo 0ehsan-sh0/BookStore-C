@@ -9,7 +9,7 @@ namespace BookStoreApi.BusinessLogicLayer.Admin
 {
     public class BLLTranslator(ITranslatorRepository repo)
     {
-        public async Task<(List<Translator> categories, TPaginationInfo pagination)> GetAllAsync(QTranslatorGetAll query)
+        public async Task<(List<Translator> translators, TPaginationInfo pagination)> GetAllAsync(QTranslatorGetAll query)
         {
             return await repo.GetAllAsync(query);
         }
@@ -19,7 +19,7 @@ namespace BookStoreApi.BusinessLogicLayer.Admin
             return await repo.GetByIdAsync(id);
         }
 
-        public async Task<(string message, Translator? category, int status)> Create(CreateTranslatorRequest createTranslatorRequest)
+        public async Task<(string message, Translator? translator, int status)> Create(CreateTranslatorRequest createTranslatorRequest)
         {
             var translator = createTranslatorRequest.ToTranslator();
 
@@ -29,7 +29,7 @@ namespace BookStoreApi.BusinessLogicLayer.Admin
             return ("مترجم با موفقیت اضافه شد", translator, 201);
         }
 
-        public async Task<(string message, Translator? category, int status)> Update(int id, UpdateTranslatorRequest uTranslator)
+        public async Task<(string message, Translator? translator, int status)> Update(int id, UpdateTranslatorRequest uTranslator)
         {
             var translator = await repo.GetByIdAsync(id);
             if (translator is null)

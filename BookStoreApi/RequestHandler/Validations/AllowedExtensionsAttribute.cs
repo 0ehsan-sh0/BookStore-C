@@ -13,14 +13,26 @@ namespace BookStoreApi.RequestHandler.Validations
 
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-            var file = value as IFormFile;
-            if (file == null) return ValidationResult.Success;
+            var files = new List<IFormFile>();
 
-            var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
-
-            if (!_extensions.Contains(extension))
+            if (value is IFormFile singleFile)
             {
-                return new ValidationResult($"فرمت فایل مجاز نیست. فرمت‌های مجاز: {string.Join(", ", _extensions)}");
+                files.Add(singleFile);
+            }
+            else if (value is IEnumerable<IFormFile> multipleFiles)
+            {
+                files.AddRange(multipleFiles);
+            }
+
+            foreach (var file in files)
+            {
+                var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+                if (!_extensions.Contains(extension))
+                {
+                    return new ValidationResult(
+                        $"فرمت فایل مجاز نیست. فرمت‌های مجاز: {string.Join(", ", _extensions)}"
+                    );
+                }
             }
 
             return ValidationResult.Success;

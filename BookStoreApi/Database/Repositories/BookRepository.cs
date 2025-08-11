@@ -2,6 +2,7 @@
 using BookStoreApi.Database.Models;
 using BookStoreApi.RequestHandler.Admin.QueryObjects.Book;
 using BookStoreApi.RequestHandler.Admin.Responses.Book;
+using BookStoreApi.Services;
 using BookStoreApi.Services.Models;
 using Dapper;
 using System.Data;
@@ -10,12 +11,13 @@ namespace BookStoreApi.Database.Repositories
 {
     public class BookRepository(DapperUtility dapperUtility) : IBookRepository
     {
-        public async Task<int> CreateAsync(Book book, List<ImageInfo> imageInfos)
+        public async Task<int> CreateAsync(Book book, List<ImageInfo> imageInfos, List<int>? translators, List<int> categories)
         {
             using var connection = dapperUtility.GetConnection();
 
             var sql = "Book_Insert";
 
+            // making images table
             var imagesTable = new DataTable();
             imagesTable.Columns.Add("Width", typeof(int));
             imagesTable.Columns.Add("Height", typeof(int));
@@ -40,6 +42,26 @@ namespace BookStoreApi.Database.Repositories
                 );
             }
 
+            //translator ids become a table here
+            DataTable translatorIds = new();
+            translatorIds.Columns.Add("Id", typeof(int));
+            if (translators is not null)
+            {
+                foreach (var id in translators)
+                {
+                    translatorIds.Rows.Add(id);
+                }
+            }
+
+            //Categoriy ids become a table here
+            DataTable categoryIds = new();
+            categoryIds.Columns.Add("Id", typeof(int));
+            foreach (var id in categories)
+            {
+                categoryIds.Rows.Add(id);
+            }
+
+            // making the parameters for Store procejure
             var parameters = new
             {
                 book.Name,
@@ -54,11 +76,32 @@ namespace BookStoreApi.Database.Repositories
                 book.PublishYear,
                 Publisher = string.IsNullOrWhiteSpace(book.Publisher) ? null : book.Publisher,
                 book.AuthorId,
-                Images = imagesTable.AsTableValuedParameter("ImageInfoType")
+                Images = imagesTable.AsTableValuedParameter("ImageInfoType"),
+                TranslatorIds = translatorIds.AsTableValuedParameter("IntList"),
+                CategoryIds = categoryIds.AsTableValuedParameter("IntList"),
             };
 
-            int insertedId = await connection.ExecuteScalarAsync<int>(sql, parameters, commandType: CommandType.StoredProcedure);
-            return insertedId;
+            // Database call and inserting the book and relationships
+            try
+            {
+                int insertedId = await connection.ExecuteScalarAsync<int>(sql, parameters, commandType: CommandType.StoredProcedure);
+                return insertedId;
+            }
+            catch (Exception)
+            {
+                // if anything goes wrong the images must be deleted
+                if (imageInfos.Count > 0)
+                {
+                    List<string> relativePaths = [];
+                    foreach (var imageInfo in imageInfos)
+                    {
+                        string relativePath = imageInfo.RelativePath.Trim() + imageInfo.StoredFileName.Trim();
+                        relativePaths.Add(relativePath);
+                    }
+                    ImageService.DeleteImagesAsync(relativePaths);
+                }
+                return 0;
+            }
         }
 
         public Task<bool> DeleteAsync(int id)
@@ -71,9 +114,52 @@ namespace BookStoreApi.Database.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<Book?> GetByIdAsync(int id)
+        public async Task<BookAllData?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            using var connection = dapperUtility.GetConnection();
+            await connection.OpenAsync();
+
+            using var multi = await connection.QueryMultipleAsync(
+                "Book_Get_One",
+                new { id },
+                commandType: CommandType.StoredProcedure
+            );
+
+            BookAllData data = new BookAllData();
+
+            // First result: Book info
+            var book = await multi.ReadFirstOrDefaultAsync<Book>();
+            if (book == null) return null;
+
+            data.Id = book.Id;
+            data.Name = book.Name;
+            data.EnglishName = book.EnglishName;
+            data.Description = book.Description;
+            data.Price = book.Price;
+            data.PrintSeries = book.PrintSeries;
+            data.ISBN = book.ISBN;
+            data.CoverType = book.CoverType;
+            data.Format = book.Format;
+            data.Pages = book.Pages;
+            data.PublishYear = book.PublishYear;
+            data.Publisher = book.Publisher;
+            data.AuthorId = book.AuthorId;
+            data.CreatedAt = book.CreatedAt;
+            data.UpdatedAt = book.UpdatedAt;
+
+            // Second result: Author info
+            data.Author = await multi.ReadFirstOrDefaultAsync<Author>();
+
+            // Third result: Translators
+            data.Translators = (await multi.ReadAsync<Translator>()).ToList();
+
+            // Fourth result: Categories
+            data.Categories = (await multi.ReadAsync<Category>()).ToList();
+
+            // Fifth result: Images
+            data.Images = (await multi.ReadAsync<Image>()).ToList();
+
+            return data;
         }
 
         public async Task<Book?> GetByISBNAsync(string isbn)

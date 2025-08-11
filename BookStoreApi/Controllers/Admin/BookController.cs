@@ -15,11 +15,19 @@ namespace BookStoreApi.Controllers.Admin
             if (!isValid)
                 return ErrorResponse("اطلاعات به درستی وارد نشده است", errors, 400);
 
-            var (message, author, status) = await bLL.Create(createBookRequest);
+            var (message, book, status) = await bLL.Create(createBookRequest);
 
             return status == 201
-                ? SuccessResponse(message, author, status)
-                : ErrorResponse(message, author, status);
+                ? SuccessResponse(message, book, status)
+                : ErrorResponse(message, book, status);
+        }
+
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetByIdAsync([FromRoute] int id)
+        {
+            var book = await bLL.GetByIdAsync(id);
+            if (book is null) return ErrorResponse("کتاب یافت نشد", null);
+            return SuccessResponse("اطلاعات با موفقیت دریافت شد", book);
         }
     }
 }

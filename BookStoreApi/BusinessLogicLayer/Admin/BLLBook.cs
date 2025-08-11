@@ -7,11 +7,11 @@ using BookStoreApi.Services.Models;
 
 namespace BookStoreApi.BusinessLogicLayer.Admin
 {
-    public class BLLBook(IBookRepository repo, IAuthorRepository authorRepo)
+    public class BLLBook(IBookRepository repo, IAuthorRepository authorRepo, ITranslatorRepository translatorRepo, ICategoryRepository categoryRepo)
     {
         public async Task<List<ImageInfo>?> UploadImages(List<IFormFile> images)
         {
-            List<ImageInfo> imageInfos = new List<ImageInfo>();
+            List<ImageInfo> imageInfos = [];
 
             foreach (var image in images)
             {
@@ -31,7 +31,7 @@ namespace BookStoreApi.BusinessLogicLayer.Admin
                 {
                     if (imageInfos.Count > 0)
                     {
-                        List<string> relativePaths = new List<string>();
+                        List<string> relativePaths = [];
                         foreach (var imageInfo in imageInfos)
                         {
                             string relativePath = imageInfo.RelativePath.Trim() + imageInfo.StoredFileName.Trim();
@@ -57,14 +57,39 @@ namespace BookStoreApi.BusinessLogicLayer.Admin
             if (author is null)
                 return ("نویسنده ای با این شناسه وجود ندارد", null, 404);
 
+            if (createBookRequest.translators is not null)
+            {
+                foreach (var translatorId in createBookRequest.translators)
+                {
+                    var translator = translatorRepo.GetByIdAsync(translatorId);
+                    if (translator is null)
+                        return ($"مترجمی با شناسه {translatorId} وجود ندارد", null, 404);
+                }
+            }
+
+            foreach (var categoryId in createBookRequest.categories)
+            {
+                var category = categoryRepo.GetByIdAsync(categoryId);
+                if (category is null)
+                    return ($"دسته بندی با شناسه {categoryId} وجود ندارد", null, 404);
+            }
+
             var imageInfos = await UploadImages(createBookRequest.Images);
             if (imageInfos is null)
                 return ("هیچ عکسی آپلود نشد", null, 500);
 
-            int id = await repo.CreateAsync(book, imageInfos);
-            book = await repo.GetByIdAsync(id);
+            int id = await repo.CreateAsync(book, imageInfos, createBookRequest.translators, createBookRequest.categories);
+            var bookdata = await repo.GetByIdAsync(id);
+
+            if (bookdata is null)
+                return ("ایجاد کتاب با مشکل مواجه شد", null, 500);
 
             return ("کتاب با موفقیت اضافه شد", book, 201);
+        }
+
+        public async Task<BookAllData?> GetByIdAsync(int id)
+        {
+            return await repo.GetByIdAsync(id);
         }
     }
 }

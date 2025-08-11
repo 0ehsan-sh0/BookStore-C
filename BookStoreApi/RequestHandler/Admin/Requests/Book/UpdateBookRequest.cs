@@ -32,7 +32,7 @@ namespace BookStoreApi.RequestHandler.Admin.Requests.Book
         [Required(ErrorMessage = "نویسنده الزامی است")]
         public int AuthorId { get; set; }
         [Required(ErrorMessage = "تصاویر الزامی است")]
-        [AllowedExtensions(new[] { ".jpg", ".jpeg", ".png", ".gif" })]
+        [AllowedExtensions([".jpg", ".jpeg", ".png", ".gif"])]
         public List<IFormFile> Images { get; set; }
 
     }

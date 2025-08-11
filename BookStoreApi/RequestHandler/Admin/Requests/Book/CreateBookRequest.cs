@@ -32,8 +32,11 @@ namespace BookStoreApi.RequestHandler.Admin.Requests.Book
         [Required(ErrorMessage = "نویسنده الزامی است")]
         public int AuthorId { get; set; }
         [Required(ErrorMessage = "تصاویر الزامی است")]
-        [AllowedExtensions(new[] { ".jpg", ".jpeg", ".png", ".gif" })]
+        [AllowedExtensions([".jpg", ".jpeg", ".png", ".gif"])]
         public List<IFormFile> Images { get; set; }
+        public List<int>? translators { get; set; }
+        [Required(ErrorMessage = "حداقل یک دسته بندی الزامی است")]
+        public List<int> categories { get; set; }
 
     }
 }

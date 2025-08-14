@@ -6,6 +6,7 @@ using BookStoreApi.Services;
 using BookStoreApi.Services.Models;
 using Dapper;
 using System.Data;
+using System.Text.Json;
 
 namespace BookStoreApi.Database.Repositories
 {
@@ -103,14 +104,35 @@ namespace BookStoreApi.Database.Repositories
             }
         }
 
-        public Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            string sql = "Update B set DeletedAt = GETDATE() FROM Books B WHERE Id = @id";
+            using var connection = dapperUtility.GetConnection();
+            int result = await connection.ExecuteAsync(sql, new { id });
+            if (result == 1) return true;
+            return false;
         }
 
-        public Task<(List<Book> books, BPaginationInfo info)> GetAllAsync(QBookGetAll query)
+        public async Task<(List<BookAllData>? books, BPaginationInfo info)> GetAllAsync(QBookGetAll query)
         {
-            throw new NotImplementedException();
+            using var connection = dapperUtility.GetConnection();
+            await connection.OpenAsync();
+
+            using var multi = await connection.QueryMultipleAsync(
+                "Book_Get_All_JSON",
+                new { query.PageNumber, query.PageSize },
+                commandType: CommandType.StoredProcedure
+            );
+
+            // First result: JSON string
+            var booksJson = await multi.ReadFirstOrDefaultAsync<string>();
+            var books = JsonSerializer.Deserialize<List<BookAllData>>(booksJson!);
+
+            // Second result: pagination info
+            var paginationJson = await multi.ReadFirstOrDefaultAsync<string>();
+            var pagination = JsonSerializer.Deserialize<BPaginationInfo>(paginationJson!);
+
+            return (books, pagination!);
         }
 
         public async Task<BookAllData?> GetByIdAsync(int id)

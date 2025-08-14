@@ -1,7 +1,9 @@
 ﻿using BookStoreApi.Database.Interfaces;
 using BookStoreApi.Database.Models;
 using BookStoreApi.RequestHandler.Admin.Mappers;
+using BookStoreApi.RequestHandler.Admin.QueryObjects.Book;
 using BookStoreApi.RequestHandler.Admin.Requests.Book;
+using BookStoreApi.RequestHandler.Admin.Responses.Book;
 using BookStoreApi.Services;
 using ImageInfo = BookStoreApi.Services.Models.ImageInfo;
 
@@ -138,9 +140,27 @@ namespace BookStoreApi.BusinessLogicLayer.Admin
 
         }
 
+        public async Task<(List<BookAllData>? books, BPaginationInfo info)> GetAllAsync(QBookGetAll query)
+        {
+            var (books, info) = await repo.GetAllAsync(query);
+            return (books, info);
+        }
+
         public async Task<BookAllData?> GetByIdAsync(int id)
         {
             return await repo.GetByIdAsync(id);
+        }
+
+        public async Task<(string message, int status)> Delete(int id)
+        {
+            var existingEntity = await repo.GetByIdAsync(id);
+            if (existingEntity is null)
+                return ("کتاب مورد نظر یافت نشد", 404);
+
+            var entity = await repo.DeleteAsync(id);
+            if (!entity) return ("کتاب مورد نظر یافت نشد", 404);
+
+            return ("کتاب با موفقیت حذف شد", 204);
         }
     }
 }

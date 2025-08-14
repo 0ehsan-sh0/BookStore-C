@@ -3,7 +3,7 @@ using BookStoreApi.Database.Models;
 using BookStoreApi.RequestHandler.Admin.Mappers;
 using BookStoreApi.RequestHandler.Admin.Requests.Book;
 using BookStoreApi.Services;
-using BookStoreApi.Services.Models;
+using ImageInfo = BookStoreApi.Services.Models.ImageInfo;
 
 namespace BookStoreApi.BusinessLogicLayer.Admin
 {
@@ -57,34 +57,85 @@ namespace BookStoreApi.BusinessLogicLayer.Admin
             if (author is null)
                 return ("نویسنده ای با این شناسه وجود ندارد", null, 404);
 
-            if (createBookRequest.translators is not null)
+            if (createBookRequest.Translators is not null && createBookRequest.Translators.Count > 0)
             {
-                foreach (var translatorId in createBookRequest.translators)
+                foreach (var translatorId in createBookRequest.Translators)
                 {
-                    var translator = translatorRepo.GetByIdAsync(translatorId);
+                    var translator = await translatorRepo.GetByIdAsync(translatorId);
                     if (translator is null)
                         return ($"مترجمی با شناسه {translatorId} وجود ندارد", null, 404);
                 }
             }
 
-            foreach (var categoryId in createBookRequest.categories)
+            if (createBookRequest.Categories.Count > 0)
             {
-                var category = categoryRepo.GetByIdAsync(categoryId);
-                if (category is null)
-                    return ($"دسته بندی با شناسه {categoryId} وجود ندارد", null, 404);
+                foreach (var categoryId in createBookRequest.Categories)
+                {
+                    var category = await categoryRepo.GetByIdAsync(categoryId);
+                    if (category is null)
+                        return ($"دسته بندی با شناسه {categoryId} وجود ندارد", null, 404);
+                }
             }
+            else return ("لطفا حداقل یک دسته بندی وارد کنید", null, 400);
 
             var imageInfos = await UploadImages(createBookRequest.Images);
             if (imageInfos is null)
                 return ("هیچ عکسی آپلود نشد", null, 500);
 
-            int id = await repo.CreateAsync(book, imageInfos, createBookRequest.translators, createBookRequest.categories);
+            int id = await repo.CreateAsync(book, imageInfos, createBookRequest.Translators, createBookRequest.Categories);
             var bookdata = await repo.GetByIdAsync(id);
 
             if (bookdata is null)
                 return ("ایجاد کتاب با مشکل مواجه شد", null, 500);
 
             return ("کتاب با موفقیت اضافه شد", book, 201);
+        }
+
+        public async Task<(string message, BookAllData? book, int status)> Update(UpdateBookRequest updateBookRequest, int id)
+        {
+            var book = updateBookRequest.ToBook(id);
+
+            var bookExist = await repo.GetByIdAsync(id);
+            if (bookExist is null)
+                return ("کتابی با این شناسه وجود ندارد", null, 404);
+
+            var isbnExists = await repo.GetByISBNAsync(book.ISBN);
+            if (isbnExists is not null && isbnExists.ISBN != bookExist.ISBN)
+                return ("کتابی با این شابک قبلا ثبت شده است", null, 400);
+
+            var author = await authorRepo.GetByIdAsync(updateBookRequest.AuthorId);
+            if (author is null)
+                return ("نویسنده ای با این شناسه وجود ندارد", null, 404);
+
+            if (updateBookRequest.Translators is not null && updateBookRequest.Translators.Count > 0)
+            {
+                foreach (var translatorId in updateBookRequest.Translators)
+                {
+                    var translator = await translatorRepo.GetByIdAsync(translatorId);
+                    if (translator is null)
+                        return ($"مترجمی با شناسه {translatorId} وجود ندارد", null, 404);
+                }
+            }
+
+            if (updateBookRequest.Categories.Count > 0)
+            {
+                foreach (var categoryId in updateBookRequest.Categories)
+                {
+                    var category = await categoryRepo.GetByIdAsync(categoryId);
+                    if (category is null)
+                        return ($"دسته بندی با شناسه {categoryId} وجود ندارد", null, 404);
+                }
+            }
+            else return ("لطفا حداقل یک دسته بندی وارد کنید", null, 400);
+
+            var bookAllData = await repo.UpdateAsync(book, updateBookRequest.Translators, updateBookRequest.Categories);
+
+            if (bookAllData is null)
+                return ("بروزرسانی کتاب با مشکل مواجه شد", null, 500);
+
+            return ("کتاب با موفقیت بروزرسانی شد", bookAllData, 201);
+
+
         }
 
         public async Task<BookAllData?> GetByIdAsync(int id)

@@ -13,8 +13,6 @@ namespace BookStoreApi.Database.Repositories
     {
         public async Task<int> CreateAsync(Book book, List<ImageInfo> imageInfos, List<int>? translators, List<int> categories)
         {
-            using var connection = dapperUtility.GetConnection();
-
             var sql = "Book_Insert";
 
             // making images table
@@ -84,6 +82,7 @@ namespace BookStoreApi.Database.Repositories
             // Database call and inserting the book and relationships
             try
             {
+                using var connection = dapperUtility.GetConnection();
                 int insertedId = await connection.ExecuteScalarAsync<int>(sql, parameters, commandType: CommandType.StoredProcedure);
                 return insertedId;
             }
@@ -125,7 +124,7 @@ namespace BookStoreApi.Database.Repositories
                 commandType: CommandType.StoredProcedure
             );
 
-            BookAllData data = new BookAllData();
+            BookAllData data = new();
 
             // First result: Book info
             var book = await multi.ReadFirstOrDefaultAsync<Book>();
@@ -170,9 +169,62 @@ namespace BookStoreApi.Database.Repositories
             return result;
         }
 
-        public Task<Book?> UpdateAsync(Book bookWithId)
+        public async Task<BookAllData?> UpdateAsync(Book bookWithId, List<int>? translators, List<int> categories)
         {
-            throw new NotImplementedException();
+            var sql = "Book_Update";
+
+            //translator ids become a table here
+            DataTable translatorIds = new();
+            translatorIds.Columns.Add("Id", typeof(int));
+            if (translators is not null)
+            {
+                foreach (var id in translators)
+                {
+                    translatorIds.Rows.Add(id);
+                }
+            }
+
+            //Categoriy ids become a table here
+            DataTable categoryIds = new();
+            categoryIds.Columns.Add("Id", typeof(int));
+            foreach (var id in categories)
+            {
+                categoryIds.Rows.Add(id);
+            }
+
+            // making the parameters for Store procejure
+            var parameters = new
+            {
+                bookWithId.Id,
+                bookWithId.Name,
+                EnglishName = string.IsNullOrWhiteSpace(bookWithId.EnglishName) ? null : bookWithId.EnglishName,
+                Description = string.IsNullOrWhiteSpace(bookWithId.Description) ? null : bookWithId.Description,
+                bookWithId.Price,
+                bookWithId.PrintSeries,
+                bookWithId.ISBN,
+                CoverType = string.IsNullOrWhiteSpace(bookWithId.CoverType) ? null : bookWithId.CoverType,
+                Format = string.IsNullOrWhiteSpace(bookWithId.Format) ? null : bookWithId.Format,
+                bookWithId.Pages,
+                bookWithId.PublishYear,
+                Publisher = string.IsNullOrWhiteSpace(bookWithId.Publisher) ? null : bookWithId.Publisher,
+                bookWithId.AuthorId,
+                TranslatorIds = translatorIds.AsTableValuedParameter("IntList"),
+                CategoryIds = categoryIds.AsTableValuedParameter("IntList"),
+            };
+
+            // Database call and inserting the book and relationships
+            try
+            {
+                using var connection = dapperUtility.GetConnection();
+                int result = await connection.ExecuteScalarAsync<int>(sql, parameters, commandType: CommandType.StoredProcedure);
+                if (result == 1)
+                    return await GetByIdAsync(bookWithId.Id);
+                return null;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
     }
 }

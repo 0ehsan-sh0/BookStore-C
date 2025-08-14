@@ -11,7 +11,7 @@ namespace BookStoreApi.Database.Interfaces
         Task<BookAllData?> GetByIdAsync(int id);
         Task<Book?> GetByISBNAsync(string isbn);
         Task<int> CreateAsync(Book book, List<ImageInfo> imageInfos, List<int>? translators, List<int> categories);
-        Task<Book?> UpdateAsync(Book bookWithId);
+        Task<BookAllData?> UpdateAsync(Book bookWithId, List<int>? translators, List<int> categories);
         Task<bool> DeleteAsync(int id);
     }
 }

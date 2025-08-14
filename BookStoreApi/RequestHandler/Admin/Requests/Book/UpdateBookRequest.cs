@@ -30,10 +30,11 @@ namespace BookStoreApi.RequestHandler.Admin.Requests.Book
         [Required(ErrorMessage = "وارد کردن نام انتشارات الزامی است")]
         public string Publisher { get; set; } = string.Empty;
         [Required(ErrorMessage = "نویسنده الزامی است")]
+        [PositiveNumber(ErrorMessage = "شناسه نویسنده نمیتواند صفر یا منفی باشد")]
         public int AuthorId { get; set; }
-        [Required(ErrorMessage = "تصاویر الزامی است")]
-        [AllowedExtensions([".jpg", ".jpeg", ".png", ".gif"])]
-        public List<IFormFile> Images { get; set; }
+        public List<int>? Translators { get; set; }
+        [Required(ErrorMessage = "حداقل یک دسته بندی الزامی است")]
+        public required List<int> Categories { get; set; }
 
     }
 }

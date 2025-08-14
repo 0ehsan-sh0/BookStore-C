@@ -32,5 +32,19 @@ namespace BookStoreApi.Controllers.Admin
 
             return SuccessResponse("اطلاعات با موفقیت دریافت شد", book.ToRBookAllData());
         }
+
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Update([FromBody] UpdateBookRequest updateBookRequest, [FromRoute] int id)
+        {
+            var (isValid, errors) = ModelStateValidation();
+            if (!isValid)
+                return ErrorResponse("اطلاعات به درستی وارد نشده است", errors, 400);
+
+            var (message, book, status) = await bLL.Update(updateBookRequest, id);
+
+            return status == 201
+                ? SuccessResponse(message, book!.ToRBookAllData(), status)
+                : ErrorResponse(message, null, status);
+        }
     }
 }

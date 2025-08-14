@@ -1,4 +1,5 @@
 ﻿using BookStoreApi.BusinessLogicLayer.Admin;
+using BookStoreApi.RequestHandler.Admin.Mappers;
 using BookStoreApi.RequestHandler.Admin.Requests.Book;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,7 +28,9 @@ namespace BookStoreApi.Controllers.Admin
         {
             var book = await bLL.GetByIdAsync(id);
             if (book is null) return ErrorResponse("کتاب یافت نشد", null);
-            return SuccessResponse("اطلاعات با موفقیت دریافت شد", book);
+
+
+            return SuccessResponse("اطلاعات با موفقیت دریافت شد", book.ToRBookAllData());
         }
     }
 }

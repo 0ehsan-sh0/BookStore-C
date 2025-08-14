@@ -8,25 +8,17 @@ namespace BookStoreApi.RequestHandler.Validations
         {
             if (value == null) return true; // Consider null as valid, use [Required] for null check
 
-            switch (value)
+            return value switch
             {
-                case int intValue:
-                    return intValue > 0;
-                case long longValue:
-                    return longValue > 0;
-                case float floatValue:
-                    return floatValue > 0;
-                case double doubleValue:
-                    return doubleValue > 0;
-                case decimal decimalValue:
-                    return decimalValue > 0;
-                case short shortValue:
-                    return shortValue > 0;
-                case byte byteValue:
-                    return byteValue > 0;
-                default:
-                    return false; // Unsupported type
-            }
+                int intValue => intValue > 0,
+                long longValue => longValue > 0,
+                float floatValue => floatValue > 0,
+                double doubleValue => doubleValue > 0,
+                decimal decimalValue => decimalValue > 0,
+                short shortValue => shortValue > 0,
+                byte byteValue => byteValue > 0,
+                _ => false,// Unsupported type
+            };
         }
     }
 }

@@ -121,7 +121,7 @@ namespace BookStoreApi.Services
                     }
                     // Optionally, log if file not found
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     // Log the error (ex) if you have a logging framework
                     // For now just skip and continue
@@ -133,6 +133,39 @@ namespace BookStoreApi.Services
                 : $"تعداد {deletedCount} از {relativePaths.Count} تصویر حذف شدند.";
 
             return (msg, deletedCount);
+        }
+
+        public static (string message, bool status) DeleteImageAsync(string relativePath)
+        {
+            if (relativePath == null || string.IsNullOrWhiteSpace(relativePath))
+                return ("لیست تصاویر برای حذف خالی است", false);
+
+            bool status = false;
+            try
+            {
+                // Compose the full physical path based on relativePath and subFolder
+                // If relativePath is something like "d8/c2/xxxx.jpeg" or includes subfolder already:
+                // Adjust logic as needed for your input format.
+                string fullPath = Path.Combine(publicPath, relativePath);
+
+                if (File.Exists(fullPath))
+                {
+                    File.Delete(fullPath);
+                    status = true;
+                }
+                // Optionally, log if file not found
+            }
+            catch (Exception)
+            {
+                // Log the error (ex) if you have a logging framework
+                // For now just skip and continue
+            }
+
+            string msg = status
+               ? "تصویر با موفقیت حذف شد"
+               : $"در حذف تصویر مشکلی پیش آمد";
+
+            return (msg, status);
         }
     }
 }

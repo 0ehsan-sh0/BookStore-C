@@ -51,6 +51,9 @@ builder.Services.AddScoped<ITranslatorRepository, TranslatorRepository>();
 builder.Services.AddScoped<BLLTranslator>();
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<BLLBook>();
+builder.Services.AddScoped<IImageRepository, ImageRepository>();
+builder.Services.AddScoped<BLLImage>();
+
 
 
 var app = builder.Build();
@@ -61,6 +64,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// Serve files from wwwroot
+app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 

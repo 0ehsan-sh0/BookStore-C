@@ -47,7 +47,7 @@ namespace BookStoreApi.BusinessLogicLayer.Admin
 
             return imageInfos;
         }
-        public async Task<(string message, Book? book, int status)> Create(CreateBookRequest createBookRequest)
+        public async Task<(string message, BookAllData? book, int status)> Create(CreateBookRequest createBookRequest)
         {
             var book = createBookRequest.ToBook();
 
@@ -90,7 +90,7 @@ namespace BookStoreApi.BusinessLogicLayer.Admin
             if (bookdata is null)
                 return ("ایجاد کتاب با مشکل مواجه شد", null, 500);
 
-            return ("کتاب با موفقیت اضافه شد", book, 201);
+            return ("کتاب با موفقیت اضافه شد", bookdata, 201);
         }
 
         public async Task<(string message, BookAllData? book, int status)> Update(UpdateBookRequest updateBookRequest, int id)

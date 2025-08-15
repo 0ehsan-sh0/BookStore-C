@@ -35,8 +35,10 @@ namespace BookStoreApi.RequestHandler.Admin.Requests.Book
         [Required(ErrorMessage = "تصاویر الزامی است")]
         [AllowedExtensions([".jpg", ".jpeg", ".png", ".gif"])]
         public required List<IFormFile> Images { get; set; }
+        [NoDuplicates(ErrorMessage = "لطفا مترجم تکراری وارد نکنید")]
         public List<int>? Translators { get; set; }
         [Required(ErrorMessage = "حداقل یک دسته بندی الزامی است")]
+        [NoDuplicates(ErrorMessage = "لطفا دسته بندی تکراری وارد نکنید")]
         public required List<int> Categories { get; set; }
 
     }

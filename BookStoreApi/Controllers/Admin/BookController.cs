@@ -22,8 +22,8 @@ namespace BookStoreApi.Controllers.Admin
             var (message, book, status) = await bLL.Create(createBookRequest);
 
             return status == 201
-                ? SuccessResponse(message, book, status)
-                : ErrorResponse(message, book, status);
+                ? SuccessResponse(message, book!.ToRBookAllData(), status)
+                : ErrorResponse(message, null, status);
         }
 
         [HttpGet("{id:int}")]

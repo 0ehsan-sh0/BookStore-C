@@ -19,28 +19,7 @@ namespace BookStoreApi.Database.Repositories
         public async Task<List<int>?> CreateAsync(List<ImageInfo> imageInfos, string foreignTable, int foreignId)
         {
             // making images table
-            var imagesTable = new DataTable();
-            imagesTable.Columns.Add("Width", typeof(int));
-            imagesTable.Columns.Add("Height", typeof(int));
-            imagesTable.Columns.Add("IsPrimary", typeof(bool));
-            imagesTable.Columns.Add("StoredFileName", typeof(string));
-            imagesTable.Columns.Add("RelativePath", typeof(string));
-            imagesTable.Columns.Add("FileSize", typeof(long));
-            imagesTable.Columns.Add("MimeType", typeof(string));
-            for (int i = 0; i < imageInfos.Count; i++)
-            {
-                var image = imageInfos[i];
-
-                imagesTable.Rows.Add(
-                    image.Width,
-                    image.Height,
-                    false,
-                    image.StoredFileName,
-                    image.RelativePath,
-                    image.FileSize,
-                    image.MimeType
-                );
-            }
+            var imagesTable = DataTables.ImageInfoTypeTable(imageInfos);
 
             try
             {

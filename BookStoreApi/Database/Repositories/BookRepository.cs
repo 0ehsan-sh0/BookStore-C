@@ -17,48 +17,15 @@ namespace BookStoreApi.Database.Repositories
             var sql = "Book_Insert";
 
             // making images table
-            var imagesTable = new DataTable();
-            imagesTable.Columns.Add("Width", typeof(int));
-            imagesTable.Columns.Add("Height", typeof(int));
-            imagesTable.Columns.Add("IsPrimary", typeof(bool));
-            imagesTable.Columns.Add("StoredFileName", typeof(string));
-            imagesTable.Columns.Add("RelativePath", typeof(string));
-            imagesTable.Columns.Add("FileSize", typeof(long));
-            imagesTable.Columns.Add("MimeType", typeof(string));
-            for (int i = 0; i < imageInfos.Count; i++)
-            {
-                var image = imageInfos[i];
-                bool isPrimary = (i == 0);  // First image is primary
-
-                imagesTable.Rows.Add(
-                    image.Width,
-                    image.Height,
-                    isPrimary,
-                    image.StoredFileName,
-                    image.RelativePath,
-                    image.FileSize,
-                    image.MimeType
-                );
-            }
+            var imagesTable = DataTables.ImageInfoTypeTable(imageInfos);
 
             //translator ids become a table here
-            DataTable translatorIds = new();
-            translatorIds.Columns.Add("Id", typeof(int));
-            if (translators is not null)
-            {
-                foreach (var id in translators)
-                {
-                    translatorIds.Rows.Add(id);
-                }
-            }
+            DataTable translatorIds = translators is not null
+                 ? DataTables.IntListTable(translators)
+                 : DataTables.IntListTable(new List<int>()); // empty but correct schema
 
             //Categoriy ids become a table here
-            DataTable categoryIds = new();
-            categoryIds.Columns.Add("Id", typeof(int));
-            foreach (var id in categories)
-            {
-                categoryIds.Rows.Add(id);
-            }
+            var categoryIds = DataTables.IntListTable(categories);
 
             // making the parameters for Store procejure
             var parameters = new
@@ -196,23 +163,12 @@ namespace BookStoreApi.Database.Repositories
             var sql = "Book_Update";
 
             //translator ids become a table here
-            DataTable translatorIds = new();
-            translatorIds.Columns.Add("Id", typeof(int));
-            if (translators is not null)
-            {
-                foreach (var id in translators)
-                {
-                    translatorIds.Rows.Add(id);
-                }
-            }
+            DataTable translatorIds = translators is not null
+                 ? DataTables.IntListTable(translators)
+                 : DataTables.IntListTable(new List<int>()); // empty but correct schema
 
             //Categoriy ids become a table here
-            DataTable categoryIds = new();
-            categoryIds.Columns.Add("Id", typeof(int));
-            foreach (var id in categories)
-            {
-                categoryIds.Rows.Add(id);
-            }
+            var categoryIds = DataTables.IntListTable(categories);
 
             // making the parameters for Store procejure
             var parameters = new

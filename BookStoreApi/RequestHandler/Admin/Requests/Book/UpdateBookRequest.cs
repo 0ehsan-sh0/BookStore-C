@@ -32,8 +32,10 @@ namespace BookStoreApi.RequestHandler.Admin.Requests.Book
         [Required(ErrorMessage = "نویسنده الزامی است")]
         [PositiveNumber(ErrorMessage = "شناسه نویسنده نمیتواند صفر یا منفی باشد")]
         public int AuthorId { get; set; }
+        [NoDuplicates(ErrorMessage = "لطفا مترجم تکراری وارد نکنید")]
         public List<int>? Translators { get; set; }
         [Required(ErrorMessage = "حداقل یک دسته بندی الزامی است")]
+        [NoDuplicates(ErrorMessage = "لطفا دسته بندی تکراری وارد نکنید")]
         public required List<int> Categories { get; set; }
 
     }

@@ -12,7 +12,7 @@ namespace BookStoreApi.Database.Repositories
 {
     public class BookRepository(DapperUtility dapperUtility) : IBookRepository
     {
-        public async Task<int> CreateAsync(Book book, List<ImageInfo> imageInfos, List<int>? translators, List<int> categories)
+        public async Task<int> CreateAsync(Book book, List<ImageInfo> imageInfos, List<int>? translators, List<int> categories, List<int> tags)
         {
             var sql = "Book_Insert";
 
@@ -26,6 +26,9 @@ namespace BookStoreApi.Database.Repositories
 
             //Categoriy ids become a table here
             var categoryIds = DataTables.IntListTable(categories);
+
+            //Tag ids become a table here
+            var tagIds = DataTables.IntListTable(tags);
 
             // making the parameters for Store procejure
             var parameters = new
@@ -45,6 +48,7 @@ namespace BookStoreApi.Database.Repositories
                 Images = imagesTable.AsTableValuedParameter("ImageInfoType"),
                 TranslatorIds = translatorIds.AsTableValuedParameter("IntList"),
                 CategoryIds = categoryIds.AsTableValuedParameter("IntList"),
+                TagIds = tagIds.AsTableValuedParameter("IntList")
             };
 
             // Database call and inserting the book and relationships
@@ -144,7 +148,11 @@ namespace BookStoreApi.Database.Repositories
             // Fourth result: Categories
             data.Categories = (await multi.ReadAsync<Category>()).ToList();
 
-            // Fifth result: Images
+
+            // Fifth result: Tags
+            data.Tags = (await multi.ReadAsync<Tag>()).ToList();
+
+            // Sixth result : Images
             data.Images = (await multi.ReadAsync<Image>()).ToList();
 
             return data;
@@ -158,7 +166,7 @@ namespace BookStoreApi.Database.Repositories
             return result;
         }
 
-        public async Task<BookAllData?> UpdateAsync(Book bookWithId, List<int>? translators, List<int> categories)
+        public async Task<BookAllData?> UpdateAsync(Book bookWithId, List<int>? translators, List<int> categories, List<int> tags)
         {
             var sql = "Book_Update";
 
@@ -169,6 +177,9 @@ namespace BookStoreApi.Database.Repositories
 
             //Categoriy ids become a table here
             var categoryIds = DataTables.IntListTable(categories);
+
+            //Tag ids become a table here
+            var tagIds = DataTables.IntListTable(tags);
 
             // making the parameters for Store procejure
             var parameters = new
@@ -188,6 +199,7 @@ namespace BookStoreApi.Database.Repositories
                 bookWithId.AuthorId,
                 TranslatorIds = translatorIds.AsTableValuedParameter("IntList"),
                 CategoryIds = categoryIds.AsTableValuedParameter("IntList"),
+                TagIds = tagIds.AsTableValuedParameter("IntList"),
             };
 
             // Database call and inserting the book and relationships

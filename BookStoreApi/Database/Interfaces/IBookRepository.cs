@@ -10,8 +10,8 @@ namespace BookStoreApi.Database.Interfaces
         Task<(List<BookAllData>? books, BPaginationInfo info)> GetAllAsync(QBookGetAll query);
         Task<BookAllData?> GetByIdAsync(int id);
         Task<Book?> GetByISBNAsync(string isbn);
-        Task<int> CreateAsync(Book book, List<ImageInfo> imageInfos, List<int>? translators, List<int> categories);
-        Task<BookAllData?> UpdateAsync(Book bookWithId, List<int>? translators, List<int> categories);
+        Task<int> CreateAsync(Book book, List<ImageInfo> imageInfos, List<int>? translators, List<int> categories, List<int> tags);
+        Task<BookAllData?> UpdateAsync(Book bookWithId, List<int>? translators, List<int> categories, List<int> tags);
         Task<bool> DeleteAsync(int id);
     }
 }

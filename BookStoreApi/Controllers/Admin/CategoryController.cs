@@ -32,7 +32,7 @@ namespace BookStoreApi.Controllers.Admin
         {
             var category = await bLL.GetByIdAsync(id);
             if (category is null) return ErrorResponse("دسته بندی یافت نشد", null);
-            return SuccessResponse("اطلاعات با موفقیت دریافت شد", category);
+            return SuccessResponse("اطلاعات با موفقیت دریافت شد", category.ToRCategory());
         }
 
         [HttpPost]
@@ -45,7 +45,7 @@ namespace BookStoreApi.Controllers.Admin
             var (message, category, status) = await bLL.Create(createCategoryRequest);
 
             return status == 201
-                ? SuccessResponse(message, category, status)
+                ? SuccessResponse(message, category!.ToRCategory(), status)
                 : ErrorResponse(message, category, status);
         }
 
@@ -58,7 +58,7 @@ namespace BookStoreApi.Controllers.Admin
             var (message, category, status) = await bLL.Update(id, UCategory);
 
             return status == 200
-                ? SuccessResponse(message, category, status)
+                ? SuccessResponse(message, category!.ToRCategory(), status)
                 : ErrorResponse(message, null, status);
         }
 

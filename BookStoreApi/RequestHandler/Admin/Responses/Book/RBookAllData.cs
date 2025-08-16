@@ -1,6 +1,7 @@
 ﻿using BookStoreApi.RequestHandler.Admin.Responses.Author;
 using BookStoreApi.RequestHandler.Admin.Responses.Category;
 using BookStoreApi.RequestHandler.Admin.Responses.Image;
+using BookStoreApi.RequestHandler.Admin.Responses.Tag;
 using BookStoreApi.RequestHandler.Admin.Responses.Translator;
 
 namespace BookStoreApi.RequestHandler.Admin.Responses.Book
@@ -23,6 +24,7 @@ namespace BookStoreApi.RequestHandler.Admin.Responses.Book
         public DateTime? UpdatedAt { get; set; }
         public List<RTranslator>? Translators { get; set; }
         public List<RCategory>? Categories { get; set; }
+        public List<RTag>? Tags { get; set; }
         public List<RImage>? Images { get; set; }
         public RAuthor? Author { get; set; }
     }

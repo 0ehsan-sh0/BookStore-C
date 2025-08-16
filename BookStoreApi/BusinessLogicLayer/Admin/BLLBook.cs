@@ -9,7 +9,7 @@ using ImageInfo = BookStoreApi.Services.Models.ImageInfo;
 
 namespace BookStoreApi.BusinessLogicLayer.Admin
 {
-    public class BLLBook(IBookRepository repo, IAuthorRepository authorRepo, ITranslatorRepository translatorRepo, ICategoryRepository categoryRepo)
+    public class BLLBook(IBookRepository repo, IAuthorRepository authorRepo, ITranslatorRepository translatorRepo, ICategoryRepository categoryRepo, ITagRepository tagRepo)
     {
         public async Task<List<ImageInfo>?> UploadImages(List<IFormFile> images)
         {
@@ -80,11 +80,22 @@ namespace BookStoreApi.BusinessLogicLayer.Admin
             }
             else return ("لطفا حداقل یک دسته بندی وارد کنید", null, 400);
 
+            if (createBookRequest.Tags.Count > 0)
+            {
+                foreach (var tagId in createBookRequest.Tags)
+                {
+                    var tag = await tagRepo.GetByIdAsync(tagId);
+                    if (tag is null)
+                        return ($"دسته بندی با شناسه {tagId} وجود ندارد", null, 404);
+                }
+            }
+            else return ("لطفا حداقل یک دسته بندی وارد کنید", null, 400);
+
             var imageInfos = await UploadImages(createBookRequest.Images);
             if (imageInfos is null)
                 return ("هیچ عکسی آپلود نشد", null, 500);
 
-            int id = await repo.CreateAsync(book, imageInfos, createBookRequest.Translators, createBookRequest.Categories);
+            int id = await repo.CreateAsync(book, imageInfos, createBookRequest.Translators, createBookRequest.Categories, createBookRequest.Tags);
             var bookdata = await repo.GetByIdAsync(id);
 
             if (bookdata is null)
@@ -130,7 +141,18 @@ namespace BookStoreApi.BusinessLogicLayer.Admin
             }
             else return ("لطفا حداقل یک دسته بندی وارد کنید", null, 400);
 
-            var bookAllData = await repo.UpdateAsync(book, updateBookRequest.Translators, updateBookRequest.Categories);
+            if (updateBookRequest.Tags.Count > 0)
+            {
+                foreach (var tagId in updateBookRequest.Tags)
+                {
+                    var tag = await tagRepo.GetByIdAsync(tagId);
+                    if (tag is null)
+                        return ($"دسته بندی با شناسه {tagId} وجود ندارد", null, 404);
+                }
+            }
+            else return ("لطفا حداقل یک دسته بندی وارد کنید", null, 400);
+
+            var bookAllData = await repo.UpdateAsync(book, updateBookRequest.Translators, updateBookRequest.Categories, updateBookRequest.Tags);
 
             if (bookAllData is null)
                 return ("بروزرسانی کتاب با مشکل مواجه شد", null, 500);

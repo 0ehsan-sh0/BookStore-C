@@ -37,6 +37,9 @@ namespace BookStoreApi.RequestHandler.Admin.Requests.Book
         [Required(ErrorMessage = "حداقل یک دسته بندی الزامی است")]
         [NoDuplicates(ErrorMessage = "لطفا دسته بندی تکراری وارد نکنید")]
         public required List<int> Categories { get; set; }
+        [Required(ErrorMessage = "حداقل یک تگ الزامی است")]
+        [NoDuplicates(ErrorMessage = "لطفا تگ تکراری وارد نکنید")]
+        public required List<int> Tags { get; set; }
 
     }
 }

@@ -51,12 +51,14 @@ namespace BookStoreApi.BusinessLogicLayer.Admin
                     return ("دسته بندی اصلی یافت نشد", null, 404);
             }
 
-            var urlCategory = await repo.GetByUrlAsync(category.Url);
-            if (urlCategory is not null)
+
+            // 🔹 check if another tag already has this new URL
+            var urlCategory = await repo.GetByUrlAsync(UCategory.Url);
+            if (urlCategory is not null && urlCategory.Id != id) // make sure it's not the same tag
             {
-                if (!(urlCategory.Url == UCategory.Url))
-                    return ("لینک وارد شده تکراری است", null, 400);
+                return ("لینک وارد شده تکراری است", null, 400);
             }
+
             category = await repo.UpdateAsync(UCategory.ToCategory(id));
             return ("دسته بندی با موفقیت بروزرسانی شد", category, 200);
         }

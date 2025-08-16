@@ -19,6 +19,7 @@
         public DateTime? UpdatedAt { get; set; }
         public List<Translator>? Translators { get; set; }
         public List<Category>? Categories { get; set; }
+        public List<Tag>? Tags { get; set; }
         public List<Image>? Images { get; set; }
         public Author? Author { get; set; }
     }

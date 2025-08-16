@@ -37,7 +37,7 @@ namespace BookStoreApi.Controllers.Admin
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetByIdAsync([FromQuery] QBookGetAll query)
+        public async Task<IActionResult> GetAllAsync([FromQuery] QBookGetAll query)
         {
             var (books, pagination) = await bLL.GetAllAsync(query);
             if (books is null)

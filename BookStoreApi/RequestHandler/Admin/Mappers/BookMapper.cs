@@ -55,6 +55,9 @@ namespace BookStoreApi.RequestHandler.Admin.Mappers
             if (bookAllData.Categories is not null && bookAllData.Categories.Count > 0)
                 rBookAllData.Categories = bookAllData.Categories.Select(a => a.ToRCategory()).ToList();
 
+            if (bookAllData.Tags is not null && bookAllData.Tags.Count > 0)
+                rBookAllData.Tags = bookAllData.Tags.Select(a => a.ToRTag()).ToList();
+
             if (bookAllData.Images is not null && bookAllData.Images.Count > 0)
                 rBookAllData.Images = bookAllData.Images.Select(a => a.ToRImage()).ToList();
 

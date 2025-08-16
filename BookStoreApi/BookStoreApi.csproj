@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <Folder Include="RequestHandler\Admin\Requests\Comment\" />
-    <Folder Include="wwwroot\" />
+    <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
 </Project>

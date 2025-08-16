@@ -55,6 +55,8 @@ builder.Services.AddScoped<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<BLLImage>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<BLLComment>();
+builder.Services.AddScoped<ITagRepository, TagRepository>();
+builder.Services.AddScoped<BLLTag>();
 
 
 

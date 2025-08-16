@@ -22,7 +22,7 @@ namespace BookStoreApi.Database.Repositories
             //translator ids become a table here
             DataTable translatorIds = translators is not null
                  ? DataTables.IntListTable(translators)
-                 : DataTables.IntListTable(new List<int>()); // empty but correct schema
+                 : DataTables.IntListTable([]); // empty but correct schema
 
             //Categoriy ids become a table here
             var categoryIds = DataTables.IntListTable(categories);
@@ -165,7 +165,7 @@ namespace BookStoreApi.Database.Repositories
             //translator ids become a table here
             DataTable translatorIds = translators is not null
                  ? DataTables.IntListTable(translators)
-                 : DataTables.IntListTable(new List<int>()); // empty but correct schema
+                 : DataTables.IntListTable([]); // empty but correct schema
 
             //Categoriy ids become a table here
             var categoryIds = DataTables.IntListTable(categories);

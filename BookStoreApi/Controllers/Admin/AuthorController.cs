@@ -32,7 +32,7 @@ namespace BookStoreApi.Controllers.Admin
         {
             var author = await bLL.GetByIdAsync(id);
             if (author is null) return ErrorResponse("نویسنده یافت نشد", null);
-            return SuccessResponse("اطلاعات با موفقیت دریافت شد", author);
+            return SuccessResponse("اطلاعات با موفقیت دریافت شد", author.ToRAuthor());
         }
 
         [HttpPost]
@@ -45,7 +45,7 @@ namespace BookStoreApi.Controllers.Admin
             var (message, author, status) = await bLL.Create(createAuthorRequest);
 
             return status == 201
-                ? SuccessResponse(message, author, status)
+                ? SuccessResponse(message, author!.ToRAuthor(), status)
                 : ErrorResponse(message, author, status);
         }
 
@@ -57,7 +57,7 @@ namespace BookStoreApi.Controllers.Admin
 
             var (message, author, status) = await bLL.Update(id, UAuthor);
             return status == 200
-                ? SuccessResponse(message, author, status)
+                ? SuccessResponse(message, author!.ToRAuthor(), status)
                 : ErrorResponse(message, null, status);
         }
 

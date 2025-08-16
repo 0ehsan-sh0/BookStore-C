@@ -1,8 +1,6 @@
-﻿
-namespace BookStoreApi.Database.Models
+﻿namespace BookStoreApi.RequestHandler.Admin.Responses.Comment
 {
-
-    public class CommentInfo
+    public class RComment
     {
         public int Id { get; set; }
         public string Comment { get; set; } = string.Empty;

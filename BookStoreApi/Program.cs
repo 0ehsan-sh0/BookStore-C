@@ -58,7 +58,15 @@ builder.Services.AddScoped<BLLComment>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<BLLTag>();
 
-
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins(builder.Configuration["Frontend:URL"]!)
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 
 var app = builder.Build();
 

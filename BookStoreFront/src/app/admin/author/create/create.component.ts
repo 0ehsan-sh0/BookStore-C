@@ -28,6 +28,7 @@ export class CreateComponent {
       if (isCreated) {
         this.created.emit();
         this.form()?.reset();
+        this.authorService.created.set(false); // reset the flag so effect won't fire again
       }
     });
   }

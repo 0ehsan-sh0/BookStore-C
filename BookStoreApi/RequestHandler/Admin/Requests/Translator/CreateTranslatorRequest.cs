@@ -6,7 +6,7 @@ namespace BookStoreApi.RequestHandler.Admin.Requests.Translator
     {
         [Required(ErrorMessage = "نام دسته بندی الزامی است")]
         public string Name { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
+        public string? Description { get; set; } = string.Empty;
 
     }
 }

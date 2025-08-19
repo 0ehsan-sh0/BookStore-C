@@ -32,6 +32,7 @@ export class UpdateComponent {
       if (isUpdated) {
         this.updated.emit();
         this.form()?.reset();
+        this.authorService.updated.set(false); // reset the flag so effect won't fire again
       }
     });
   }

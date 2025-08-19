@@ -9,7 +9,15 @@
         <ul class="menu bg-base-200 text-base-content min-h-full w-80 p-4 space-y-3">
             <!-- Sidebar content here -->
             <li>
-                <a [routerLink]="['/admin/author']" class="text-lg font-bold"> <i-lucide name="pencil-line" size="18" strokeWidth="3"></i-lucide>
+                <a [routerLink]="['/admin']" class="text-lg font-bold"> <i-lucide name="chart-column-big" size="18"
+                        strokeWidth="3"></i-lucide>
+                    داشبورد
+                </a>
+            </li>
+            <div class="divider"></div>
+            <li>
+                <a [routerLink]="['/admin/author']" class="text-lg font-bold"> <i-lucide name="pencil-line" size="18"
+                        strokeWidth="3"></i-lucide>
                     نویسندگان
                 </a>
             </li>
@@ -24,10 +32,12 @@
                 </a>
             </li>
             <li>
-                <a class="text-lg font-bold"> <i-lucide name="book-type" size="18" strokeWidth="3"></i-lucide>
+                <a [routerLink]="['/admin/translator']" class="text-lg font-bold"> <i-lucide name="book-type" size="18"
+                        strokeWidth="3"></i-lucide>
                     مترجمان
                 </a>
             </li>
+            <div class="divider"></div>
             <li>
                 <a class="text-lg font-bold"> <i-lucide name="message-circle-more" size="18" strokeWidth="3"></i-lucide>
                     نظرات

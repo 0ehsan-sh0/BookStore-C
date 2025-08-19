@@ -4,7 +4,7 @@ import { APaginationInfo, Author } from '../../models/author';
 import { ModalComponent } from '../../ui-service/modal/modal.component';
 
 @Component({
-  selector: 'app-author',
+  selector: 'app-admin-author',
   standalone: false,
   templateUrl: './author.component.html',
   styleUrl: './author.component.css',

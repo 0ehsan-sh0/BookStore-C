@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import {
   Book,
   BookType,
+  ChartColumnBig,
   Grid2x2,
   House,
   LucideAngularModule,
@@ -28,6 +29,9 @@ import { CreateComponent } from './admin/author/create/create.component';
 import { ModalComponent } from './ui-service/modal/modal.component';
 import { FormsModule } from '@angular/forms';
 import { UpdateComponent } from './admin/author/update/update.component';
+import { TranslatorComponent } from './admin/translator/translator.component';
+import { CreateTranslatorComponent } from './admin/translator/create-translator/create-translator.component';
+import { UpdateTranslatorComponent } from './admin/translator/update-translator/update-translator.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +43,9 @@ import { UpdateComponent } from './admin/author/update/update.component';
     CreateComponent,
     ModalComponent,
     UpdateComponent,
+    TranslatorComponent,
+    CreateTranslatorComponent,
+    UpdateTranslatorComponent,
   ],
   imports: [
     BrowserModule,
@@ -56,7 +63,8 @@ import { UpdateComponent } from './admin/author/update/update.component';
       Pencil,
       Trash,
       House,
-      Plus
+      Plus,
+      ChartColumnBig
     }),
     FormsModule,
   ],

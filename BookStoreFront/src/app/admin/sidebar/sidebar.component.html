@@ -1,0 +1,43 @@
+<div class="drawer lg:drawer-open">
+    <input id="admin-sidebar" type="checkbox" class="drawer-toggle" />
+    <div class="drawer-content flex flex-col ">
+        <!-- Page content here -->
+        <ng-content></ng-content>
+    </div>
+    <div class="drawer-side">
+        <label for="admin-sidebar" aria-label="close sidebar" class="drawer-overlay"></label>
+        <ul class="menu bg-base-200 text-base-content min-h-full w-80 p-4 space-y-3">
+            <!-- Sidebar content here -->
+            <li>
+                <a [routerLink]="['/admin/author']" class="text-lg font-bold"> <i-lucide name="pencil-line" size="18" strokeWidth="3"></i-lucide>
+                    نویسندگان
+                </a>
+            </li>
+            <li>
+                <a class="text-lg font-bold"> <i-lucide name="book" size="18" strokeWidth="3"></i-lucide>
+                    کتاب ها
+                </a>
+            </li>
+            <li>
+                <a class="text-lg font-bold"> <i-lucide name="grid-2x2" size="18" strokeWidth="3"></i-lucide>
+                    دسته بندی ها
+                </a>
+            </li>
+            <li>
+                <a class="text-lg font-bold"> <i-lucide name="book-type" size="18" strokeWidth="3"></i-lucide>
+                    مترجمان
+                </a>
+            </li>
+            <li>
+                <a class="text-lg font-bold"> <i-lucide name="message-circle-more" size="18" strokeWidth="3"></i-lucide>
+                    نظرات
+                </a>
+            </li>
+            <li>
+                <a class="text-lg font-bold"> <i-lucide name="tag" size="18" strokeWidth="3"></i-lucide>
+                    تگ ها
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

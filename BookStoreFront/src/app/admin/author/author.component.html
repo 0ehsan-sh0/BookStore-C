@@ -1,0 +1,115 @@
+<button class="btn w-full sm:w-65  btn-lg btn-primary mb-5" (click)="create()">
+    <i-lucide name="plus"></i-lucide>
+    افزودن نویسنده جدید
+</button>
+
+<div class="flex space-x-4  mb-5">
+    <input type="text" class="input input-lg flex-8 pr-5" placeholder="جستجو در نویسندگان ..." />
+    <button class="btn btn-lg btn-accent flex-1">جستجو</button>
+</div>
+
+<div class="divider"></div>
+
+<div class="overflow-x-auto">
+    <table class="table table-pin-cols">
+        <!-- head -->
+        <thead>
+            <tr>
+                <th>شناسه</th>
+                <td>نام</td>
+                <td>توضیحات</td>
+                <td>تاریخ ایجاد</td>
+                <td>تاریخ به روز رسانی</td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            @for (author of this.authors; track author.id) {
+            <!-- row  -->
+            <tr>
+                <th class="font-bold text-lg">
+                    {{author.id}}
+                </th>
+                <td class="text-lg">
+                    {{author.name}}
+                </td>
+                <td class="text-lg">
+                    {{author.description}}
+                </td>
+                <td class="text-lg">
+                    {{author.createdAt}}
+                </td>
+                <td class="text-lg">
+                    {{author.updatedAt}}
+                </td>
+                <td class="flex gap-2">
+                    <button class="btn h-10 btn-primary btn-xs" (click)="update(author.id)">
+                        <i-lucide name="pencil"></i-lucide>
+                    </button>
+                    <button class="btn h-10 btn-error btn-xs" (click)="delete(author.id)">
+                        <i-lucide name="trash"></i-lucide>
+                    </button>
+                </td>
+            </tr>
+            }
+        </tbody>
+        <!-- foot -->
+        <tfoot>
+            <tr>
+                <th>شناسه</th>
+                <td>نام</td>
+                <td>توضیحات</td>
+                <td>تاریخ ایجاد</td>
+                <td>تاریخ به روز رسانی</td>
+                <td></td>
+            </tr>
+        </tfoot>
+
+    </table>
+
+</div>
+
+<div class="flex flex-wrap justify-center my-5" *ngIf="pagination.totalPages > 1">
+    <button class="btn btn-md sm:btn-lg" [disabled]="pagination.pageNumber === 1"
+        (click)="changePage(pagination.pageNumber - 1)">
+        قبلی
+    </button>
+
+    <ng-container *ngFor="let page of getPageArray()">
+        <button class="btn btn-md sm:btn-lg" [ngClass]="{
+    'btn-disabled': page === -1,
+    'btn-primary' : page === pagination.pageNumber,
+  }" (click)="changePage(page)">
+            @if (page === -1) {
+            ...
+            } @else {
+            {{ page }}
+            }
+        </button>
+    </ng-container>
+
+    <button class="btn btn-md sm:btn-lg" [disabled]="pagination.pageNumber === pagination.totalPages"
+        (click)="changePage(pagination.pageNumber + 1)">
+        بعدی
+    </button>
+</div>
+
+<app-modal #createAuthor id="createAuthor">
+    <app-create-author (created)="closeDialog('createAuthorModal')"></app-create-author>
+</app-modal>
+
+<app-modal #updateAuthor id="updateAuthor">
+    <app-update-author (updated)="closeDialog('updateAuthorModal')"></app-update-author>
+</app-modal>
+
+<app-modal #deleteAuthor id="deleteAuthor">
+  <h3 class="text-lg font-bold mb-5">آیا از حذف نویسنده اطمینان دارید؟</h3>
+  <div class="flex gap-5">
+    <form method="dialog" class="flex-1">
+      <button class="btn btn-error btn-lg w-full">خیر</button>
+    </form>
+    <div class="flex-1">
+      <button class="btn btn-primary btn-lg w-full" (click)="deleteConfirmed()">بله</button>
+    </div>
+  </div>
+</app-modal>

@@ -19,7 +19,7 @@ import { ApiResponse } from '../../models/apiResponse';
   providedIn: 'root',
 })
 export class CategoryService {
-  private readonly apiUrl = 'https://localhost:7034/api/admin/category';
+  private readonly apiUrl = 'admin/category';
 
   constructor(private http: HttpClient, private alertService: AlertService) {}
 

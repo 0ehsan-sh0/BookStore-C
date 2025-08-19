@@ -20,7 +20,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
   providedIn: 'root',
 })
 export class AuthorService {
-  private readonly apiUrl = 'https://localhost:7034/api/admin/author';
+  private readonly apiUrl = 'admin/author';
 
   constructor(private http: HttpClient, private alertService: AlertService) {}
 

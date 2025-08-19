@@ -10,7 +10,7 @@ import { ApiResponse } from '../../models/apiResponse';
 })
 export class TranslatorService {
 
-  private readonly apiUrl = 'https://localhost:7034/api/admin/translator';
+  private readonly apiUrl = 'admin/translator';
 
   constructor(private http: HttpClient, private alertService: AlertService) {}
 

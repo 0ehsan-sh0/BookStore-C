@@ -23,7 +23,11 @@ import {
 import { HeaderComponent } from './admin/header/header.component';
 import { SidebarComponent } from './admin/sidebar/sidebar.component';
 import { AuthorComponent } from './admin/author/author.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import {
+  provideHttpClient,
+  withInterceptors,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CreateComponent } from './admin/author/create/create.component';
 import { ModalComponent } from './ui-service/modal/modal.component';
@@ -35,6 +39,9 @@ import { UpdateTranslatorComponent } from './admin/translator/update-translator/
 import { CategoryComponent } from './admin/category/category.component';
 import { CreateCategoryComponent } from './admin/category/create-category/create-category.component';
 import { UpdateCategoryComponent } from './admin/category/update-category/update-category.component';
+import { environment } from '../environments/environment';
+import { API_URL } from './models/apiResponse';
+import { baseUrlInterceptor } from './interceptors/base-url.interceptor';
 
 @NgModule({
   declarations: [
@@ -70,12 +77,14 @@ import { UpdateCategoryComponent } from './admin/category/update-category/update
       Trash,
       House,
       Plus,
-      ChartColumnBig
+      ChartColumnBig,
     }),
     FormsModule,
   ],
   providers: [
-    provideHttpClient(withInterceptorsFromDi())
+    provideHttpClient(withInterceptorsFromDi()),
+    { provide: API_URL, useValue: environment.apiUrl },
+    provideHttpClient(withInterceptors([baseUrlInterceptor])),
   ],
   bootstrap: [AppComponent],
 })

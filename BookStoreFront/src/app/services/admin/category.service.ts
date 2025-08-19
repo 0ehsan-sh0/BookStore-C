@@ -1,0 +1,144 @@
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpParams,
+} from '@angular/common/http';
+import { Injectable, signal } from '@angular/core';
+import { AlertService } from '../../ui-service/alert.service';
+import { BehaviorSubject } from 'rxjs';
+import {
+  Category,
+  CategoryListResponse,
+  CPaginationInfo,
+  CreateCategoryRequest,
+  UpdateCategoryRequest,
+} from '../../models/category';
+import { ApiResponse } from '../../models/apiResponse';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class CategoryService {
+  private readonly apiUrl = 'https://localhost:7034/api/admin/category';
+
+  constructor(private http: HttpClient, private alertService: AlertService) {}
+
+  categories = new BehaviorSubject<Category[]>([]);
+  category = new BehaviorSubject<Category>({} as Category);
+  pagination = new BehaviorSubject<CPaginationInfo>({
+    pageNumber: 1,
+    pageSize: 20,
+    totalCount: 0,
+    totalPages: 1,
+  });
+  createErrors = signal<string[]>([]);
+  updateErrors = signal<string[]>([]);
+  created = signal<boolean>(false);
+  updated = signal<boolean>(false);
+
+  getCategories(pageNumber: number = 1, pageSize: number = 20) {
+    const params = new HttpParams()
+      .set('PageNumber', pageNumber.toString())
+      .set('PageSize', pageSize.toString());
+    this.http
+      .get<ApiResponse<CategoryListResponse>>(`${this.apiUrl}`, { params })
+      .subscribe({
+        next: (response) => {
+          this.categories.next([...(response.data?.categories ?? [])]);
+          this.pagination.next(response.data?.pagination! ?? null);
+        },
+        error: (err) => {
+          this.handleError(err);
+        },
+      });
+  }
+
+  getById(id: number) {
+    this.http.get<ApiResponse<Category>>(`${this.apiUrl}/${id}`).subscribe({
+      next: (res) => {
+        this.category.next(res.data!);
+      },
+      error: (err) => {
+        this.handleError(err);
+      },
+    });
+  }
+
+  create(category: CreateCategoryRequest) {
+    this.http
+      .post<ApiResponse<Category>>(`${this.apiUrl}`, category)
+      .subscribe({
+        next: (res) => {
+          this.categories.next([res.data!, ...this.categories.value]);
+          this.created.set(true);
+          this.createErrors.set([]);
+          this.alertService.show('دسته‌بندی با موفقیت ایجاد شد', 'success');
+        },
+        error: (err) => {
+          this.createErrors.set(this.handleError(err));
+        },
+      });
+  }
+
+  update(category: UpdateCategoryRequest, id: number) {
+    this.http
+      .put<ApiResponse<Category>>(`${this.apiUrl}/${id}`, category)
+      .subscribe({
+        next: (res) => {
+          this.categories.next(
+            this.categories.value.map((a) =>
+              a.id === res.data!.id ? res.data! : a
+            )
+          );
+          this.updated.set(true);
+          this.updateErrors.set([]);
+          this.alertService.show(
+            'دسته‌بندی با موفقیت به‌روزرسانی شد',
+            'success'
+          );
+        },
+        error: (err) => {
+          this.updateErrors.set(this.handleError(err));
+        },
+      });
+  }
+
+  delete(id: number) {
+    this.http.delete<null>(`${this.apiUrl}/${id}`).subscribe({
+      next: () => {
+        this.categories.next(this.categories.value.filter((c) => c.id !== id));
+        this.alertService.show('دسته‌بندی با موفقیت حذف شد', 'success');
+      },
+      error: (err) => {
+        this.handleError(err);
+      },
+    });
+  }
+
+  private handleError(error: HttpErrorResponse): string[] {
+    // Try to get the backend response
+    const apiError = error.error as ApiResponse<null>;
+
+    if (apiError) {
+      // Show alert with the main message
+      this.alertService.show(apiError.message || 'خطا رخ داد', 'error');
+
+      // Flatten the errors object into a string array
+      if (apiError.errors) {
+        const flattenedErrors: string[] = [];
+        for (const key in apiError.errors) {
+          if (apiError.errors.hasOwnProperty(key)) {
+            flattenedErrors.push(...apiError.errors[key]);
+          }
+        }
+        return flattenedErrors;
+      } else {
+        return [];
+      }
+    } else {
+      // Fallback for unknown errors
+      this.alertService.show('خطای ناشناخته رخ داد', 'error');
+      return [];
+    }
+  }
+}

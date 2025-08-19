@@ -32,6 +32,9 @@ import { UpdateComponent } from './admin/author/update/update.component';
 import { TranslatorComponent } from './admin/translator/translator.component';
 import { CreateTranslatorComponent } from './admin/translator/create-translator/create-translator.component';
 import { UpdateTranslatorComponent } from './admin/translator/update-translator/update-translator.component';
+import { CategoryComponent } from './admin/category/category.component';
+import { CreateCategoryComponent } from './admin/category/create-category/create-category.component';
+import { UpdateCategoryComponent } from './admin/category/update-category/update-category.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +49,9 @@ import { UpdateTranslatorComponent } from './admin/translator/update-translator/
     TranslatorComponent,
     CreateTranslatorComponent,
     UpdateTranslatorComponent,
+    CategoryComponent,
+    CreateCategoryComponent,
+    UpdateCategoryComponent,
   ],
   imports: [
     BrowserModule,

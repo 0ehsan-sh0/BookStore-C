@@ -1,0 +1,120 @@
+<button class="btn w-full sm:w-65  btn-lg btn-primary mb-5" (click)="create()">
+    <i-lucide name="plus"></i-lucide>
+    افزودن دسته بندی جدید
+</button>
+
+<div class="flex space-x-4  mb-5">
+    <input type="text" class="input input-lg flex-8 pr-5" placeholder="جستجو در دسته بندی ها ..." />
+    <button class="btn btn-lg btn-accent flex-1">جستجو</button>
+</div>
+
+<div class="divider"></div>
+
+<div class="overflow-x-auto">
+    <table class="table table-pin-cols">
+        <!-- head -->
+        <thead>
+            <tr>
+                <th>شناسه</th>
+                <td>نام</td>
+                <td>لینک</td>
+                <td>دسته بندی اصلی</td>
+                <td>تاریخ ایجاد</td>
+                <td>تاریخ به روز رسانی</td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            @for (category of this.categories; track category.id) {
+            <!-- row  -->
+            <tr>
+                <th class="font-bold text-lg">
+                    {{category.id}}
+                </th>
+                <td class="text-lg">
+                    {{category.name}}
+                </td>
+                <td class="text-lg">
+                    {{category.url}}
+                </td>
+                <td class="text-lg">
+                    {{ mainCategoryMap[category.mainCategoryId!] || '- - - - - ' }} - {{ category.mainCategoryId }}
+                </td>
+                <td class="text-lg">
+                    {{category.createdAt}}
+                </td>
+                <td class="text-lg">
+                    {{category.updatedAt}}
+                </td>
+                <td class="flex gap-2">
+                    <button class="btn h-10 btn-primary btn-xs" (click)="update(category.id)">
+                        <i-lucide name="pencil"></i-lucide>
+                    </button>
+                    <button class="btn h-10 btn-error btn-xs" (click)="delete(category.id)">
+                        <i-lucide name="trash"></i-lucide>
+                    </button>
+                </td>
+            </tr>
+            }
+        </tbody>
+        <!-- foot -->
+        <tfoot>
+            <tr>
+                <th>شناسه</th>
+                <td>نام</td>
+                <td>لینک</td>
+                <td>دسته بندی اصلی</td>
+                <td>تاریخ ایجاد</td>
+                <td>تاریخ به روز رسانی</td>
+                <td></td>
+            </tr>
+        </tfoot>
+
+    </table>
+
+</div>
+
+<div class="flex flex-wrap justify-center my-5" *ngIf="pagination.totalPages > 1">
+    <button class="btn btn-md sm:btn-lg" [disabled]="pagination.pageNumber === 1"
+        (click)="changePage(pagination.pageNumber - 1)">
+        قبلی
+    </button>
+
+    <ng-container *ngFor="let page of getPageArray()">
+        <button class="btn btn-md sm:btn-lg" [ngClass]="{
+    'btn-disabled': page === -1,
+    'btn-primary' : page === pagination.pageNumber,
+  }" (click)="changePage(page)">
+            @if (page === -1) {
+            ...
+            } @else {
+            {{ page }}
+            }
+        </button>
+    </ng-container>
+
+    <button class="btn btn-md sm:btn-lg" [disabled]="pagination.pageNumber === pagination.totalPages"
+        (click)="changePage(pagination.pageNumber + 1)">
+        بعدی
+    </button>
+</div>
+
+<app-modal #createCategory id="createCategory">
+    <app-create-category (created)="closeDialog('createCategoryModal')"></app-create-category>
+</app-modal>
+
+<app-modal #updateCategory id="updateCategory">
+    <app-update-category (updated)="closeDialog('updateCategoryModal')"></app-update-category>
+</app-modal>
+
+<app-modal #deleteCategory id="deleteCategory">
+    <h3 class="text-lg font-bold mb-5">آیا از حذف دسته بندی اطمینان دارید؟</h3>
+    <div class="flex gap-5">
+        <form method="dialog" class="flex-1">
+            <button class="btn btn-error btn-lg w-full">خیر</button>
+        </form>
+        <div class="flex-1">
+            <button class="btn btn-primary btn-lg w-full" (click)="deleteConfirmed()">بله</button>
+        </div>
+    </div>
+</app-modal>

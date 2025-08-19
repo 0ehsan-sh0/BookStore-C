@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AdminComponent } from './admin/admin/admin.component';
 import { AuthorComponent } from './admin/author/author.component';
 import { TranslatorComponent } from './admin/translator/translator.component';
+import { CategoryComponent } from './admin/category/category.component';
 
 const routes: Routes = [
   {
@@ -11,6 +12,7 @@ const routes: Routes = [
     children: [
       { path: 'author', component: AuthorComponent },
       { path: 'translator', component: TranslatorComponent },
+      { path: 'category', component: CategoryComponent },
     ],
   },
   { path: '**', redirectTo: '' }, // fallback

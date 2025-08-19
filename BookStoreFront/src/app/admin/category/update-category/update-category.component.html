@@ -1,0 +1,37 @@
+<h3 class="text-lg font-bold mb-3">بروزرسانی دسته بندی</h3>
+<div class="mb-2">
+    @for (error of this.errors; track $index) {
+    <p class="text-error">{{error}}</p>
+    }
+</div>
+<form action="" #form="ngForm" (ngSubmit)="onSubmit(form)">
+    <div class="space-y-2 mb-3">
+        <label class="label">نام :</label>
+        <input type="text" class="input sm:input-lg w-full" placeholder="نام" name="name" [(ngModel)]="category.name" required
+            maxlength="200" #name="ngModel" [class.input-error]="name.invalid && name.touched" />
+    </div>
+    <div class="space-y-2 mb-3">
+        <label class="label">لینک :</label>
+        <input type="text" class="input sm:input-lg w-full" placeholder="لینک" name="url" [(ngModel)]="category.url" required
+            pattern="^[a-zA-Z0-9_-]+$" minlength="4" maxlength="255" #url="ngModel"
+            [class.input-error]="url.invalid && url.touched" />
+        @if (url.invalid && url.touched) {
+        <p class="text-error">لینک باید انگلیسی، حداقل 4 کاراکتر و حداکثر 255 کاراکتر داشته باشد</p>
+        }
+    </div>
+
+    <div class="space-y-2 mb-3">
+        <label class="label">دسته بندی اصلی :</label>
+        <select class="select sm:select-lg w-full" name="mainCategoryId" [(ngModel)]="category.mainCategoryId" #mainCategoryId="ngModel"
+            [class.input-error]="mainCategoryId.invalid && mainCategoryId.touched">
+            <option value="" selected>دسته بندی اصلی</option>
+            @for (category of this.categories; track category.id) {
+            @if (!category.mainCategoryId) {
+            <option value="{{category.id}}">{{category.url}}</option>
+            }
+            }
+        </select>
+    </div>
+
+    <button type="submit" [disabled]="form.invalid" class="btn btn-primary btn-lg w-full">بروزرسانی</button>
+</form>

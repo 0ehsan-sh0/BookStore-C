@@ -28,6 +28,10 @@ namespace BookStoreApi.BusinessLogicLayer.Admin
                 var existingCategory = await repo.GetByIdAsync(parentId);
                 if (existingCategory is null)
                     return ("دسته بندی اصلی یافت نشد", null, 404);
+                if (existingCategory.MainCategoryId is int parentId2)
+                {
+                    return ("دسته بندی اصلی وارد شده معتبر نیست", null, 400);
+                }
             }
 
             var urlCategory = await repo.GetByUrlAsync(category.Url);

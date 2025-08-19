@@ -69,9 +69,10 @@ namespace BookStoreApi.Controllers.Admin
 
             var (message, status) = await bLL.Delete(id);
 
-            return status == 204
-                ? SuccessResponse(message, null, status)
-                : ErrorResponse(message, null, status);
+            if (status == 204)
+                return NoContent(); // ✅ Correct way to return 204
+
+            return ErrorResponse(message, null, status);
         }
     }
 }

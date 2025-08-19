@@ -4,8 +4,8 @@ namespace BookStoreApi.RequestHandler.Admin.Requests.Author
 {
     public class UpdateAuthorRequest
     {
-        [Required(ErrorMessage = "نام دسته بندی الزامی است")]
+        [Required(ErrorMessage = "نام دسته بندی الزامی است.")]
         public string Name { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
+        public string? Description { get; set; }
     }
 }

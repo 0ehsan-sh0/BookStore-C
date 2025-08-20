@@ -21,7 +21,7 @@ import { ErrorHandlerService } from '../error-handler.service';
   providedIn: 'root',
 })
 export class AuthorService {
-  private readonly apiUrl = 'admin/author';
+  private readonly apiUrl = 'api/admin/author';
 
   constructor(
     private http: HttpClient,

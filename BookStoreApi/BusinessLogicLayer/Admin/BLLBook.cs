@@ -147,7 +147,7 @@ namespace BookStoreApi.BusinessLogicLayer.Admin
                 {
                     var tag = await tagRepo.GetByIdAsync(tagId);
                     if (tag is null)
-                        return ($"دسته بندی با شناسه {tagId} وجود ندارد", null, 404);
+                        return ($"تگ با شناسه {tagId} وجود ندارد", null, 404);
                 }
             }
             else return ("لطفا حداقل یک دسته بندی وارد کنید", null, 400);

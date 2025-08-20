@@ -1,0 +1,49 @@
+<div class="overflow-x-auto">
+    <table class="table table-pin-cols">
+        <!-- head -->
+        <thead>
+            <tr>
+                <th>شناسه</th>
+                <td>نام</td>
+                <td>لینک</td>
+                <td>دسته بندی اصلی</td>
+            </tr>
+        </thead>
+        <tbody>
+            @for (category of this.categories; track category.id) {
+            <!-- row  -->
+            <tr>
+                <th class="font-bold text-lg">
+                    {{category.id}}
+                </th>
+                <td class="text-lg">
+                    {{category.name}}
+                </td>
+                <td class="text-lg">
+                    <div class="badge badge-accent">{{category.url}}</div>
+                </td>
+                <td class="text-lg">
+                    @if(category.mainCategoryId && mainCategoryMap[category.mainCategoryId!]){
+                        {{ category.mainCategoryId }} - {{ mainCategoryMap[category.mainCategoryId!]  }} 
+                    } @else if (category.mainCategoryId && !mainCategoryMap[category.mainCategoryId!]) {
+                        {{ category.mainCategoryId }} - دسته بندی پاک شده  
+                    } @else {
+                        - - - - - - -
+                    }
+                </td>
+            </tr>
+            }
+        </tbody>
+        <!-- foot -->
+        <tfoot>
+            <tr>
+                <th>شناسه</th>
+                <td>نام</td>
+                <td>لینک</td>
+                <td>دسته بندی اصلی</td>
+            </tr>
+        </tfoot>
+
+    </table>
+
+</div>

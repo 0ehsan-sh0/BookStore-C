@@ -4,7 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AdminComponent } from './admin/admin/admin.component';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import {
   Book,
   BookType,
@@ -42,6 +42,11 @@ import { UpdateCategoryComponent } from './admin/category/update-category/update
 import { environment } from '../environments/environment';
 import { API_URL } from './models/apiResponse';
 import { baseUrlInterceptor } from './interceptors/base-url.interceptor';
+import { BookComponent } from './admin/book/book.component';
+import { CreateBookComponent } from './admin/book/create-book/create-book.component';
+import { UpdateBookComponent } from './admin/book/update-book/update-book.component';
+import { BookCategoryComponent } from './admin/book/book-category/book-category.component';
+import { BookTranslatorComponent } from './admin/book/book-translator/book-translator.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +64,11 @@ import { baseUrlInterceptor } from './interceptors/base-url.interceptor';
     CategoryComponent,
     CreateCategoryComponent,
     UpdateCategoryComponent,
+    BookComponent,
+    CreateBookComponent,
+    UpdateBookComponent,
+    BookCategoryComponent,
+    BookTranslatorComponent,
   ],
   imports: [
     BrowserModule,

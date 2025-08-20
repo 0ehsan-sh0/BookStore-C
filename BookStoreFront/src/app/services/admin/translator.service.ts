@@ -20,7 +20,7 @@ import { ErrorHandlerService } from '../error-handler.service';
   providedIn: 'root',
 })
 export class TranslatorService {
-  private readonly apiUrl = 'admin/translator';
+  private readonly apiUrl = 'api/admin/translator';
 
   constructor(
     private http: HttpClient,

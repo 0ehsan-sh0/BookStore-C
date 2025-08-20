@@ -97,9 +97,10 @@ namespace BookStoreApi.Database.Repositories
 
             // First result: JSON string
             var booksJson = await multi.ReadFirstOrDefaultAsync<string>();
-            var books = JsonSerializer.Deserialize<List<BookAllData>>(booksJson!);
+            List<BookAllData> books = [];
+            if (booksJson is not null)
+                books = JsonSerializer.Deserialize<List<BookAllData>>(booksJson)!;
 
-            // Second result: pagination info
             var paginationJson = await multi.ReadFirstOrDefaultAsync<string>();
             var pagination = JsonSerializer.Deserialize<BPaginationInfo>(paginationJson!);
 

@@ -20,7 +20,7 @@ import { ErrorHandlerService } from '../error-handler.service';
   providedIn: 'root',
 })
 export class CategoryService {
-  private readonly apiUrl = 'admin/category';
+  private readonly apiUrl = 'api/admin/category';
 
   constructor(
     private http: HttpClient,

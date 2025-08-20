@@ -7,6 +7,7 @@ namespace BookStoreApi.RequestHandler.Admin.Requests.Book
     {
         [Required(ErrorMessage = "نام کتاب الزامی است")]
         public string Name { get; set; } = string.Empty;
+        [RegularExpression("^[a-zA-Z0-9_-]+$", ErrorMessage = "نام انگلیسی باید انگلیسی باشد")]
         public string? EnglishName { get; set; } = string.Empty;
         public string? Description { get; set; } = string.Empty;
         [Required(ErrorMessage = "قیمت کتاب الزامی است")]
@@ -15,8 +16,7 @@ namespace BookStoreApi.RequestHandler.Admin.Requests.Book
         [PositiveNumber(ErrorMessage = "سری چاپ نمیتواند صفر یا منفی باشد")]
         public short PrintSeries { get; set; } // سری چاپ
         [Required(ErrorMessage = "شابک کتاب الزامی است")]
-        [PositiveNumber(ErrorMessage = "شابک نمیتواند صفر یا منفی باشد")]
-        public long ISBN { get; set; } // شابک
+        public string ISBN { get; set; } = string.Empty; // شابک
         [Required(ErrorMessage = "نوع جلد کتاب الزامی است")]
         public string CoverType { get; set; } = string.Empty; // نوع جلد
         [Required(ErrorMessage = "فطع کتاب الزامی است")]

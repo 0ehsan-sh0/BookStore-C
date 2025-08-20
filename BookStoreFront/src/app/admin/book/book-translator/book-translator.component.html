@@ -1,0 +1,38 @@
+<div class="overflow-x-auto">
+    <table class="table table-pin-cols">
+        <!-- head -->
+        <thead>
+            <tr>
+                <th>شناسه</th>
+                <td>نام</td>
+                <td>توضیحات</td>
+            </tr>
+        </thead>
+        <tbody>
+            @for (translator of this.translators; track translator.id) {
+            <!-- row  -->
+            <tr>
+                <th class="font-bold text-lg">
+                    {{translator.id}}
+                </th>
+                <td class="text-lg">
+                    {{translator.name}}
+                </td>
+                <td class="text-lg">
+                    {{translator.description}}
+                </td>
+            </tr>
+            }
+        </tbody>
+        <!-- foot -->
+        <tfoot>
+            <tr>
+                <th>شناسه</th>
+                <td>نام</td>
+                <td>توضیحات</td>
+            </tr>
+        </tfoot>
+
+    </table>
+
+</div>

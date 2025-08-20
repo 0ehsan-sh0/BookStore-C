@@ -35,10 +35,16 @@
                     {{category.name}}
                 </td>
                 <td class="text-lg">
-                    {{category.url}}
+                    <div class="badge badge-accent">{{category.url}}</div>
                 </td>
                 <td class="text-lg">
-                    {{ mainCategoryMap[category.mainCategoryId!] || '- - - - - ' }} - {{ category.mainCategoryId }}
+                    @if(category.mainCategoryId && mainCategoryMap[category.mainCategoryId!]){
+                        {{ category.mainCategoryId }} - {{ mainCategoryMap[category.mainCategoryId!]  }} 
+                    } @else if (category.mainCategoryId && !mainCategoryMap[category.mainCategoryId!]) {
+                        {{ category.mainCategoryId }} - دسته بندی پاک شده  
+                    } @else {
+                        - - - - - - -
+                    }
                 </td>
                 <td class="text-lg">
                     {{category.createdAt}}

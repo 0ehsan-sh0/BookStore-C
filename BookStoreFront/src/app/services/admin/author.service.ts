@@ -15,6 +15,7 @@ import {
 } from '../../models/author';
 import { ApiResponse } from '../../models/apiResponse';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { ErrorHandlerService } from '../error-handler.service';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +23,11 @@ import { toSignal } from '@angular/core/rxjs-interop';
 export class AuthorService {
   private readonly apiUrl = 'admin/author';
 
-  constructor(private http: HttpClient, private alertService: AlertService) {}
+  constructor(
+    private http: HttpClient,
+    private alertService: AlertService,
+    private errorHandler: ErrorHandlerService
+  ) {}
 
   authors = new BehaviorSubject<Author[]>([]);
   author = new BehaviorSubject<Author>({} as Author);
@@ -49,7 +54,7 @@ export class AuthorService {
           this.pagination.next(response.data?.pagination! ?? null);
         },
         error: (err) => {
-          this.handleError(err);
+          this.errorHandler.handleError(err);
         },
       });
   }
@@ -64,26 +69,30 @@ export class AuthorService {
       },
       error: (err) => {
         this.created.set(false);
-        this.createErrors.set(this.handleError(err));
+        this.createErrors.set(this.errorHandler.handleError(err));
       },
     });
   }
 
-  update(author: UpdateAuthorRequest, id:number) {
-    this.http.put<ApiResponse<Author>>(`${this.apiUrl}/${id}`, author).subscribe({
-      next: (res) => {
-        this.authors.next(
-          this.authors.value.map((a) => (a.id === res.data!.id ? res.data! : a))
-        );
-        this.updateErrors.set([]); // clear errors
-        this.updated.set(true); // emit updated author
-        this.alertService.show('نویسنده با موفقیت به‌روزرسانی شد', 'success');
-      },
-      error: (err) => {
-        this.updated.set(false);
-        this.updateErrors.set(this.handleError(err));
-      },
-    });
+  update(author: UpdateAuthorRequest, id: number) {
+    this.http
+      .put<ApiResponse<Author>>(`${this.apiUrl}/${id}`, author)
+      .subscribe({
+        next: (res) => {
+          this.authors.next(
+            this.authors.value.map((a) =>
+              a.id === res.data!.id ? res.data! : a
+            )
+          );
+          this.updateErrors.set([]); // clear errors
+          this.updated.set(true); // emit updated author
+          this.alertService.show('نویسنده با موفقیت به‌روزرسانی شد', 'success');
+        },
+        error: (err) => {
+          this.updated.set(false);
+          this.updateErrors.set(this.errorHandler.handleError(err));
+        },
+      });
   }
 
   delete(id: number) {
@@ -93,46 +102,20 @@ export class AuthorService {
         this.alertService.show('نویسنده با موفقیت حذف شد', 'success');
       },
       error: (err) => {
-        this.handleError(err);
+        this.errorHandler.handleError(err);
       },
     });
   }
 
-  getById(id:number) {
+  getById(id: number) {
     this.http.get<ApiResponse<Author>>(`${this.apiUrl}/${id}`).subscribe({
       next: (res) => {
         this.author.next(res.data!);
       },
       error: (err) => {
-        this.handleError(err);
+        this.errorHandler.handleError(err);
       },
     });
   }
 
-  private handleError(error: HttpErrorResponse): string[] {
-    // Try to get the backend response
-    const apiError = error.error as ApiResponse<null>;
-
-    if (apiError) {
-      // Show alert with the main message
-      this.alertService.show(apiError.message || 'خطا رخ داد', 'error');
-
-      // Flatten the errors object into a string array
-      if (apiError.errors) {
-        const flattenedErrors: string[] = [];
-        for (const key in apiError.errors) {
-          if (apiError.errors.hasOwnProperty(key)) {
-            flattenedErrors.push(...apiError.errors[key]);
-          }
-        }
-        return flattenedErrors;
-      } else {
-        return [];
-      }
-    } else {
-      // Fallback for unknown errors
-      this.alertService.show('خطای ناشناخته رخ داد', 'error');
-      return [];
-    }
-  }
 }

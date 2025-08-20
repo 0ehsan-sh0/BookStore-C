@@ -14,6 +14,7 @@ import {
   UpdateCategoryRequest,
 } from '../../models/category';
 import { ApiResponse } from '../../models/apiResponse';
+import { ErrorHandlerService } from '../error-handler.service';
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +22,11 @@ import { ApiResponse } from '../../models/apiResponse';
 export class CategoryService {
   private readonly apiUrl = 'admin/category';
 
-  constructor(private http: HttpClient, private alertService: AlertService) {}
+  constructor(
+    private http: HttpClient,
+    private alertService: AlertService,
+    private errorHandler: ErrorHandlerService
+  ) {}
 
   categories = new BehaviorSubject<Category[]>([]);
   category = new BehaviorSubject<Category>({} as Category);
@@ -48,7 +53,7 @@ export class CategoryService {
           this.pagination.next(response.data?.pagination! ?? null);
         },
         error: (err) => {
-          this.handleError(err);
+          this.errorHandler.handleError(err);
         },
       });
   }
@@ -59,7 +64,7 @@ export class CategoryService {
         this.category.next(res.data!);
       },
       error: (err) => {
-        this.handleError(err);
+        this.errorHandler.handleError(err);
       },
     });
   }
@@ -75,7 +80,7 @@ export class CategoryService {
           this.alertService.show('دسته‌بندی با موفقیت ایجاد شد', 'success');
         },
         error: (err) => {
-          this.createErrors.set(this.handleError(err));
+          this.createErrors.set(this.errorHandler.handleError(err));
         },
       });
   }
@@ -98,7 +103,7 @@ export class CategoryService {
           );
         },
         error: (err) => {
-          this.updateErrors.set(this.handleError(err));
+          this.updateErrors.set(this.errorHandler.handleError(err));
         },
       });
   }
@@ -110,35 +115,8 @@ export class CategoryService {
         this.alertService.show('دسته‌بندی با موفقیت حذف شد', 'success');
       },
       error: (err) => {
-        this.handleError(err);
+        this.errorHandler.handleError(err);
       },
     });
-  }
-
-  private handleError(error: HttpErrorResponse): string[] {
-    // Try to get the backend response
-    const apiError = error.error as ApiResponse<null>;
-
-    if (apiError) {
-      // Show alert with the main message
-      this.alertService.show(apiError.message || 'خطا رخ داد', 'error');
-
-      // Flatten the errors object into a string array
-      if (apiError.errors) {
-        const flattenedErrors: string[] = [];
-        for (const key in apiError.errors) {
-          if (apiError.errors.hasOwnProperty(key)) {
-            flattenedErrors.push(...apiError.errors[key]);
-          }
-        }
-        return flattenedErrors;
-      } else {
-        return [];
-      }
-    } else {
-      // Fallback for unknown errors
-      this.alertService.show('خطای ناشناخته رخ داد', 'error');
-      return [];
-    }
   }
 }

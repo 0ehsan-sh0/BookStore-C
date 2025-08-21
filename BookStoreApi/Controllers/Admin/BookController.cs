@@ -12,7 +12,6 @@ namespace BookStoreApi.Controllers.Admin
     public class BookController(BLLBook bLL) : ApiResponseHelper
     {
         [HttpPost]
-        [RequestSizeLimit(2_000_000)]
         public async Task<IActionResult> Create([FromForm] CreateBookRequest createBookRequest)
         {
             var (isValid, errors) = ModelStateValidation();

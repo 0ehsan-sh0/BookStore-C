@@ -35,6 +35,8 @@ namespace BookStoreApi.RequestHandler.Admin.Requests.Book
         public int AuthorId { get; set; }
         [Required(ErrorMessage = "تصاویر الزامی است")]
         [AllowedExtensions([".jpg", ".jpeg", ".png", ".gif"])]
+        [MaxFileSize(1 * 1024 * 1024, ErrorMessage = "حجم فایل نباید بیش از 1 مگابایت باشد")]
+        [MaxItems(3, ErrorMessage = "حداکثر 3 تصویر مجاز است")]
         public required List<IFormFile> Images { get; set; }
         [NoDuplicates(ErrorMessage = "لطفا مترجم تکراری وارد نکنید")]
         public List<int>? Translators { get; set; }

@@ -10,7 +10,6 @@ namespace BookStoreApi.Controllers.Admin
     public class ImageController(BLLImage bLL) : ApiResponseHelper
     {
         [HttpPost]
-        [RequestSizeLimit(2_000_000)]
         public async Task<IActionResult> Create([FromForm] CreateImageRequest createImageRequest)
         {
             var (isValid, errors) = ModelStateValidation();

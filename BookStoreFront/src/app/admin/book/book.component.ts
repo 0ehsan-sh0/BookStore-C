@@ -26,6 +26,8 @@ export class BookComponent {
   deleteBookModal = viewChild<ModalComponent>('deleteBook');
   bookCategories = viewChild<ModalComponent>('bookCategories');
   bookTranslators = viewChild<ModalComponent>('bookTranslators');
+  bookTags = viewChild<ModalComponent>('bookTags');
+  bookImages = viewChild<ModalComponent>('bookImages');
 
   constructor(
     public bookService: BookService,
@@ -74,6 +76,16 @@ export class BookComponent {
   showTranslators(id : number) {
     this.bookService.getById(id);
     this.bookTranslators()!.open();
+  }
+
+  showTags(id : number) {
+    this.bookService.getById(id);
+    this.bookTags()!.open();
+  }
+
+  showImage(id: number) {
+    this.bookService.getById(id);
+    this.bookImages()!.open();
   }
 
   changePage(page: number) {

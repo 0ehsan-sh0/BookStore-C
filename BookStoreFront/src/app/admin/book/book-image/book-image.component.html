@@ -1,0 +1,12 @@
+<div class="flex justify-center mt-5">
+  <div class="grid grid-cols-1 gap-2 p-2 w-64">
+    <div *ngFor="let image of images">
+      <img
+       
+        [src]="imageService.getUrl(image.relativePath, image.storedFileName)"
+        [alt]="image.isPrimary ? 'Primary image of ' + book.name : 'Image of ' + book.name"
+        class="w-full h-auto rounded-lg object-cover"
+      />
+    </div>
+  </div>
+</div>

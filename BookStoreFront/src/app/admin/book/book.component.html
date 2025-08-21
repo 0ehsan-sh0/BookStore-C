@@ -31,6 +31,7 @@
                 <td>نویسنده</td>
                 <td>دسته بندی ها</td>
                 <td>مترجمان</td>
+                <td>تگ ها</td>
                 <td>تاریخ ایجاد</td>
                 <td>تاریخ به روز رسانی</td>
                 <td></td>
@@ -45,8 +46,13 @@
                 </th>
                 @for (image of book.images; track image.id) {
                 @if (image.isPrimary) {
-                <td class="text-lg"><img [src]="imageService.getUrl(image.relativePath, image.storedFileName)"
-                        width="100" height="150" alt="Book Image" class="rounded-xl" /></td>
+                <td class="text-lg">
+                    <div class="avatar" (click)="showImage(image.id)">
+                        <div class="ring-primary ring-offset-base-100 w-12 rounded-full ring-2 ring-offset-2">
+                            <img class="cursor-pointer" [src]="imageService.getUrl(image.relativePath, image.storedFileName)" />
+                        </div>
+                    </div>
+                </td>
                 }
                 }
 
@@ -62,7 +68,7 @@
                 <td class="text-lg">{{book.price}}</td>
                 <td class="text-lg">{{book.printSeries}}</td>
                 <td class="text-lg">
-                    <div class="badge badge-accent">{{book.isbn}}</div>
+                    <div class="badge badge-accent w-42 h-7">{{book.isbn}}</div>
                 </td>
                 <td class="text-lg">{{book.coverType}}</td>
                 <td class="text-lg">{{book.format}}</td>
@@ -82,9 +88,14 @@
                     <button class="btn w-40 gap-3" (click)="showTranslators(book.id)">
                         <i-lucide name="book-type" size="18"></i-lucide> مترجمان
                     </button>
-                } @else {
+                    } @else {
                     <span class="text-gray-500">بدون مترجم</span>
-                }
+                    }
+                </td>
+                <td class="text-lg">
+                    <button class="btn w-40 gap-3" (click)="showTags(book.id)">
+                        <i-lucide name="tag" size="18"></i-lucide> تگ ها
+                    </button>
                 </td>
                 <td class="text-lg">
                     {{book.createdAt! | jalaliDate:true}}
@@ -122,6 +133,7 @@
                 <td>نویسنده</td>
                 <td>دسته بندی ها</td>
                 <td>مترجمان</td>
+                <td>تگ ها</td>
                 <td>تاریخ ایجاد</td>
                 <td>تاریخ به روز رسانی</td>
                 <td></td>
@@ -163,6 +175,14 @@
 
 <app-modal #bookTranslators id="bookTranslators">
     <app-book-translator></app-book-translator>
+</app-modal>
+
+<app-modal #bookImages id="bookImages">
+    <app-book-image></app-book-image>
+</app-modal>
+
+<app-modal #bookTags id="bookTags">
+    <app-book-tag></app-book-tag>
 </app-modal>
 
 <app-modal #createBook id="createBook">

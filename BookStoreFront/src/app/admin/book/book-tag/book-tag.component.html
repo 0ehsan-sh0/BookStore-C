@@ -1,0 +1,38 @@
+<div class="overflow-x-auto">
+    <table class="table table-pin-cols">
+        <!-- head -->
+        <thead>
+            <tr>
+                <th>شناسه</th>
+                <td>نام</td>
+                <td>لینک</td>
+            </tr>
+        </thead>
+        <tbody>
+            @for (tag of this.tags; track tag.id) {
+            <!-- row  -->
+            <tr>
+                <th class="font-bold text-lg">
+                    {{tag.id}}
+                </th>
+                <td class="text-lg">
+                    {{tag.name}}
+                </td>
+                <td class="text-lg">
+                    <div class="badge badge-accent w-auto h-auto">{{tag.url}}</div>
+                </td>
+            </tr>
+            }
+        </tbody>
+        <!-- foot -->
+        <tfoot>
+            <tr>
+                <th>شناسه</th>
+                <td>نام</td>
+                <td>لینک</td>
+            </tr>
+        </tfoot>
+
+    </table>
+
+</div>

@@ -51,6 +51,8 @@ import { JalaliDatePipe } from './pipes/jalali-date.pipe';
 import { TagComponent } from './admin/tag/tag.component';
 import { CreateTagComponent } from './admin/tag/create-tag/create-tag.component';
 import { UpdateTagComponent } from './admin/tag/update-tag/update-tag.component';
+import { BookTagComponent } from './admin/book/book-tag/book-tag.component';
+import { BookImageComponent } from './admin/book/book-image/book-image.component';
 
 @NgModule({
   declarations: [
@@ -77,6 +79,8 @@ import { UpdateTagComponent } from './admin/tag/update-tag/update-tag.component'
     TagComponent,
     CreateTagComponent,
     UpdateTagComponent,
+    BookTagComponent,
+    BookImageComponent,
   ],
   imports: [
     BrowserModule,

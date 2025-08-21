@@ -12,7 +12,7 @@ export class JalaliDatePipe implements PipeTransform {
 
       const date = new Date(value);
       const jDate = toJalaali(date);
-      console.log('Pipe input:', value, 'Converted:', jDate);
+      
       const formattedDate = `${jDate.jy}/${this.pad(jDate.jm)}/${this.pad(
         jDate.jd
       )}`;

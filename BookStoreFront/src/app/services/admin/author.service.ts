@@ -42,10 +42,12 @@ export class AuthorService {
   created = signal<boolean>(false);
   updated = signal<boolean>(false);
 
-  getAuthors(pageNumber: number = 1, pageSize: number = 20) {
+  getAuthors(pageNumber: number = 1, pageSize: number = 20, search: string = '') {
     const params = new HttpParams()
       .set('PageNumber', pageNumber.toString())
-      .set('PageSize', pageSize.toString());
+      .set('PageSize', pageSize.toString())
+      .set('Search', search);
+      
     this.http
       .get<ApiResponse<AuthorListResponse>>(`${this.apiUrl}`, { params })
       .subscribe({

@@ -78,7 +78,6 @@ export class AuthorComponent {
         pages.push(-1); // use -1 as ellipsis
       }
     }
-    console.log(pages);
 
     return [...new Set(pages)];
   }

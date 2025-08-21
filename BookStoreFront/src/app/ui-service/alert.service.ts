@@ -16,9 +16,9 @@ export class AlertService {
     message: string,
     type: 'success' | 'error' | 'info' | 'warning' = 'success'
   ) {
-    console.log('show');
+    ('show');
     if (!this.containerRef) return;
-    console.log('show after if');
+    ('show after if');
 
     // Remove previous alert
     this.currentAlert?.destroy();

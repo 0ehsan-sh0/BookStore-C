@@ -37,10 +37,11 @@ export class TagService {
   created = signal<boolean>(false);
   updated = signal<boolean>(false);
 
-  getTags(pageNumber: number = 1, pageSize: number = 20) {
+  getTags(pageNumber: number = 1, pageSize: number = 20, search: string = '') {
     const params = new HttpParams()
       .set('PageNumber', pageNumber.toString())
-      .set('PageSize', pageSize.toString());
+      .set('PageSize', pageSize.toString())
+      .set('Search', search);
     this.http
       .get<ApiResponse<TagListResponse>>(`${this.apiUrl}`, { params })
       .subscribe({

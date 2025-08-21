@@ -78,7 +78,7 @@ export class TagComponent {
         pages.push(-1); // use -1 as ellipsis
       }
     }
-    console.log(pages);
+    (pages);
 
     return [...new Set(pages)];
   }

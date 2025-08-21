@@ -3,7 +3,7 @@ import { Injectable, signal } from '@angular/core';
 import { AlertService } from '../../ui-service/alert.service';
 import { ErrorHandlerService } from '../error-handler.service';
 import { BehaviorSubject } from 'rxjs';
-import { BookAllData, BookListResponse, BPaginationInfo } from '../../models/book';
+import { BookAllData, BookListResponse, BPaginationInfo, CreateBookRequest, UpdateBookRequest } from '../../models/book';
 import { ApiResponse } from '../../models/apiResponse';
 
 @Injectable({
@@ -59,7 +59,7 @@ export class BookService {
     });
   }
 
-  create(book: BookAllData) {
+  create(book: FormData) {
     this.http.post<ApiResponse<BookAllData>>(`${this.apiUrl}`, book).subscribe({
       next: (res) => {
         this.books.next([res.data!, ...this.books.value]);
@@ -74,7 +74,7 @@ export class BookService {
     });
   }
 
-  update(book: BookAllData, id: number) {
+  update(book: UpdateBookRequest, id: number) {
     this.http
       .put<ApiResponse<BookAllData>>(`${this.apiUrl}/${id}`, book)
       .subscribe({

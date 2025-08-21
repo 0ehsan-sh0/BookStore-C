@@ -1,1 +1,248 @@
-<p>create-book works!</p>
+<h3 class="text-lg font-bold mb-3">ایجاد کتاب</h3>
+
+<div class="mb-2">
+    @for (error of this.errors; track $index) {
+    <p class="text-error">{{ error }}</p>
+    }
+</div>
+
+<form #form="ngForm" (ngSubmit)="onSubmit(form)" novalidate>
+    <!-- Book Name -->
+    <div class="space-y-2 mb-3">
+        <label class="label">نام کتاب :</label>
+        <input type="text" class="input sm:input-lg w-full" name="name" ngModel required maxlength="200" #name="ngModel"
+            [class.input-error]="name.invalid && name.touched" placeholder="نام کتاب" />
+        @if (name.invalid && name.touched) {
+        <p class="text-error">نام کتاب الزامی است و نباید بیش از 200 کاراکتر باشد</p>
+        }
+    </div>
+
+    <!-- English Name -->
+    <div class="space-y-2 mb-3">
+        <label class="label">نام انگلیسی :</label>
+        <input type="text" class="input sm:input-lg w-full" name="englishName" ngModel pattern="^[a-zA-Z0-9_-]+$"
+            maxlength="200" #englishName="ngModel" [class.input-error]="englishName.invalid && englishName.touched"
+            placeholder="نام انگلیسی (اختیاری)" />
+        @if (englishName.invalid && englishName.touched) {
+        <p class="text-error">فقط حروف انگلیسی، عدد، - و _ مجاز است</p>
+        }
+    </div>
+
+    <!-- Description -->
+    <div class="space-y-2 mb-3">
+        <label class="label">توضیحات :</label>
+        <textarea class="textarea sm:textarea-lg w-full" name="description" ngModel maxlength="2000"
+            placeholder="توضیحات کتاب (اختیاری)"></textarea>
+    </div>
+
+    <!-- Price -->
+    <div class="space-y-2 mb-3">
+        <label class="label">قیمت :</label>
+        <input type="number" class="input sm:input-lg w-full" name="price" ngModel required min="1" #price="ngModel"
+            [class.input-error]="price.invalid && price.touched" placeholder="قیمت کتاب" />
+        @if (price.invalid && price.touched) {
+        <p class="text-error">قیمت باید بزرگتر از صفر باشد</p>
+        }
+    </div>
+
+    <!-- Print Series -->
+    <div class="space-y-2 mb-3">
+        <label class="label">سری چاپ :</label>
+        <input type="number" class="input sm:input-lg w-full" name="printSeries" ngModel required min="1"
+            #printSeries="ngModel" [class.input-error]="printSeries.invalid && printSeries.touched"
+            placeholder="سری چاپ" />
+    </div>
+
+    <!-- ISBN -->
+    <div class="space-y-2 mb-3">
+        <label class="label">شابک :</label>
+        <input type="text" class="input sm:input-lg w-full" name="isbn" ngModel required
+            maxlength="20" #isbn="ngModel"
+            [class.input-error]="isbn.invalid && isbn.touched" placeholder="شابک کتاب" />
+    </div>
+
+    <!-- Cover Type -->
+    <div class="space-y-2 mb-3">
+        <label class="label">نوع جلد :</label>
+        <input type="text" class="input sm:input-lg w-full" name="coverType" ngModel required maxlength="50"
+            #coverType="ngModel" [class.input-error]="coverType.invalid && coverType.touched"
+            placeholder="مثال: شومیز / گالینگور" />
+    </div>
+
+    <!-- Format -->
+    <div class="space-y-2 mb-3">
+        <label class="label">قطع :</label>
+        <input type="text" class="input sm:input-lg w-full" name="format" ngModel required maxlength="50"
+            #format="ngModel" [class.input-error]="format.invalid && format.touched" placeholder="مثال: رقعی / وزیری" />
+    </div>
+
+    <!-- Pages -->
+    <div class="space-y-2 mb-3">
+        <label class="label">تعداد صفحات :</label>
+        <input type="number" class="input sm:input-lg w-full" name="pages" ngModel required min="1" #pages="ngModel"
+            [class.input-error]="pages.invalid && pages.touched" placeholder="تعداد صفحات" />
+    </div>
+
+    <!-- Publish Year -->
+    <div class="space-y-2 mb-3">
+        <label class="label">سال انتشار :</label>
+        <input type="number" class="input sm:input-lg w-full" name="publishYear" ngModel required min="1" max="2100"
+            #publishYear="ngModel" [class.input-error]="publishYear.invalid && publishYear.touched"
+            placeholder="سال انتشار" />
+    </div>
+
+
+    <!-- Publisher -->
+    <div class="space-y-2 mb-3">
+        <label class="label">ناشر :</label>
+        <input type="text" class="input sm:input-lg w-full" name="publisher" ngModel required maxlength="200"
+            #publisher="ngModel" [class.input-error]="publisher.invalid && publisher.touched" placeholder="نام ناشر" />
+    </div>
+
+    <!-- Author -->
+    <div class="space-y-2 mb-3">
+        <label class="label">جستجوی نویسنده :</label>
+
+        <!-- Search input -->
+        <div class="flex gap-2">
+            <input type="text" class="input input-bordered w-full" placeholder="نام را وارد کنید..."
+                [(ngModel)]="searchAuthorText" [ngModelOptions]="{standalone: true}" />
+
+            <button class="btn btn-primary" type="button" (click)="onAuthorSearch()">
+                جستجو
+            </button>
+        </div>
+
+        <!-- Results list -->
+        <div class="mt-3">
+            <label class="label mb-2">نویسنده ها :</label>
+            <select class="select select-bordered w-full" name="selectedAuthor" [(ngModel)]="selectedAuthor" required>
+                <option *ngFor="let author of authors" [value]="author.id">
+                    {{ author.name }} - شناسه : {{author.id}}
+                </option>
+            </select>
+        </div>
+    </div>
+    <!-- End Author -->
+
+    <!-- Images -->
+    <div class="space-y-2 mb-3">
+        <label class="label">تصاویر (حداکثر 3 و هر کدام 1MB) :</label>
+        <input type="file" class="file-input file-input-bordered w-full" (change)="onFilesSelected($event)" multiple />
+    </div>
+
+    <!-- Categories -->
+    <div class="space-y-2 mb-3">
+        <label class="label">جستجوی دسته بندی :</label>
+        <div class="flex gap-2">
+            <input type="text" class="input input-bordered w-full" placeholder="نام یا لینک را وارد کنید..."
+                [(ngModel)]="searchCategoryText" [ngModelOptions]="{standalone: true}" />
+            <button class="btn btn-primary" type="button" (click)="onCategorySearch()">جستجو</button>
+        </div>
+
+        <!-- Results -->
+        <div class="mt-3 ">
+            <label class="label mb-2">دسته بندی ها :</label>
+            <div class="grid grid-cols-1 gap-1 overflow-auto border rounded p-2">
+                @for (item of this.categories; track item.id) {
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" [checked]="isCategorySelected(item)"
+                        (change)="toggleCategorySelection(item)" />
+                    <span>{{item.name}} - لینک : {{item.url}}</span>
+                </div>
+                }
+            </div>
+        </div>
+
+        <!-- Selected categories (optional display) -->
+        <div class="mt-2" [ngClass]="{'hidden': selectedCategories.length === 0}">
+            <label class="label mb-2 " >دسته بندی ‌های انتخاب‌ شده:</label>
+            <div class="flex flex-wrap gap-2">
+                @for (item of this.selectedCategories; track item.id) {
+                <span class="badge badge-neutral">
+                    {{item.url}}
+                </span>
+                }
+            </div>
+        </div>
+    </div>
+    <!-- End Categories -->
+
+    <!-- Tags -->
+    <div class="space-y-2 mb-3">
+        <label class="label">جستجوی تگ :</label>
+        <div class="flex gap-2">
+            <input type="text" class="input input-bordered w-full" placeholder="نام یا لینک را وارد کنید..."
+                [(ngModel)]="searchTagText" [ngModelOptions]="{standalone: true}" />
+            <button class="btn btn-primary" type="button" (click)="onTagSearch()">جستجو</button>
+        </div>
+
+        <!-- Results -->
+        <div class="mt-3 ">
+            <label class="label mb-2">تگ ها :</label>
+            <div class="grid grid-cols-1 gap-1 max-h-40 overflow-auto border rounded p-2">
+                @for (tag of this.tags; track tag.id) {
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" [checked]="isTagSelected(tag)" (change)="toggleTagSelection(tag)" />
+                    <span>{{tag.name}} - لینک : {{tag.url}}</span>
+                </div>
+                }
+            </div>
+        </div>
+
+        <!-- Selected tags (optional display) -->
+        <div class="mt-2" [ngClass]="{'hidden': selectedTags.length === 0}">
+            <label class="label mb-2">تگ‌های انتخاب‌شده:</label>
+            <div class="flex flex-wrap gap-2">
+                @for (tag of selectedTags; track tag.id) {
+                <span class="badge badge-neutral">
+                    {{tag.url}}
+                </span>
+                }
+            </div>
+        </div>
+    </div>
+    <!-- End Tags -->
+
+
+    <!-- Translators -->
+    <div class="space-y-2 mb-3">
+        <label class="label">جستجوی مترجم :</label>
+        <div class="flex gap-2">
+            <input type="text" class="input input-bordered w-full" placeholder="نام را وارد کنید..."
+                [(ngModel)]="searchTranslatorText" [ngModelOptions]="{standalone: true}" />
+            <button class="btn btn-primary" type="button" (click)="onTranslatorSearch()">جستجو</button>
+        </div>
+
+        <!-- Results -->
+        <div class="mt-3" >
+            <label class="label mb-2" >مترجم ها :</label>
+            <div class="grid grid-cols-1 gap-1 max-h-40 overflow-auto border rounded p-2 tooltip" data-tip="مترجم هایی که در لیست نیستند را جستجو کنید">
+                @for (translator of this.translators; track translator.id) {
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" [checked]="isTranslatorSelected(translator)"
+                        (change)="toggleTranslatorSelection(translator)" />
+                    <span>{{translator.name}} - شناسه : {{translator.id}}</span>
+                </div>
+                }
+            </div>
+        </div>
+
+        <!-- Selected Translators (optional display) -->
+        <div class="mt-2" [ngClass]="{'hidden': selectedTranslators.length === 0}">
+            <label class="label mb-2">مترجم ‌های انتخاب‌ شده:</label>
+            <div class="flex flex-wrap gap-2">
+                @for (translator of selectedTranslators; track translator.id) {
+                <span class="badge badge-neutral">
+                    {{translator.name}} - شناسه : {{translator.id}}
+                </span>
+            }
+            </div>
+        </div>
+    </div>
+    <!-- End Translators -->
+
+    <button type="submit" [disabled]="form.invalid" class="btn btn-primary btn-lg w-full">
+        ایجاد کتاب
+    </button>
+</form>

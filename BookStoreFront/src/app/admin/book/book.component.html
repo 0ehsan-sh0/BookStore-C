@@ -47,7 +47,7 @@
                 @for (image of book.images; track image.id) {
                 @if (image.isPrimary) {
                 <td class="text-lg">
-                    <div class="avatar" (click)="showImage(image.id)">
+                    <div class="avatar" (click)="showImage(book.id)">
                         <div class="ring-primary ring-offset-base-100 w-12 rounded-full ring-2 ring-offset-2">
                             <img class="cursor-pointer" [src]="imageService.getUrl(image.relativePath, image.storedFileName)" />
                         </div>

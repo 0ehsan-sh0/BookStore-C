@@ -44,7 +44,7 @@ namespace BookStoreApi.Database.Repositories
 
             using var multi = await connection.QueryMultipleAsync(
                 sql,
-                new { query.PageNumber, query.PageSize },
+                new { query.PageNumber, query.PageSize, Search = query.Search },
                 commandType: CommandType.StoredProcedure);
 
             var translators = (await multi.ReadAsync<Translator>()).ToList();

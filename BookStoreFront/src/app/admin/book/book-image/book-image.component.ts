@@ -21,7 +21,7 @@ export class BookImageComponent {
     this.bookService.book.subscribe((book) => {
       this.images = book.images ?? [];
       this.book = book;
-      console.log(book.images);
+      (book.images);
     });
   }
 }

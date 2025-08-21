@@ -46,7 +46,7 @@
                 @for (image of book.images; track image.id) {
                 @if (image.isPrimary) {
                 <td class="text-lg"><img [src]="imageService.getUrl(image.relativePath, image.storedFileName)"
-                        width="100" height="150" alt="Book Image" class="w-full rounded-xl " /></td>
+                        width="100" height="150" alt="Book Image" class="rounded-xl" /></td>
                 }
                 }
 
@@ -87,10 +87,10 @@
                 }
                 </td>
                 <td class="text-lg">
-                    {{book.createdAt}}
+                    {{book.createdAt! | jalaliDate:true}}
                 </td>
                 <td class="text-lg">
-                    {{book.updatedAt}}
+                    {{book.updatedAt! | jalaliDate:true}}
                 </td>
                 <td class="flex gap-2">
                     <button class="btn h-10 btn-primary btn-xs" (click)="update(book.id)">

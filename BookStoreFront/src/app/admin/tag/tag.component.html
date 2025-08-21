@@ -1,10 +1,10 @@
 <button class="btn w-full sm:w-65  btn-lg btn-primary mb-5" (click)="create()">
     <i-lucide name="plus"></i-lucide>
-    افزودن نویسنده جدید
+    افزودن تگ جدید
 </button>
 
 <div class="flex space-x-4  mb-5">
-    <input type="text" class="input input-lg flex-8 pr-5" placeholder="جستجو در نویسندگان ..." />
+    <input type="text" class="input input-lg flex-8 pr-5" placeholder="جستجو در تگ ها ..." />
     <button class="btn btn-lg btn-accent flex-1">جستجو</button>
 </div>
 
@@ -17,36 +17,36 @@
             <tr>
                 <th>شناسه</th>
                 <td>نام</td>
-                <td>توضیحات</td>
+                <td>لینک</td>
                 <td>تاریخ ایجاد</td>
                 <td>تاریخ به روز رسانی</td>
                 <td></td>
             </tr>
         </thead>
         <tbody>
-            @for (author of this.authors; track author.id) {
+            @for (tag of this.tags; track tag.id) {
             <!-- row  -->
             <tr>
                 <th class="font-bold text-lg">
-                    {{author.id}}
+                    {{tag.id}}
                 </th>
                 <td class="text-lg">
-                    {{author.name}}
+                    {{tag.name}}
                 </td>
                 <td class="text-lg">
-                    {{author.description}}
+                    <div class="badge badge-accent">{{tag.url}}</div>
                 </td>
                 <td class="text-lg">
-                    {{author.createdAt! | jalaliDate:true}}
+                    {{tag.createdAt! | jalaliDate:true}}
                 </td>
                 <td class="text-lg">
-                    {{author.updatedAt! | jalaliDate:true}}
+                    {{tag.updatedAt! | jalaliDate:true}}
                 </td>
                 <td class="flex gap-2">
-                    <button class="btn h-10 btn-primary btn-xs" (click)="update(author.id)">
+                    <button class="btn h-10 btn-primary btn-xs" (click)="update(tag.id)">
                         <i-lucide name="pencil"></i-lucide>
                     </button>
-                    <button class="btn h-10 btn-error btn-xs" (click)="delete(author.id)">
+                    <button class="btn h-10 btn-error btn-xs" (click)="delete(tag.id)">
                         <i-lucide name="trash"></i-lucide>
                     </button>
                 </td>
@@ -58,7 +58,7 @@
             <tr>
                 <th>شناسه</th>
                 <td>نام</td>
-                <td>توضیحات</td>
+                <td>لینک</td>
                 <td>تاریخ ایجاد</td>
                 <td>تاریخ به روز رسانی</td>
                 <td></td>
@@ -94,22 +94,22 @@
     </button>
 </div>
 
-<app-modal #createAuthor id="createAuthor">
-    <app-create-author (created)="closeDialog('createAuthorModal')"></app-create-author>
+<app-modal #createTag id="createTag">
+    <app-create-tag (created)="closeDialog('createTagModal')"></app-create-tag>
 </app-modal>
 
-<app-modal #updateAuthor id="updateAuthor">
-    <app-update-author (updated)="closeDialog('updateAuthorModal')"></app-update-author>
+<app-modal #updateTag id="updateTag">
+    <app-update-tag (updated)="closeDialog('updateTagModal')"></app-update-tag>
 </app-modal>
 
-<app-modal #deleteAuthor id="deleteAuthor">
-  <h3 class="text-lg font-bold mb-5">آیا از حذف نویسنده اطمینان دارید؟</h3>
-  <div class="flex gap-5">
-    <form method="dialog" class="flex-1">
-      <button class="btn btn-error btn-lg w-full">خیر</button>
-    </form>
-    <div class="flex-1">
-      <button class="btn btn-primary btn-lg w-full" (click)="deleteConfirmed()">بله</button>
+<app-modal #deleteTag id="deleteTag">
+    <h3 class="text-lg font-bold mb-5">آیا از حذف تگ اطمینان دارید؟</h3>
+    <div class="flex gap-5">
+        <form method="dialog" class="flex-1">
+            <button class="btn btn-error btn-lg w-full">خیر</button>
+        </form>
+        <div class="flex-1">
+            <button class="btn btn-primary btn-lg w-full" (click)="deleteConfirmed()">بله</button>
+        </div>
     </div>
-  </div>
 </app-modal>

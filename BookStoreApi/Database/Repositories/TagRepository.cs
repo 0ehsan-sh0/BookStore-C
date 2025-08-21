@@ -20,8 +20,8 @@ namespace BookStoreApi.Database.Repositories
             ;
             var parameters = new
             {
-                tag.Name,
-                tag.Url
+                Name = tag.Name.Trim(),
+                Url = tag.Url.Trim()
             };
 
             int insertedId = await connection.ExecuteScalarAsync<int>(sql, parameters);
@@ -78,8 +78,8 @@ namespace BookStoreApi.Database.Repositories
             using var connection = dapperUtility.GetConnection();
             var parameters = new
             {
-                tagWithId.Name,
-                tagWithId.Url,
+                Name = tagWithId.Name.Trim(),
+                Url = tagWithId.Url.Trim(),
                 tagWithId.Id,
             };
             bool result = await connection.ExecuteAsync(sql, parameters) >= 0;

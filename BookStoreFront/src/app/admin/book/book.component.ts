@@ -1,10 +1,9 @@
 import { Component, viewChild } from '@angular/core';
-import { Book, BookAllData, BPaginationInfo } from '../../models/book';
+import { BookAllData, BPaginationInfo } from '../../models/book';
 import { ModalComponent } from '../../ui-service/modal/modal.component';
-import { CategoryService } from '../../services/admin/category.service';
 import { BookService } from '../../services/admin/book.service';
 import { ImageService } from '../../services/image.service';
-import { Category } from '../../models/category';
+
 
 @Component({
   selector: 'app-book',

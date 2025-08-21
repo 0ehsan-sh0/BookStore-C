@@ -47,6 +47,10 @@ import { CreateBookComponent } from './admin/book/create-book/create-book.compon
 import { UpdateBookComponent } from './admin/book/update-book/update-book.component';
 import { BookCategoryComponent } from './admin/book/book-category/book-category.component';
 import { BookTranslatorComponent } from './admin/book/book-translator/book-translator.component';
+import { JalaliDatePipe } from './pipes/jalali-date.pipe';
+import { TagComponent } from './admin/tag/tag.component';
+import { CreateTagComponent } from './admin/tag/create-tag/create-tag.component';
+import { UpdateTagComponent } from './admin/tag/update-tag/update-tag.component';
 
 @NgModule({
   declarations: [
@@ -69,6 +73,10 @@ import { BookTranslatorComponent } from './admin/book/book-translator/book-trans
     UpdateBookComponent,
     BookCategoryComponent,
     BookTranslatorComponent,
+    JalaliDatePipe,
+    TagComponent,
+    CreateTagComponent,
+    UpdateTagComponent,
   ],
   imports: [
     BrowserModule,

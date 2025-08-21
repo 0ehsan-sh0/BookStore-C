@@ -37,10 +37,10 @@
                     {{translator.description}}
                 </td>
                 <td class="text-lg">
-                    {{translator.createdAt}}
+                    {{translator.createdAt! | jalaliDate:true}}
                 </td>
                 <td class="text-lg">
-                    {{translator.updatedAt}}
+                    {{translator.updatedAt! | jalaliDate:true}}
                 </td>
                 <td class="flex gap-2">
                     <button class="btn h-10 btn-primary btn-xs" (click)="update(translator.id)">

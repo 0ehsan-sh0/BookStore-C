@@ -25,7 +25,7 @@ export class UpdateCategoryComponent {
     });
     // reactively track errors
     effect(() => {
-      this.errors = this.categoryService.createErrors();
+      this.errors = this.categoryService.updateErrors();
     });
 
     // reactively track creation

@@ -40,7 +40,7 @@ export class BookService {
       .subscribe({
         next: (response) => {
           this.books.next([...(response.data?.books ?? [])]);
-          this.pagination.next(response.data?.pagination! ?? null);
+          this.pagination.next(response.data?.pagination!);
         },
         error: (err) => {
           this.errorHandler.handleError(err);

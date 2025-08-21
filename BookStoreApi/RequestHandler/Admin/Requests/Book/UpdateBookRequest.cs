@@ -16,6 +16,7 @@ namespace BookStoreApi.RequestHandler.Admin.Requests.Book
         [PositiveNumber(ErrorMessage = "سری چاپ نمیتواند صفر یا منفی باشد")]
         public short PrintSeries { get; set; } // سری چاپ
         [Required(ErrorMessage = "شابک کتاب الزامی است")]
+        [Isbn(ErrorMessage = "لطفا شابک معتبر وارد کنید")]
         public string ISBN { get; set; } = string.Empty; // شابک
         [Required(ErrorMessage = "نوع جلد کتاب الزامی است")]
         public string CoverType { get; set; } = string.Empty; // نوع جلد

@@ -51,7 +51,7 @@ export class AuthorService {
       .subscribe({
         next: (response) => {
           this.authors.next([...(response.data?.authors ?? [])]);
-          this.pagination.next(response.data?.pagination! ?? null);
+          this.pagination.next(response.data?.pagination!);
         },
         error: (err) => {
           this.errorHandler.handleError(err);

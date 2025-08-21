@@ -50,7 +50,7 @@ export class CategoryService {
       .subscribe({
         next: (response) => {
           this.categories.next([...(response.data?.categories ?? [])]);
-          this.pagination.next(response.data?.pagination! ?? null);
+          this.pagination.next(response.data?.pagination!);
         },
         error: (err) => {
           this.errorHandler.handleError(err);

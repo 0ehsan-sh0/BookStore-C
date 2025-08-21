@@ -47,10 +47,10 @@
                     }
                 </td>
                 <td class="text-lg">
-                    {{category.createdAt}}
+                    {{category.createdAt! | jalaliDate:true}}
                 </td>
                 <td class="text-lg">
-                    {{category.updatedAt}}
+                    {{category.updatedAt! | jalaliDate:true}}
                 </td>
                 <td class="flex gap-2">
                     <button class="btn h-10 btn-primary btn-xs" (click)="update(category.id)">

@@ -22,6 +22,7 @@ export class TagComponent {
   createTagModal = viewChild<ModalComponent>('createTag');
   updateTagModal = viewChild<ModalComponent>('updateTag');
   deleteTagModal = viewChild<ModalComponent>('deleteTag');
+  searchText: string = '';
 
   constructor(public tagService: TagService) {
     this.tagService.tags.subscribe((tags) => {
@@ -54,9 +55,13 @@ export class TagComponent {
     this.deleteTagModal()!.open();
   }
 
-    deleteConfirmed() {
+  deleteConfirmed() {
     this.tagService.delete(this.deleteId);
     this.closeDialog('deleteTagModal');
+  }
+
+  onSearch() {
+    this.tagService.getTags(1, 20, this.searchText);
   }
 
   changePage(page: number) {
@@ -65,7 +70,7 @@ export class TagComponent {
     }
   }
 
-   getPageArray(): number[] {
+  getPageArray(): number[] {
     const total = this.pagination.totalPages;
     const current = this.pagination.pageNumber;
 
@@ -78,7 +83,7 @@ export class TagComponent {
         pages.push(-1); // use -1 as ellipsis
       }
     }
-    (pages);
+    pages;
 
     return [...new Set(pages)];
   }

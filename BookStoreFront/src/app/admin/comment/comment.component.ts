@@ -21,6 +21,7 @@ export class CommentComponent {
   };
 
   deleteCommentModal = viewChild<ModalComponent>('deleteComment');
+  searchText: string = '';
 
   constructor(public commentService: CommentService) {
     this.commentService.comments.subscribe((comments) => {
@@ -48,6 +49,14 @@ export class CommentComponent {
   deleteConfirmed() {
     this.commentService.delete(this.deleteId);
     this.closeDialog('deleteCommentModal');
+  }
+
+  onSearch() {
+    this.commentService.getComments(
+      this.pagination.pageNumber,
+      this.pagination.pageSize,
+      this.searchText
+    );
   }
 
   changePage(page: number) {

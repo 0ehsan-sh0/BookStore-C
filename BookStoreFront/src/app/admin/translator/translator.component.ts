@@ -22,6 +22,7 @@ export class TranslatorComponent {
   createTranslatorModal = viewChild<ModalComponent>('createTranslator');
   updateTranslatorModal = viewChild<ModalComponent>('updateTranslator');
   deleteTranslatorModal = viewChild<ModalComponent>('deleteTranslator');
+  searchText: string = '';
 
   constructor(public translatorService: TranslatorService) {
     this.translatorService.translators.subscribe((translators) => {
@@ -57,6 +58,10 @@ export class TranslatorComponent {
   deleteConfirmed() {
     this.translatorService.delete(this.deleteId);
     this.closeDialog('deleteTranslatorModal');
+  }
+
+  onSearch() {
+    this.translatorService.getTranslators(1, 20, this.searchText);
   }
 
   changePage(page: number) {

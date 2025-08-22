@@ -22,6 +22,7 @@ export class AuthorComponent {
   createAuthorModal = viewChild<ModalComponent>('createAuthor');
   updateAuthorModal = viewChild<ModalComponent>('updateAuthor');
   deleteAuthorModal = viewChild<ModalComponent>('deleteAuthor');
+  searchText = '';
 
   constructor(public authorService: AuthorService) {
     this.authorService.authors.subscribe((authors) => {
@@ -57,6 +58,10 @@ export class AuthorComponent {
   deleteConfirmed() {
     this.authorService.delete(this.deleteId);
     this.closeDialog('deleteAuthorModal');
+  }
+
+  onSearch() {
+    this.authorService.getAuthors(1, 20, this.searchText);
   }
 
   changePage(page: number) {

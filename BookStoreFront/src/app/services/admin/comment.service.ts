@@ -30,10 +30,11 @@ export class CommentService {
     totalPages: 1,
   });
 
-  getComments(pageNumber: number = 1, pageSize: number = 20) {
+  getComments(pageNumber: number = 1, pageSize: number = 20, search: string = '') {
     const params = new HttpParams()
       .set('PageNumber', pageNumber.toString())
-      .set('PageSize', pageSize.toString());
+      .set('PageSize', pageSize.toString())
+      .set('Search', search);
     this.http
       .get<ApiResponse<CommentListResponse>>(`${this.apiUrl}`, { params })
       .subscribe({

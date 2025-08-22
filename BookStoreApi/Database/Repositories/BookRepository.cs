@@ -91,7 +91,7 @@ namespace BookStoreApi.Database.Repositories
 
             using var multi = await connection.QueryMultipleAsync(
                 "Book_Get_All_JSON",
-                new { query.PageNumber, query.PageSize },
+                new { query.PageNumber, query.PageSize, query.Search },
                 commandType: CommandType.StoredProcedure
             );
 

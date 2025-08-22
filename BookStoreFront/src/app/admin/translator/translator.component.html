@@ -4,8 +4,8 @@
 </button>
 
 <div class="flex space-x-4  mb-5">
-    <input type="text" class="input input-lg flex-8 pr-5" placeholder="جستجو در نویسندگان ..." />
-    <button class="btn btn-lg btn-accent flex-1">جستجو</button>
+    <input type="text" [(ngModel)]="searchText" class="input input-lg flex-8 pr-5" placeholder="جستجو در مترجم ها ..." />
+    <button class="btn btn-lg btn-accent flex-1" (click)="onSearch()">جستجو</button>
 </div>
 
 <div class="divider"></div>

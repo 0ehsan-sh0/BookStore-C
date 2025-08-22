@@ -23,6 +23,7 @@ export class CategoryComponent {
   createCategoryModal = viewChild<ModalComponent>('createCategory');
   updateCategoryModal = viewChild<ModalComponent>('updateCategory');
   deleteCategoryModal = viewChild<ModalComponent>('deleteCategory');
+  searchText = '';
 
   constructor(public categoryService: CategoryService) {
     this.categoryService.categories.subscribe((categories) => {
@@ -62,6 +63,10 @@ export class CategoryComponent {
   deleteConfirmed() {
     this.categoryService.delete(this.deleteId);
     this.closeDialog('deleteCategoryModal');
+  }
+
+  onSearch() {
+    this.categoryService.getCategories(1, 20, this.searchText);
   }
 
   changePage(page: number) {

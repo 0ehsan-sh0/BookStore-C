@@ -28,6 +28,7 @@ export class BookComponent {
   bookTranslators = viewChild<ModalComponent>('bookTranslators');
   bookTags = viewChild<ModalComponent>('bookTags');
   bookImages = viewChild<ModalComponent>('bookImages');
+  searchText: string = '';
 
   constructor(
     public bookService: BookService,
@@ -66,6 +67,14 @@ export class BookComponent {
   deleteConfirmed() {
     this.bookService.delete(this.deleteId);
     this.closeDialog('deleteBookModal');
+  }
+  
+  onSearch() {
+    this.bookService.getBooks(
+      this.pagination.pageNumber,
+      this.pagination.pageSize,
+      this.searchText
+    );
   }
 
   showCategories(id : number) {

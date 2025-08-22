@@ -4,10 +4,9 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ApiResponse } from '../models/apiResponse';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ErrorHandlerService {
-
   constructor(private alertService: AlertService) {}
 
   handleError(error: HttpErrorResponse): string[] {

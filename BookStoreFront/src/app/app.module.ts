@@ -53,6 +53,7 @@ import { CreateTagComponent } from './admin/tag/create-tag/create-tag.component'
 import { UpdateTagComponent } from './admin/tag/update-tag/update-tag.component';
 import { BookTagComponent } from './admin/book/book-tag/book-tag.component';
 import { BookImageComponent } from './admin/book/book-image/book-image.component';
+import { CommentComponent } from './admin/comment/comment.component';
 
 @NgModule({
   declarations: [
@@ -81,6 +82,7 @@ import { BookImageComponent } from './admin/book/book-image/book-image.component
     UpdateTagComponent,
     BookTagComponent,
     BookImageComponent,
+    CommentComponent,
   ],
   imports: [
     BrowserModule,

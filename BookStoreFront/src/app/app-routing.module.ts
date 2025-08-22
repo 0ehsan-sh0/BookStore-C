@@ -6,6 +6,7 @@ import { TranslatorComponent } from './admin/translator/translator.component';
 import { CategoryComponent } from './admin/category/category.component';
 import { BookComponent } from './admin/book/book.component';
 import { TagComponent } from './admin/tag/tag.component';
+import { CommentComponent } from './admin/comment/comment.component';
 
 const routes: Routes = [
   {
@@ -15,8 +16,9 @@ const routes: Routes = [
       { path: 'author', component: AuthorComponent },
       { path: 'translator', component: TranslatorComponent },
       { path: 'category', component: CategoryComponent },
-      { path: 'book' , component : BookComponent},
-      { path: 'tag', component : TagComponent}
+      { path: 'book', component: BookComponent },
+      { path: 'tag', component: TagComponent },
+      { path: 'comment', component: CommentComponent },
     ],
   },
   { path: '**', redirectTo: '' }, // fallback

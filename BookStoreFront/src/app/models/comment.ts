@@ -7,3 +7,15 @@ export interface Comment {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface CommentListResponse {
+  comments: Comment[];
+  pagination: COPaginationInfo;
+}
+
+export interface COPaginationInfo {
+  pageNumber: number;
+  pageSize: number;
+  totalCount: number;
+  totalPages: number;
+}

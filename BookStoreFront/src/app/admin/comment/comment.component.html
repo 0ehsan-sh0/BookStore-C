@@ -1,0 +1,109 @@
+<div class="flex space-x-4  mb-5">
+    <input type="text" class="input input-lg flex-8 pr-5" placeholder="جستجو در نظرات ..." />
+    <button class="btn btn-lg btn-accent flex-1">جستجو</button>
+</div>
+
+<div class="divider"></div>
+
+<div class="overflow-x-auto">
+    <table class="table table-pin-cols">
+        <!-- head -->
+        <thead>
+            <tr>
+                <th class="flex justify-center">تغییر وضعیت</th>
+                <td>شناسه</td>
+                <td>نظر</td>
+                <td>نظر برای</td>
+                <td>تاریخ ایجاد</td>
+                <td>تاریخ به روز رسانی</td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            @for (comment of this.comments; track comment.id) {
+            <!-- row  -->
+            <tr>
+                <th class="flex justify-center">
+                    <input type="checkbox" [checked]="comment.status" class="checkbox checkbox-primary h-10 w-10"
+                        (click)="changeStatus(comment.id)" />
+                </th>
+                <td class="font-bold text-lg">
+                    {{comment.id}}
+                </td>
+                <td class="text-lg">
+                    {{comment.comment}}
+                </td>
+                <td class="text-lg">
+                    @switch (comment.foreignTable) {
+                    @case ('books') {
+                    <a class="link" [routerLink]="['/admin/book']">{{comment.foreignId}} - کتاب</a>
+                    }
+                    }
+                </td>
+                <td class="text-lg">
+                    {{comment.createdAt! | jalaliDate:true}}
+                </td>
+                <td class="text-lg">
+                    {{comment.updatedAt! | jalaliDate:true}}
+                </td>
+                <td>
+                    <button class="btn h-10 btn-error btn-xs" (click)="delete(comment.id)">
+                        <i-lucide name="trash"></i-lucide>
+                    </button>
+                </td>
+            </tr>
+            }
+        </tbody>
+        <!-- foot -->
+        <tfoot>
+            <tr>
+                <th class="flex justify-center">تغییر وضعیت</th>
+                <td>شناسه</td>
+                <td>نظر</td>
+                <td>نظر برای</td>
+                <td>تاریخ ایجاد</td>
+                <td>تاریخ به روز رسانی</td>
+                <td></td>
+            </tr>
+        </tfoot>
+
+    </table>
+
+</div>
+
+<div class="flex flex-wrap justify-center my-5" *ngIf="pagination.totalPages > 1">
+    <button class="btn btn-md sm:btn-lg" [disabled]="pagination.pageNumber === 1"
+        (click)="changePage(pagination.pageNumber - 1)">
+        قبلی
+    </button>
+
+    <ng-container *ngFor="let page of getPageArray()">
+        <button class="btn btn-md sm:btn-lg" [ngClass]="{
+    'btn-disabled': page === -1,
+    'btn-primary' : page === pagination.pageNumber,
+  }" (click)="changePage(page)">
+            @if (page === -1) {
+            ...
+            } @else {
+            {{ page }}
+            }
+        </button>
+    </ng-container>
+
+    <button class="btn btn-md sm:btn-lg" [disabled]="pagination.pageNumber === pagination.totalPages"
+        (click)="changePage(pagination.pageNumber + 1)">
+        بعدی
+    </button>
+</div>
+
+<app-modal #deleteComment id="deleteComment">
+    <h3 class="text-lg font-bold mb-5">آیا از حذف نظر اطمینان دارید؟</h3>
+    <div class="flex gap-5">
+        <form method="dialog" class="flex-1">
+            <button class="btn btn-error btn-lg w-full">خیر</button>
+        </form>
+        <div class="flex-1">
+            <button class="btn btn-primary btn-lg w-full" (click)="deleteConfirmed()">بله</button>
+        </div>
+    </div>
+</app-modal>

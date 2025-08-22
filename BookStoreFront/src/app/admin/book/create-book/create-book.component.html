@@ -9,7 +9,7 @@
 <form #form="ngForm" (ngSubmit)="onSubmit(form)" novalidate>
     <!-- Book Name -->
     <div class="space-y-2 mb-3">
-        <label class="label">نام کتاب :</label>
+        <label class="label">نام کتاب :</label> 
         <input type="text" class="input sm:input-lg w-full" name="name" ngModel required maxlength="200" #name="ngModel"
             [class.input-error]="name.invalid && name.touched" placeholder="نام کتاب" />
         @if (name.invalid && name.touched) {
@@ -143,15 +143,15 @@
         <!-- Results -->
         <div class="mt-3 ">
             <label class="label mb-2">دسته بندی ها :</label>
-            <div class="grid grid-cols-1 gap-1 overflow-auto border rounded p-2">
+            <div class="grid grid-cols-1 gap-2 border rounded p-2 max-h-48 overflow-auto">
                 @for (item of this.categories; track item.id) {
-                <div class="flex items-center gap-2">
+                  <div class="flex items-center gap-2">
                     <input type="checkbox" [checked]="isCategorySelected(item)"
-                        (change)="toggleCategorySelection(item)" />
-                    <span>{{item.name}} - لینک : {{item.url}}</span>
-                </div>
+                           (change)="toggleCategorySelection(item)" />
+                    <span>{{ item.name }} - لینک : {{ item.url }}</span>
+                  </div>
                 }
-            </div>
+              </div>
         </div>
 
         <!-- Selected categories (optional display) -->
@@ -216,7 +216,7 @@
 
         <!-- Results -->
         <div class="mt-3" >
-            <label class="label mb-2" >مترجم ها :</label>
+            <label class="label mb-2" >مترجم ها (اختیاری):</label>
             <div class="grid grid-cols-1 gap-1 max-h-40 overflow-auto border rounded p-2 tooltip" data-tip="مترجم هایی که در لیست نیستند را جستجو کنید">
                 @for (translator of this.translators; track translator.id) {
                 <div class="flex items-center gap-2">

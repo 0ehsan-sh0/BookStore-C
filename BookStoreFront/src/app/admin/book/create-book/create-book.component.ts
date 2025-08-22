@@ -31,11 +31,6 @@ export class CreateBookComponent {
   searchCategoryText = '';
   searchTagText = '';
 
-  availableAuthors: Author[] = [];
-  availableTranslators: Translator[] = [];
-  availableCategories: Category[] = [];
-  availableTags: Tag[] = [];
-
   selectedAuthor: number | null = null;
   selectedTranslators: Translator[] = [];
   selectedCategories: Category[] = [];
@@ -60,13 +55,12 @@ export class CreateBookComponent {
       if (isCreated) {
         this.created.emit();
         this.form()?.reset();
-        this.categoryService.created.set(false); // reset the flag so effect won't fire again
+        this.bookService.created.set(false); // reset the flag so effect won't fire again
       }
     });
 
     this.authorService.authors.subscribe((authors) => {
       this.authors = authors;
-      authors;
     });
     this.translatorService.translators.subscribe((translators) => {
       this.translators = translators;
@@ -86,32 +80,36 @@ export class CreateBookComponent {
   onSubmit(form: NgForm) {
     const formData = new FormData();
 
-  // Simple fields
-  formData.append('name', form.value.name);
-  formData.append('englishName', form.value.englishName || '');
-  formData.append('description', form.value.description || '');
-  formData.append('price', form.value.price);
-  formData.append('printSeries', form.value.printSeries);
-  formData.append('isbn', form.value.isbn);
-  formData.append('coverType', form.value.coverType);
-  formData.append('format', form.value.format);
-  formData.append('pages', form.value.pages);
-  formData.append('publishYear', form.value.publishYear);
-  formData.append('publisher', form.value.publisher);
-  formData.append('authorId', this.selectedAuthor!.toString());
+    // Simple fields
+    formData.append('name', form.value.name);
+    formData.append('englishName', form.value.englishName || '');
+    formData.append('description', form.value.description || '');
+    formData.append('price', form.value.price);
+    formData.append('printSeries', form.value.printSeries);
+    formData.append('isbn', form.value.isbn);
+    formData.append('coverType', form.value.coverType);
+    formData.append('format', form.value.format);
+    formData.append('pages', form.value.pages);
+    formData.append('publishYear', form.value.publishYear);
+    formData.append('publisher', form.value.publisher);
+    formData.append('authorId', this.selectedAuthor!.toString());
 
-  // Files
-  this.selectedFiles.forEach((file, index) => {
-    formData.append('images', file); // use same key as backend expects
-  });
+    // Files
+    this.selectedFiles.forEach((file, index) => {
+      formData.append('images', file); // use same key as backend expects
+    });
 
-  // Arrays
-  this.selectedTranslators.forEach(t => formData.append('translators', t.id.toString()));
-  this.selectedCategories.forEach(c => formData.append('categories', c.id.toString()));
-  this.selectedTags.forEach(t => formData.append('tags', t.id.toString()));
+    // Arrays
+    this.selectedTranslators.forEach((t) =>
+      formData.append('translators', t.id.toString())
+    );
+    this.selectedCategories.forEach((c) =>
+      formData.append('categories', c.id.toString())
+    );
+    this.selectedTags.forEach((t) => formData.append('tags', t.id.toString()));
 
-  // Send
-  this.bookService.create(formData);
+    // Send
+    this.bookService.create(formData);
   }
 
   onFilesSelected(event: any) {

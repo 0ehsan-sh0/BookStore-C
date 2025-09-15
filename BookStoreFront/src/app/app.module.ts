@@ -4,7 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AdminComponent } from './admin/admin/admin.component';
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import {
   Book,
   BookType,
@@ -19,6 +19,7 @@ import {
   Plus,
   Tag,
   Trash,
+  ShoppingCart
 } from 'lucide-angular';
 import { HeaderComponent } from './admin/header/header.component';
 import { SidebarComponent } from './admin/sidebar/sidebar.component';
@@ -54,6 +55,9 @@ import { UpdateTagComponent } from './admin/tag/update-tag/update-tag.component'
 import { BookTagComponent } from './admin/book/book-tag/book-tag.component';
 import { BookImageComponent } from './admin/book/book-image/book-image.component';
 import { CommentComponent } from './admin/comment/comment.component';
+import { PublicComponent } from './public/public/public.component';
+import { PublicHeaderComponent } from './public/public-header/public-header.component';
+import { PublicSidebarComponent } from './public/public-sidebar/public-sidebar.component';
 
 @NgModule({
   declarations: [
@@ -83,6 +87,9 @@ import { CommentComponent } from './admin/comment/comment.component';
     BookTagComponent,
     BookImageComponent,
     CommentComponent,
+    PublicComponent,
+    PublicHeaderComponent,
+    PublicSidebarComponent,
   ],
   imports: [
     BrowserModule,
@@ -102,6 +109,7 @@ import { CommentComponent } from './admin/comment/comment.component';
       House,
       Plus,
       ChartColumnBig,
+      ShoppingCart
     }),
     FormsModule,
   ],

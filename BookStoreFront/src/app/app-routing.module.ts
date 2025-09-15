@@ -7,6 +7,7 @@ import { CategoryComponent } from './admin/category/category.component';
 import { BookComponent } from './admin/book/book.component';
 import { TagComponent } from './admin/tag/tag.component';
 import { CommentComponent } from './admin/comment/comment.component';
+import { PublicComponent } from './public/public/public.component';
 
 const routes: Routes = [
   {
@@ -20,6 +21,11 @@ const routes: Routes = [
       { path: 'tag', component: TagComponent },
       { path: 'comment', component: CommentComponent },
     ],
+  },
+  {
+    path: '',
+    component: PublicComponent,
+    children: [],
   },
   { path: '**', redirectTo: '' }, // fallback
 ];

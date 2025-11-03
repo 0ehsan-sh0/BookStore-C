@@ -8,6 +8,7 @@ import { BookComponent } from './admin/book/book.component';
 import { TagComponent } from './admin/tag/tag.component';
 import { CommentComponent } from './admin/comment/comment.component';
 import { PublicComponent } from './public/public/public.component';
+import { HomeComponent } from './public/home/home.component';
 
 const routes: Routes = [
   {
@@ -25,7 +26,7 @@ const routes: Routes = [
   {
     path: '',
     component: PublicComponent,
-    children: [],
+    children: [{ path: '', component: HomeComponent }],
   },
   { path: '**', redirectTo: '' }, // fallback
 ];

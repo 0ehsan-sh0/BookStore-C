@@ -167,6 +167,26 @@ namespace BookStoreApi.Database.Repositories
             return result;
         }
 
+        public async Task<List<BookAllData>?> GetNewAsync(int pageSize = 20)
+        {
+            using var connection = dapperUtility.GetConnection();
+            await connection.OpenAsync();
+
+            using var multi = await connection.QueryMultipleAsync(
+                "Book_Get_New_JSON",
+                new { PageSize = pageSize },
+                commandType: CommandType.StoredProcedure
+            );
+
+            // First result: JSON string
+            var booksJson = await multi.ReadFirstOrDefaultAsync<string>();
+            List<BookAllData> books = [];
+            if (booksJson is not null)
+                books = JsonSerializer.Deserialize<List<BookAllData>>(booksJson)!;
+
+            return books;
+        }
+
         public async Task<BookAllData?> UpdateAsync(Book bookWithId, List<int>? translators, List<int> categories, List<int> tags)
         {
             var sql = "Book_Update";

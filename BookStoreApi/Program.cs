@@ -51,6 +51,7 @@ builder.Services.AddScoped<ITranslatorRepository, TranslatorRepository>();
 builder.Services.AddScoped<BLLTranslator>();
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<BLLBook>();
+builder.Services.AddScoped<BookStoreApi.BusinessLogicLayer.Public.BLLBook>();
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<BLLImage>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();

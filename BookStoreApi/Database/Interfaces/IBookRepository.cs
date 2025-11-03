@@ -8,6 +8,7 @@ namespace BookStoreApi.Database.Interfaces
     public interface IBookRepository
     {
         Task<(List<BookAllData>? books, BPaginationInfo info)> GetAllAsync(QBookGetAll query);
+        Task<List<BookAllData>?> GetNewAsync(int pageSize = 20);
         Task<BookAllData?> GetByIdAsync(int id);
         Task<Book?> GetByISBNAsync(string isbn);
         Task<int> CreateAsync(Book book, List<ImageInfo> imageInfos, List<int>? translators, List<int> categories, List<int> tags);

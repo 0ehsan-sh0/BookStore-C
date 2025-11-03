@@ -19,7 +19,14 @@ import {
   Plus,
   Tag,
   Trash,
-  ShoppingCart
+  ShoppingCart,
+  Instagram,
+  Phone,
+  Search,
+  ShieldCheck,
+  ChartPie,
+  Truck,
+  UserPlus
 } from 'lucide-angular';
 import { HeaderComponent } from './admin/header/header.component';
 import { SidebarComponent } from './admin/sidebar/sidebar.component';
@@ -58,6 +65,10 @@ import { CommentComponent } from './admin/comment/comment.component';
 import { PublicComponent } from './public/public/public.component';
 import { PublicHeaderComponent } from './public/public-header/public-header.component';
 import { PublicSidebarComponent } from './public/public-sidebar/public-sidebar.component';
+import { PublicFooterComponent } from './public/public-footer/public-footer.component';
+import { HomeComponent } from './public/home/home.component';
+import { HorizontalScrollDirective } from './directives/horizontal-scroll.directive';
+import { PublicBannersComponent } from './public/home/public-banners/public-banners.component';
 
 @NgModule({
   declarations: [
@@ -90,6 +101,10 @@ import { PublicSidebarComponent } from './public/public-sidebar/public-sidebar.c
     PublicComponent,
     PublicHeaderComponent,
     PublicSidebarComponent,
+    PublicFooterComponent,
+    HomeComponent,
+    HorizontalScrollDirective,
+    PublicBannersComponent,
   ],
   imports: [
     BrowserModule,
@@ -109,7 +124,13 @@ import { PublicSidebarComponent } from './public/public-sidebar/public-sidebar.c
       House,
       Plus,
       ChartColumnBig,
-      ShoppingCart
+      ShoppingCart,
+      Phone,
+      Search,
+      ShieldCheck,
+      ChartPie,
+      Truck,
+      UserPlus
     }),
     FormsModule,
   ],

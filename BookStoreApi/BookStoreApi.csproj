@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Database\DBModels\" />
     <Folder Include="RequestHandler\Admin\Requests\Comment\" />
     <Folder Include="wwwroot\images\" />
   </ItemGroup>

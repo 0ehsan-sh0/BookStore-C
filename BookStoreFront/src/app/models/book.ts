@@ -17,6 +17,7 @@ export interface Book {
   pages: string;
   publishYear: string;
   publisher: string;
+  isRecommended: boolean;
   authorId: number;
   createdAt?: Date;
   updatedAt?: Date;
@@ -35,6 +36,7 @@ export interface BookAllData {
   pages: string;
   publishYear: string;
   publisher: string;
+  isRecommended: boolean;
   authorId: number;
   createdAt?: Date;
   updatedAt?: Date;
@@ -70,6 +72,7 @@ export interface CreateBookRequest {
   pages: number;
   publishYear: number;
   publisher: string;
+  isRecommended: boolean;
   authorId: number;
   images: File[];        
   translators?: number[];   
@@ -89,6 +92,7 @@ export interface UpdateBookRequest {
   pages: number;
   publishYear: number;
   publisher: string;
+  isRecommended: boolean;
   authorId: number;
   translators?: number[];
   categories: number[];

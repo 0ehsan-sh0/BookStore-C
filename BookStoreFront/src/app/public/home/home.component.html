@@ -4,125 +4,115 @@
 <!-- New Books -->
 <!-- Books -->
 <div>
-  <h2 class="mt-10 text-2xl font-bold mx-2 md:mx-20">جدید ترین کتاب ها</h2>
+    <h2 class="mt-10 text-2xl font-bold mx-2 md:mx-20">جدید ترین کتاب ها</h2>
 
-  <div appHorizontalScroll class="mb-10 mt-5 mx-2 md:mx-20 overflow-x-auto scroll-x-scroll">
-    <div class="flex space-x-4 w-max">
+    <div appHorizontalScroll class="mb-10 mt-5 mx-2 md:mx-20 overflow-x-auto scroll-x-scroll">
+        <div class="flex space-x-4 w-max">
 
-      <!-- Dynamic book cards -->
-      @for (book of newBooks; track book.id) {
-        <div class="card bg-base-200 w-52 h-90 shadow-sm flex-shrink-0">
-          <figure>
-            @if (book.images && book.images.length > 0) {
-              <!-- Use primary image if exists -->
-                @for (image of book.images; track image.id) {
-                  @if (image.isPrimary) {
-                    <img
-                      class="h-50 object-cover"
-                      [src]="imageService.getUrl(image.relativePath, image.storedFileName)"
-                      alt="{{ book.name }}" />
-                  }
-                }
-            } @else {
-              <!-- Default placeholder image -->
-              <img
-                class="h-50 object-cover"
-                src="https://placehold.co/300x400?text=No+Image"
-                alt="{{ book.name }}" />
-            }
-          </figure>
+            <!-- Dynamic book cards -->
+            @for (book of newBooks; track book.id) {
+            <div class="card bg-base-200 w-52 h-90 shadow-sm flex-shrink-0">
+                <figure>
+                    @if (book.images && book.images.length > 0) {
+                    <!-- Use primary image if exists -->
+                    @for (image of book.images; track image.id) {
+                    @if (image.isPrimary) {
+                    <img class="h-50 object-cover" [src]="imageService.getUrl(image.relativePath, image.storedFileName)"
+                        alt="{{ book.name }}" />
+                    }
+                    }
+                    } @else {
+                    <!-- Default placeholder image -->
+                    <img class="h-50 object-cover" src="https://placehold.co/300x400?text=No+Image"
+                        alt="{{ book.name }}" />
+                    }
+                </figure>
 
-          <div class="card-body py-0">
-            <h2 class="card-title truncate mt-1">{{ book.name }}</h2>
-            <p class="truncate text-gray-500">{{ book.author?.name || 'بدون نویسنده' }}</p>
+                <div class="card-body py-0">
+                    <h2 class="card-title truncate mt-1">{{ book.name }}</h2>
+                    <p class="truncate text-gray-500">{{ book.author?.name || 'بدون نویسنده' }}</p>
 
-            <div class="card-actions flex mb-5">
-              <div class="flex flex-col text-right flex-1">
-                <!-- Show a fake discount example -->
-                <span class="text-sm text-gray-500 line-through" *ngIf="book.price > 100000">
-                  {{ (book.price * 1.2) | number:'1.0-0' }} تومان
-                </span>
+                    <div class="card-actions flex mb-5">
+                        <div class="flex flex-col text-right flex-1">
+                            <!-- Show a fake discount example -->
+                            <span class="text-sm text-gray-500 line-through" *ngIf="book.price > 100000">
+                                {{ (book.price * 1.2) | number:'1.0-0' }} تومان
+                            </span>
 
-                <div class="indicator">
-                  <span *ngIf="book.price > 100000"
-                        class="indicator-item indicator-end badge badge-sm md:badge-md badge-error text-white">
-                    20%
-                  </span>
-                  <span class="text-lg font-bold">{{ book.price | number:'1.0-0' }} تومان</span>
+                            <div class="indicator">
+                                <span *ngIf="book.price > 100000"
+                                    class="indicator-item indicator-end badge badge-sm md:badge-md badge-error text-white">
+                                    20%
+                                </span>
+                                <span class="text-lg font-bold">{{ book.price | number:'1.0-0' }} تومان</span>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary btn-sm flex-none text-primary-content">
+                            خرید
+                        </button>
+                    </div>
                 </div>
-              </div>
-
-              <button class="btn btn-primary btn-sm flex-none text-primary-content">
-                خرید
-              </button>
             </div>
-          </div>
+            }
         </div>
-      }
     </div>
-  </div>
 </div>
 
 <!-- Books -->
 <div>
-    <h2 class="mt-10 text-2xl font-bold mx-2 md:mx-20">پر فروش ترین کتاب های کتاب کده</h2>
+    <h2 class="mt-10 text-2xl font-bold mx-2 md:mx-20">پیشنهادی های کتاب کده</h2>
     <div appHorizontalScroll class="mb-10 mt-5 mx-2 md:mx-20 overflow-x-auto scroll-x-scroll">
         <div class="flex space-x-4 w-max">
 
-            <!-- Card 1 -->
+            <!-- Dynamic book cards -->
+            @for (book of newBooks; track book.id) {
+            @if(book.isRecommended) {
             <div class="card bg-base-200 w-52 h-90 shadow-sm flex-shrink-0">
                 <figure>
-                    <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-                        class="h-70" />
+                    @if (book.images && book.images.length > 0) {
+                    <!-- Use primary image if exists -->
+                    @for (image of book.images; track image.id) {
+                    @if (image.isPrimary) {
+                    <img class="h-50 object-cover" [src]="imageService.getUrl(image.relativePath, image.storedFileName)"
+                        alt="{{ book.name }}" />
+                    }
+                    }
+                    } @else {
+                    <!-- Default placeholder image -->
+                    <img class="h-50 object-cover" src="https://placehold.co/300x400?text=No+Image"
+                        alt="{{ book.name }}" />
+                    }
                 </figure>
+
                 <div class="card-body py-0">
-                    <h2 class="card-title truncate mt-1">کتاب شب های روشن</h2>
-                    <p class="truncate">داستایفسکی</p>
+                    <h2 class="card-title truncate mt-1">{{ book.name }}</h2>
+                    <p class="truncate text-gray-500">{{ book.author?.name || 'بدون نویسنده' }}</p>
+
                     <div class="card-actions flex mb-5">
                         <div class="flex flex-col text-right flex-1">
-                            <span class="text-sm text-gray-500 line-through">120,000 تومان</span>
+                            <!-- Show a fake discount example -->
+                            <span class="text-sm text-gray-500 line-through" *ngIf="book.price > 100000">
+                                {{ (book.price * 1.2) | number:'1.0-0' }} تومان
+                            </span>
+
                             <div class="indicator">
-                                <span class="indicator-item indicator-end badge badge-error text-white">20%</span>
-                                <span class="text-lg font-bold">90,000 تومان</span>
+                                <span *ngIf="book.price > 100000"
+                                    class="indicator-item indicator-end badge badge-sm md:badge-md badge-error text-white">
+                                    20%
+                                </span>
+                                <span class="text-lg font-bold">{{ book.price | number:'1.0-0' }} تومان</span>
                             </div>
                         </div>
-                        <button class="btn btn-primary btn-sm flex-none text-primary-content">خرید</button>
+
+                        <button class="btn btn-primary btn-sm flex-none text-primary-content">
+                            خرید
+                        </button>
                     </div>
                 </div>
             </div>
-            <!-- Card 2 -->
-            <div class="card bg-base-200 w-52 h-90 shadow-sm flex-shrink-0">
-                <!-- ... same structure ... -->
-            </div>
-            <div class="card bg-base-200 w-52 h-90 shadow-sm flex-shrink-0">
-                <!-- ... same structure ... -->
-            </div>
-            <div class="card bg-base-200 w-52 h-90 shadow-sm flex-shrink-0">
-                <!-- ... same structure ... -->
-            </div>
-
-            <div class="card bg-base-200 w-52 h-90 shadow-sm flex-shrink-0">
-                <!-- ... same structure ... -->
-            </div>
-            <div class="card bg-base-200 w-52 h-90 shadow-sm flex-shrink-0">
-                <!-- ... same structure ... -->
-            </div>
-            <div class="card bg-base-200 w-52 h-90 shadow-sm flex-shrink-0">
-                <!-- ... same structure ... -->
-            </div>
-            <div class="card bg-base-200 w-52 h-90 shadow-sm flex-shrink-0">
-                <!-- ... same structure ... -->
-            </div>
-            <div class="card bg-base-200 w-52 h-90 shadow-sm flex-shrink-0">
-                <!-- ... same structure ... -->
-            </div>
-            <div class="card bg-base-200 w-52 h-90 shadow-sm flex-shrink-0">
-                <!-- ... same structure ... -->
-            </div>
-            <div class="card bg-base-200 w-52 h-90 shadow-sm flex-shrink-0">
-                <!-- ... same structure ... -->
-            </div>
-            <!-- Add more cards -->
+            }
+            }
         </div>
     </div>
 </div>
@@ -210,4 +200,3 @@
         </div>
     </div>
 </div>
-

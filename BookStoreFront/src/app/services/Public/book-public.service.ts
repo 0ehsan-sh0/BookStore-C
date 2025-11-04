@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { AlertService } from '../../ui-service/alert.service';
 import { ErrorHandlerService } from '../error-handler.service';
 import { BehaviorSubject } from 'rxjs';
-import { BookAllData, BookListResponse } from '../../models/book';
+import { BookAllData } from '../../models/book';
 import { ApiResponse } from '../../models/apiResponse';
 
 @Injectable({
@@ -19,12 +19,15 @@ export class BookPublicService {
   ) {}
 
   newBooks = new BehaviorSubject<BookAllData[]>([]);
-  getBooks() {
+  getNewBooks() {
     this.http
-      .get<ApiResponse<BookListResponse>>(`${this.apiUrl}/new`)
+      .get<ApiResponse<BookAllData[]>>(`${this.apiUrl}/new`)
       .subscribe({
         next: (response) => {
-          this.newBooks.next([...(response.data?.books ?? [])]);
+          this.newBooks.next([...(response.data ?? [])]);
+          console.log(response.data);
+          
+          
         },
         error: (err) => {
           this.errorHandler.handleError(err);

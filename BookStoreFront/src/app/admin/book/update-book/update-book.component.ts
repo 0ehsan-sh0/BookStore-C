@@ -97,6 +97,7 @@ export class UpdateBookComponent {
       pages: form.value.pages,
       publishYear: form.value.publishYear,
       publisher: form.value.publisher,
+      isRecommended: true,
       authorId: this.selectedAuthor!,
       translators: this.selectedTranslators.map((t) => t.id),
       categories: this.selectedCategories.map((c) => c.id),

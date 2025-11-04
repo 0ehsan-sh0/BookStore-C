@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { BookPublicService } from '../../services/Public/book-public.service';
 import { ImageService } from '../../services/image.service';
 import { BookAllData } from '../../models/book';
@@ -9,7 +9,7 @@ import { BookAllData } from '../../models/book';
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   newBooks: BookAllData[] = [];
   constructor(
       public bookService: BookPublicService,
@@ -18,5 +18,8 @@ export class HomeComponent {
       this.bookService.newBooks.subscribe((books) => {
         this.newBooks = books;
       });
+    }
+    ngOnInit(): void {
+      this.bookService.getNewBooks();
     }
 }

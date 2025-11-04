@@ -20,6 +20,7 @@ namespace BookStoreApi.RequestHandler.Admin.Responses.Book
         public string Pages { get; set; } = string.Empty;
         public string PublishYear { get; set; } = string.Empty;
         public string Publisher { get; set; } = string.Empty;
+        public bool IsRecommended { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public List<RTranslator>? Translators { get; set; }

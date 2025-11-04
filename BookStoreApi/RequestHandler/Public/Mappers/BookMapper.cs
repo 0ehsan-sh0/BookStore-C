@@ -20,6 +20,7 @@ namespace BookStoreApi.RequestHandler.Public.Mappers
                 Format = bookAllData.Format,
                 Pages = bookAllData.Pages.ToString(),
                 PublishYear = bookAllData.PublishYear.ToString(),
+                IsRecommended = bookAllData.IsRecommended,
                 Publisher = bookAllData.Publisher,
                 CreatedAt = bookAllData.CreatedAt,
                 UpdatedAt = bookAllData.UpdatedAt

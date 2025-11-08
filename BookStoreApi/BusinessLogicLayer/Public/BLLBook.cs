@@ -10,5 +10,10 @@ namespace BookStoreApi.BusinessLogicLayer.Public
         {
             return await repo.GetNewAsync(pageSize, pageNumber, isRecommended);
         }
+
+        public async Task<BookAllData?> GetByIdAsync(int id)
+        {
+            return await repo.GetByIdAsync(id);
+        }
     }
 }

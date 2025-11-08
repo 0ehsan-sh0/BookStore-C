@@ -10,6 +10,7 @@ import { TagComponent } from './admin/tag/tag.component';
 import { CommentComponent } from './admin/comment/comment.component';
 import { PublicComponent } from './public/public/public.component';
 import { HomeComponent } from './public/home/home.component';
+import { BookDetailsComponent } from './public/book-details/book-details.component';
 
 const routes: Routes = [
   {
@@ -30,6 +31,7 @@ const routes: Routes = [
     children: [
       { path: '', component: HomeComponent },
       { path: 'books', component: BookPublicComponent },
+      { path: 'books/:id', component: BookDetailsComponent },
     ],
   },
   { path: '**', redirectTo: '' }, // fallback

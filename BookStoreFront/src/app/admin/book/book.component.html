@@ -57,26 +57,26 @@
                 }
                 }
 
-                <td class="text-lg">
+                <td class="text-lg truncate max-w-100">
                     {{book.name}}
                 </td>
-                <td class="text-lg">
+                <td class="text-lg truncate max-w-100">
                     {{book.englishName}}
                 </td>
-                <td class="text-lg">
+                <td class="text-lg truncate max-w-100">
                     {{book.description}}
                 </td>
-                <td class="text-lg">{{book.price}}</td>
-                <td class="text-lg">{{book.printSeries}}</td>
-                <td class="text-lg">
+                <td class="text-lg truncate max-w-100">{{book.price}}</td>
+                <td class="text-lg truncate max-w-100">{{book.printSeries}}</td>
+                <td class="text-lg truncate max-w-100">
                     <div class="badge badge-accent w-42 h-7">{{book.isbn}}</div>
                 </td>
-                <td class="text-lg">{{book.coverType}}</td>
-                <td class="text-lg">{{book.format}}</td>
-                <td class="text-lg">{{book.pages}}</td>
-                <td class="text-lg">{{book.publishYear}}</td>
-                <td class="text-lg">{{book.publisher}}</td>
-                <td class="text-lg"><a [routerLink]="['/admin/author']" class="link">{{book.author?.id}} -
+                <td class="text-lg truncate max-w-100">{{book.coverType}}</td>
+                <td class="text-lg truncate max-w-100">{{book.format}}</td>
+                <td class="text-lg truncate max-w-100">{{book.pages}}</td>
+                <td class="text-lg truncate max-w-100">{{book.publishYear}}</td>
+                <td class="text-lg truncate max-w-100">{{book.publisher}}</td>
+                <td class="text-lg truncate max-w-100"><a [routerLink]="['/admin/author']" class="link">{{book.author?.id}} -
                         {{book.author?.name}}</a>
                 </td>
                 <td class="text-lg">

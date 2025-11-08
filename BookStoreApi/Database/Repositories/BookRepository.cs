@@ -49,7 +49,8 @@ namespace BookStoreApi.Database.Repositories
                 Images = imagesTable.AsTableValuedParameter("ImageInfoType"),
                 TranslatorIds = translatorIds.AsTableValuedParameter("IntList"),
                 CategoryIds = categoryIds.AsTableValuedParameter("IntList"),
-                TagIds = tagIds.AsTableValuedParameter("IntList")
+                TagIds = tagIds.AsTableValuedParameter("IntList"),
+                IsRecommended = false
             };
 
             // Database call and inserting the book and relationships
@@ -225,6 +226,7 @@ namespace BookStoreApi.Database.Repositories
                 TranslatorIds = translatorIds.AsTableValuedParameter("IntList"),
                 CategoryIds = categoryIds.AsTableValuedParameter("IntList"),
                 TagIds = tagIds.AsTableValuedParameter("IntList"),
+                bookWithId.IsRecommended
             };
 
             // Database call and inserting the book and relationships

@@ -6,7 +6,7 @@
 <div>
     <div class="flex mx-2 md:mx-20 justify-between items-center">
         <h2 class=" text-2xl font-bold">جدید ترین کتاب ها</h2>
-        <div class="flex items-center">
+        <div [routerLink]="['/books']" class="flex items-center" style="cursor: pointer;">
             <h1 class="mb-1">مشاهده همه </h1>
             <i-lucide name="chevron-left" size="26" strokeWidth="3"></i-lucide>
         </div>
@@ -16,10 +16,10 @@
 
             <!-- Dynamic book cards -->
             @for (book of newBooks; track book.id) {
-            <div class="card bg-base-200 w-52 h-90 shadow-sm flex-shrink-0">
+            <div class="card bg-base-200 w-46 h-90 shadow-sm flex-shrink-0 cursor-pointer hover:shadow-md transition"
+                (click)="goToBookDetails(book.id)">
                 <figure>
                     @if (book.images && book.images.length > 0) {
-                    <!-- Use primary image if exists -->
                     @for (image of book.images; track image.id) {
                     @if (image.isPrimary) {
                     <img class="h-50 object-cover" [src]="imageService.getUrl(image.relativePath, image.storedFileName)"
@@ -27,7 +27,6 @@
                     }
                     }
                     } @else {
-                    <!-- Default placeholder image -->
                     <img class="h-50 object-cover" src="https://placehold.co/300x400?text=No+Image"
                         alt="{{ book.name }}" />
                     }
@@ -39,7 +38,6 @@
 
                     <div class="card-actions flex mb-5">
                         <div class="flex flex-col text-right flex-1">
-                            <!-- Show a fake discount example -->
                             <span class="text-sm text-gray-500 line-through" *ngIf="book.price > 100000">
                                 {{ (book.price * 1.2) | number:'1.0-0' }} تومان
                             </span>
@@ -53,7 +51,9 @@
                             </div>
                         </div>
 
-                        <button class="btn btn-primary btn-sm flex-none text-primary-content">
+                        <!-- prevent card click here -->
+                        <button class="btn btn-primary btn-sm flex-none text-primary-content"
+                            (click)="$event.stopPropagation()">
                             خرید
                         </button>
                     </div>
@@ -77,9 +77,9 @@
         <div class="flex space-x-4 w-max">
 
             <!-- Dynamic book cards -->
-            @for (book of newBooks; track book.id) {
-            @if(book.isRecommended) {
-            <div class="card bg-base-200 w-52 h-90 shadow-sm flex-shrink-0">
+            @for (book of recommendedBooks; track book.id) {
+            <div class="card bg-base-200 w-46 h-90 shadow-sm flex-shrink-0 cursor-pointer hover:shadow-md transition"
+            (click)="goToBookDetails(book.id)">
                 <figure>
                     @if (book.images && book.images.length > 0) {
                     <!-- Use primary image if exists -->
@@ -116,13 +116,13 @@
                             </div>
                         </div>
 
-                        <button class="btn btn-primary btn-sm flex-none text-primary-content">
+                        <button class="btn btn-primary btn-sm flex-none text-primary-content"
+                        (click)="$event.stopPropagation()">
                             خرید
                         </button>
                     </div>
                 </div>
             </div>
-            }
             }
         </div>
     </div>

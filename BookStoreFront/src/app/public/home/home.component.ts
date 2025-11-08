@@ -2,6 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { BookPublicService } from '../../services/Public/book-public.service';
 import { ImageService } from '../../services/image.service';
 import { BookAllData } from '../../models/book';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -13,18 +14,23 @@ export class HomeComponent implements OnInit {
   newBooks: BookAllData[] = [];
   recommendedBooks: BookAllData[] = [];
   constructor(
-      public bookService: BookPublicService,
-      public imageService: ImageService
-    ) {
-      this.bookService.newBooks.subscribe((books) => {
-        this.newBooks = books;
-      });
-      this.bookService.recommendedBooks.subscribe((books) => {
-        this.recommendedBooks = books;
-      });
-    }
-    ngOnInit(): void {
-      this.bookService.getNewBooks();
-      this.bookService.getNewBooks(1, 20, true);
-    }
+    public bookService: BookPublicService,
+    public imageService: ImageService,
+    private router: Router
+  ) {
+    this.bookService.newBooks.subscribe((books) => {
+      this.newBooks = books;
+    });
+    this.bookService.recommendedBooks.subscribe((books) => {
+      this.recommendedBooks = books;
+    });
+  }
+  ngOnInit(): void {
+    this.bookService.getNewBooks();
+    this.bookService.getNewBooks(1, 20, true);
+  }
+
+  goToBookDetails(bookId: number) {
+    this.router.navigate(['/books', bookId]);
+  }
 }

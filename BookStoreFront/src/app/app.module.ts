@@ -71,6 +71,7 @@ import { PublicFooterComponent } from './public/public-footer/public-footer.comp
 import { HomeComponent } from './public/home/home.component';
 import { HorizontalScrollDirective } from './directives/horizontal-scroll.directive';
 import { PublicBannersComponent } from './public/home/public-banners/public-banners.component';
+import { BookDetailsComponent } from './public/book-details/book-details.component';
 
 @NgModule({
   declarations: [
@@ -108,6 +109,7 @@ import { PublicBannersComponent } from './public/home/public-banners/public-bann
     HorizontalScrollDirective,
     PublicBannersComponent,
     BookPublicComponent,
+    BookDetailsComponent,
   ],
   imports: [
     BrowserModule,

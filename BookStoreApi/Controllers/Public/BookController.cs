@@ -25,6 +25,14 @@ namespace BookStoreApi.Controllers.Public
 
             return SuccessResponse("اطلاعات با موفقیت دریافت شد", response);
         }
+
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetByIdAsync([FromRoute] int id)
+        {
+            var book = await bLL.GetByIdAsync(id);
+            if (book is null) return ErrorResponse("کتاب یافت نشد", null);
+            return SuccessResponse("اطلاعات با موفقیت دریافت شد", book.ToPublicBookAllData());
+        }
     }
 
 

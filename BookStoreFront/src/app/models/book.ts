@@ -74,7 +74,7 @@ export interface CreateBookRequest {
   publisher: string;
   isRecommended: boolean;
   authorId: number;
-  images: File[];        
+  images: Image[];        
   translators?: number[];   
   categories: number[];
   tags: number[];

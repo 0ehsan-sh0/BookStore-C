@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BookAllData } from '../../models/book';
 import { BookPublicService } from '../../services/Public/book-public.service';
 import { ImageService } from '../../services/image.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-book',
@@ -18,9 +19,9 @@ export class BookComponent implements OnInit {
 
   constructor(
     private bookService: BookPublicService,
-    public imageService: ImageService
-  ) {
-  }
+    public imageService: ImageService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadBooks();
@@ -35,7 +36,7 @@ export class BookComponent implements OnInit {
     });
   }
 
-   getBookImage(book: BookAllData): string {
+  getBookImage(book: BookAllData): string {
     const primary = book.images?.find((i) => i.isPrimary);
     return primary
       ? this.imageService.getUrl(primary.relativePath, primary.storedFileName)
@@ -75,5 +76,9 @@ export class BookComponent implements OnInit {
     this.searchTerm = '';
     this.sortOption = 'newest';
     this.filteredBooks = [...this.books];
+  }
+
+  goToBookDetails(bookId: number) {
+    this.router.navigate(['/books', bookId]);
   }
 }

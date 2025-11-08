@@ -1,9 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AlertService } from '../../ui-service/alert.service';
 import { ErrorHandlerService } from '../error-handler.service';
 import { BehaviorSubject } from 'rxjs';
-import { BookAllData } from '../../models/book';
+import { BookAllData, BookListResponse } from '../../models/book';
 import { ApiResponse } from '../../models/apiResponse';
 
 @Injectable({
@@ -19,19 +19,27 @@ export class BookPublicService {
   ) {}
 
   newBooks = new BehaviorSubject<BookAllData[]>([]);
-  getNewBooks() {
-    this.http
-      .get<ApiResponse<BookAllData[]>>(`${this.apiUrl}/new`)
-      .subscribe({
-        next: (response) => {
-          this.newBooks.next([...(response.data ?? [])]);
-          console.log(response.data);
-          
-          
-        },
-        error: (err) => {
-          this.errorHandler.handleError(err);
-        },
-      });
+  recommendedBooks = new BehaviorSubject<BookAllData[]>([]);
+
+  getNewBooks(pageNumber: number = 1, pageSize: number = 20, isRecommended: boolean = false) {
+    let params = new HttpParams()
+      .set('PageNumber', pageNumber.toString());
+    if (isRecommended) {
+      params = params.set('IsRecommended', isRecommended.toString());
+    } else {
+      params = params.set('IsRecommended', 'false');
+    }
+    this.http.get<ApiResponse<BookListResponse>>(`${this.apiUrl}`, { params }).subscribe({
+      next: (response) => {
+        if (isRecommended) {
+          this.recommendedBooks.next(response.data?.books || []);
+        } else {
+          this.newBooks.next(response.data?.books || []);
+        }
+      },
+      error: (err) => {
+        this.errorHandler.handleError(err);
+      },
+    });
   }
 }

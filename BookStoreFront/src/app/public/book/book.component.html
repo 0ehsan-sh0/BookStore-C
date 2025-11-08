@@ -1,0 +1,80 @@
+<div class="mx-2 md:mx-20 my-10">
+  <!-- Page Title -->
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">تمام کتاب‌ها</h1>
+
+    <!-- Sort Dropdown -->
+    <select class="select select-bordered w-40" [(ngModel)]="sortOption" (change)="onSortChange()">
+      <option value="newest">جدیدترین</option>
+      <option value="priceLow">ارزان‌ترین</option>
+      <option value="priceHigh">گران‌ترین</option>
+    </select>
+  </div>
+
+  <!-- Search and Filters -->
+  <div class="flex flex-wrap gap-3 mb-8">
+    <input type="text" placeholder="جستجو بر اساس نام کتاب یا نویسنده..." class="input input-bordered flex-1 min-w-60"
+      [(ngModel)]="searchTerm" (input)="onSearch()" />
+
+    <button class="btn btn-outline" (click)="clearFilters()">
+      پاک کردن فیلترها
+    </button>
+  </div>
+
+  <!-- Book Grid -->
+  @if (filteredBooks.length > 0) {
+
+  <div class="flex flex-wrap space-x-4 w-full">
+
+    <!-- Dynamic book cards -->
+    @for (book of filteredBooks; track book.id) {
+    <div class="card bg-base-200 w-[calc(50%-0.5rem)] sm:w-[calc(33.3333%-1rem)] md:w-[calc(25%-1rem)] lg:w-[calc(20%-1rem)] xl:w-[calc(16.6667%-1rem)]">
+      <figure>
+        @if (book.images && book.images.length > 0) {
+        <!-- Use primary image if exists -->
+        @for (image of book.images; track image.id) {
+        @if (image.isPrimary) {
+        <img class="h-50 object-cover w-full" [src]="imageService.getUrl(image.relativePath, image.storedFileName)"
+          alt="{{ book.name }}" />
+        }
+        }
+        } @else {
+        <!-- Default placeholder image -->
+        <img class="h-50 object-cover w-full" src="https://placehold.co/300x400?text=No+Image" alt="{{ book.name }}" />
+        }
+      </figure>
+
+      <div class="card-body py-0">
+        <h2 class="card-title truncate mt-1">{{ book.name }}</h2>
+        <p class="truncate text-gray-500">{{ book.author?.name || 'بدون نویسنده' }}</p>
+
+        <div class="card-actions flex mb-5">
+          <div class="flex flex-col text-right flex-1">
+            <!-- Show a fake discount example -->
+            <span class="text-sm text-gray-500 line-through" *ngIf="book.price > 100000">
+              {{ (book.price * 1.2) | number:'1.0-0' }} تومان
+            </span>
+
+            <div class="indicator">
+              <span *ngIf="book.price > 100000"
+                class="indicator-item indicator-end badge badge-sm md:badge-md badge-error text-white">
+                20%
+              </span>
+              <span class="text-lg font-bold">{{ book.price | number:'1.0-0' }} تومان</span>
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-sm flex-none text-primary-content">
+            خرید
+          </button>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+  } @else {
+  <div class="text-center text-gray-500 mt-20 text-lg">
+    کتابی یافت نشد.
+  </div>
+  }
+</div>

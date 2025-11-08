@@ -1,5 +1,7 @@
 ﻿using BookStoreApi.BusinessLogicLayer.Public;
 using BookStoreApi.RequestHandler.Public.Mappers;
+using BookStoreApi.RequestHandler.Public.QueryObjects.Book;
+using BookStoreApi.RequestHandler.Public.Responses.Book;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookStoreApi.Controllers.Public
@@ -8,16 +10,22 @@ namespace BookStoreApi.Controllers.Public
     [ApiController]
     public class BookController(BLLBook bLL) : ApiResponseHelper
     {
-        [HttpGet("new")]
-        public async Task<IActionResult> GetAllAsync()
+        [HttpGet]
+        public async Task<IActionResult> GetNewAsync([FromQuery] QPBookGetAll query)
         {
-            var books = await bLL.GetNewAsync();
+            var (books, info) = await bLL.GetNewAsync(query.PageSize, query.PageNumber, query.IsRecommended);
             if (books is null)
                 return ErrorResponse("خطا در بارگذاری اطلاعات", null, 500);
 
-            var booksResponse = books.Select(b => b.ToPublicBookAllData()).ToList();
+            BookAllDataListResponse response = new BookAllDataListResponse
+            {
+                Books = books.Select(b => b.ToPublicBookAllData()).ToList(),
+                Pagination = info
+            };
 
-            return SuccessResponse("اطلاعات با موفقیت دریافت شد", booksResponse);
+            return SuccessResponse("اطلاعات با موفقیت دریافت شد", response);
         }
     }
+
+
 }

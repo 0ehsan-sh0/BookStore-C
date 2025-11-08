@@ -11,6 +11,7 @@ import { BookAllData } from '../../models/book';
 })
 export class HomeComponent implements OnInit {
   newBooks: BookAllData[] = [];
+  recommendedBooks: BookAllData[] = [];
   constructor(
       public bookService: BookPublicService,
       public imageService: ImageService
@@ -18,8 +19,12 @@ export class HomeComponent implements OnInit {
       this.bookService.newBooks.subscribe((books) => {
         this.newBooks = books;
       });
+      this.bookService.recommendedBooks.subscribe((books) => {
+        this.recommendedBooks = books;
+      });
     }
     ngOnInit(): void {
       this.bookService.getNewBooks();
+      this.bookService.getNewBooks(1, 20, true);
     }
 }

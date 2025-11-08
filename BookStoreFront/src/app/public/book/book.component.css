@@ -1,0 +1,26 @@
+.scroll-x-scroll::-webkit-scrollbar {
+  height: 6px; /* optional: scrollbar thickness */
+}
+
+.scroll-x-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(100, 100, 100, 0.5);
+  border-radius: 9999px;
+}
+
+/* Enable horizontal scroll with vertical mouse wheel */
+.scroll-x-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+}
+
+.scroll-x-scroll {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+/* Horizontal scroll on mouse wheel */
+.scroll-x-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+}

@@ -5,6 +5,7 @@ import { AuthorComponent } from './admin/author/author.component';
 import { TranslatorComponent } from './admin/translator/translator.component';
 import { CategoryComponent } from './admin/category/category.component';
 import { BookComponent } from './admin/book/book.component';
+import { BookComponent as BookPublicComponent } from './public/book/book.component';
 import { TagComponent } from './admin/tag/tag.component';
 import { CommentComponent } from './admin/comment/comment.component';
 import { PublicComponent } from './public/public/public.component';
@@ -26,7 +27,10 @@ const routes: Routes = [
   {
     path: '',
     component: PublicComponent,
-    children: [{ path: '', component: HomeComponent }],
+    children: [
+      { path: '', component: HomeComponent },
+      { path: 'books', component: BookPublicComponent },
+    ],
   },
   { path: '**', redirectTo: '' }, // fallback
 ];

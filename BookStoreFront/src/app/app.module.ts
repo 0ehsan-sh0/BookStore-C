@@ -26,7 +26,8 @@ import {
   ShieldCheck,
   ChartPie,
   Truck,
-  UserPlus
+  UserPlus,
+  ChevronLeft
 } from 'lucide-angular';
 import { HeaderComponent } from './admin/header/header.component';
 import { SidebarComponent } from './admin/sidebar/sidebar.component';
@@ -51,6 +52,7 @@ import { environment } from '../environments/environment';
 import { API_URL } from './models/apiResponse';
 import { baseUrlInterceptor } from './interceptors/base-url.interceptor';
 import { BookComponent } from './admin/book/book.component';
+import { BookComponent as BookPublicComponent } from './public/book/book.component';
 import { CreateBookComponent } from './admin/book/create-book/create-book.component';
 import { UpdateBookComponent } from './admin/book/update-book/update-book.component';
 import { BookCategoryComponent } from './admin/book/book-category/book-category.component';
@@ -105,6 +107,7 @@ import { PublicBannersComponent } from './public/home/public-banners/public-bann
     HomeComponent,
     HorizontalScrollDirective,
     PublicBannersComponent,
+    BookPublicComponent,
   ],
   imports: [
     BrowserModule,
@@ -130,7 +133,8 @@ import { PublicBannersComponent } from './public/home/public-banners/public-bann
       ShieldCheck,
       ChartPie,
       Truck,
-      UserPlus
+      UserPlus,
+      ChevronLeft,
     }),
     FormsModule,
   ],

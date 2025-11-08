@@ -2,6 +2,7 @@
 using BookStoreApi.Database.Models;
 using BookStoreApi.RequestHandler.Admin.QueryObjects.Book;
 using BookStoreApi.RequestHandler.Admin.Responses.Book;
+using BookStoreApi.RequestHandler.Public.Responses.Book;
 using BookStoreApi.Services;
 using BookStoreApi.Services.Models;
 using Dapper;
@@ -167,14 +168,14 @@ namespace BookStoreApi.Database.Repositories
             return result;
         }
 
-        public async Task<List<BookAllData>?> GetNewAsync(int pageSize = 20)
+        public async Task<(List<BookAllData>? books, BPPaginationInfo info)> GetNewAsync(int pageSize = 20, int pageNumber = 1, bool isRecommended = false)
         {
             using var connection = dapperUtility.GetConnection();
             await connection.OpenAsync();
 
             using var multi = await connection.QueryMultipleAsync(
                 "Book_Get_New_JSON",
-                new { PageSize = pageSize },
+                new { PageSize = pageSize, PageNumber = pageNumber, IsRecommended = isRecommended },
                 commandType: CommandType.StoredProcedure
             );
 
@@ -184,7 +185,10 @@ namespace BookStoreApi.Database.Repositories
             if (booksJson is not null)
                 books = JsonSerializer.Deserialize<List<BookAllData>>(booksJson)!;
 
-            return books;
+            var paginationJson = await multi.ReadFirstOrDefaultAsync<string>();
+            var pagination = JsonSerializer.Deserialize<BPPaginationInfo>(paginationJson!);
+
+            return (books, pagination!);
         }
 
         public async Task<BookAllData?> UpdateAsync(Book bookWithId, List<int>? translators, List<int> categories, List<int> tags)

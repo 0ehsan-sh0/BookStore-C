@@ -1,9 +1,7 @@
 ﻿namespace BookStoreApi.RequestHandler.Admin.QueryObjects.Author
 {
-    public class QAuthorGetAll
+    public class QAuthorGetAll : QueryObject
     {
-        public int PageNumber { get; set; } = 1;
-        public int PageSize { get; set; } = 20;
-        public string Search { get; set; } = string.Empty;
+
     }
 }

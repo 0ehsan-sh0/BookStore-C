@@ -3,11 +3,13 @@ using BookStoreApi.RequestHandler.Admin.Mappers;
 using BookStoreApi.RequestHandler.Admin.QueryObjects.Category;
 using BookStoreApi.RequestHandler.Admin.Requests.Category;
 using BookStoreApi.RequestHandler.Admin.Responses.Category;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookStoreApi.Controllers.Admin
 {
     [Route("api/admin/[controller]")]
+    [Authorize(Roles = "Admin")]
     [ApiController]
     public class CategoryController(BLLCategory bLL) : ApiResponseHelper
     {

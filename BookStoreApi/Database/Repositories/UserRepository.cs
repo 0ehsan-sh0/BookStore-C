@@ -1,0 +1,111 @@
+﻿using BookStoreApi.Database.Interfaces;
+using BookStoreApi.Database.Models;
+using BookStoreApi.Enums;
+using Dapper;
+using System.Data;
+
+namespace BookStoreApi.Database.Repositories
+{
+    public class UserRepository(DapperUtility dapperUtility) : IUserRepository
+    {
+        public async Task<int> CreateAsync(User user)
+        {
+            using var connection = dapperUtility.GetConnection();
+
+            var sql = @"
+            INSERT INTO Users (Mobile, Password, Role, LoggedInAt)
+            VALUES (@Mobile, @Password, @Role, @LoggedInAt);
+            SELECT CAST(SCOPE_IDENTITY() as int);";
+
+            var parameters = new
+            {
+                user.Mobile,
+                user.Password,
+                Role = UserRole.User,
+                LoggedInAt = DateTime.Now,
+            };
+
+            int insertedId = await connection.ExecuteScalarAsync<int>(sql, parameters);
+            return insertedId;
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            string sql = "Update U set DeletedAt = GETDATE() FROM Users U WHERE Id = @id";
+            using var connection = dapperUtility.GetConnection();
+            int result = await connection.ExecuteAsync(sql, new { id });
+            if (result == 1) return true;
+            return false;
+        }
+
+        public async Task<User?> GetByIdAsync(int id)
+        {
+            using var connection = dapperUtility.GetConnection();
+            await connection.OpenAsync();
+            using var multi = await connection.QueryMultipleAsync(
+                "User_Get_One",
+                new { id },
+                commandType: CommandType.StoredProcedure
+            );
+
+            var user = await multi.ReadFirstOrDefaultAsync<User>();
+            if (user is null) return null;
+
+            user.Addresses = (await multi.ReadAsync<AddressInfo>()).ToList();
+            return user;
+        }
+
+        public async Task<User?> GetByMobileAsync(string mobile)
+        {
+            using var connection = dapperUtility.GetConnection();
+            await connection.OpenAsync();
+            using var multi = await connection.QueryMultipleAsync(
+                "User_Get_By_Mobile",
+                new { mobile },
+                commandType: CommandType.StoredProcedure
+            );
+
+            var user = await multi.ReadFirstOrDefaultAsync<User>();
+            if (user is null) return null;
+
+            user.Addresses = (await multi.ReadAsync<AddressInfo>()).ToList();
+            return user;
+        }
+
+        public async Task<User?> UpdateAsync(User userWithId)
+        {
+            string sql = @"Update U
+                           set Name = @Name,LastName = @LastName,Role = @Role
+                           FROM Users U
+                           WHERE Id = @Id and DeletedAt IS NULL";
+            using var connection = dapperUtility.GetConnection();
+            var parameters = new
+            {
+                userWithId.Name,
+                userWithId.LastName,
+                userWithId.Id,
+                userWithId.Role
+            };
+            bool result = await connection.ExecuteAsync(sql, parameters) >= 0;
+            if (result) return await GetByIdAsync(userWithId.Id);
+            return null;
+        }
+
+        public async Task<bool> UpdateLoggedInAt(string mobile)
+        {
+            string sql = @"Update U
+                           set LoggedInAt = @LoggedInAt
+                           FROM Users U
+                           WHERE Mobile = @mobile and DeletedAt IS NULL";
+            using var connection = dapperUtility.GetConnection();
+            var parameters = new
+            {
+                LoggedInAt = DateTime.Now,
+                mobile,
+            };
+
+            bool result = await connection.ExecuteAsync(sql, parameters) >= 0;
+            return result;
+        }
+    }
+}

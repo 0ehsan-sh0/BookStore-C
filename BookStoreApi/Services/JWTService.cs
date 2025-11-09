@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using BookStoreApi.Services.Models;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -7,7 +8,7 @@ namespace BookStoreApi.Services
 {
     public class JWTService(IConfiguration configuration)
     {
-        public Object Authenticate(string username, string role)
+        public LoginResponse Authenticate(string username, string role)
         {
             var issuer = configuration["JWTConfiguration:Issuer"];
             var audience = configuration["JWTConfiguration:Audience"];
@@ -33,7 +34,7 @@ namespace BookStoreApi.Services
             var securityToken = tokenHandler.CreateToken(tokenDescriptor);
             var accessToken = tokenHandler.WriteToken(securityToken);
 
-            return new
+            return new LoginResponse
             {
                 AccessToken = accessToken,
                 Username = username,

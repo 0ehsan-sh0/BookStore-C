@@ -27,7 +27,19 @@ import {
   ChartPie,
   Truck,
   UserPlus,
-  ChevronLeft
+  ChevronLeft,
+  BookOpen,
+  Target,
+  Eye,
+  Heart,
+  Users,
+  HelpCircle,
+  ArrowLeft,
+  MessagesSquare,
+  MapPin,
+  Mail,
+  Send,
+  SendHorizontal,
 } from 'lucide-angular';
 import { HeaderComponent } from './admin/header/header.component';
 import { SidebarComponent } from './admin/sidebar/sidebar.component';
@@ -72,6 +84,8 @@ import { HomeComponent } from './public/home/home.component';
 import { HorizontalScrollDirective } from './directives/horizontal-scroll.directive';
 import { PublicBannersComponent } from './public/home/public-banners/public-banners.component';
 import { BookDetailsComponent } from './public/book-details/book-details.component';
+import { AboutUsComponent } from './public/about-us/about-us.component';
+import { ContactUsComponent } from './public/contact-us/contact-us.component';
 
 @NgModule({
   declarations: [
@@ -110,6 +124,8 @@ import { BookDetailsComponent } from './public/book-details/book-details.compone
     PublicBannersComponent,
     BookPublicComponent,
     BookDetailsComponent,
+    AboutUsComponent,
+    ContactUsComponent,
   ],
   imports: [
     BrowserModule,
@@ -137,6 +153,18 @@ import { BookDetailsComponent } from './public/book-details/book-details.compone
       Truck,
       UserPlus,
       ChevronLeft,
+      BookOpen,
+      Target,
+      Eye,
+      Heart,
+      Users,
+      HelpCircle,
+      ArrowLeft,
+      MessagesSquare,
+      MapPin,
+      Mail,
+      Send,
+      SendHorizontal
     }),
     FormsModule,
   ],

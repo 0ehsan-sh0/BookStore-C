@@ -11,6 +11,8 @@ import { CommentComponent } from './admin/comment/comment.component';
 import { PublicComponent } from './public/public/public.component';
 import { HomeComponent } from './public/home/home.component';
 import { BookDetailsComponent } from './public/book-details/book-details.component';
+import { AboutUsComponent } from './public/about-us/about-us.component';
+import { ContactUsComponent } from './public/contact-us/contact-us.component';
 
 const routes: Routes = [
   {
@@ -32,6 +34,8 @@ const routes: Routes = [
       { path: '', component: HomeComponent },
       { path: 'books', component: BookPublicComponent },
       { path: 'books/:id', component: BookDetailsComponent },
+      { path: 'about-us', component: AboutUsComponent },
+      { path: 'contact-us', component: ContactUsComponent },
     ],
   },
   { path: '**', redirectTo: '' }, // fallback

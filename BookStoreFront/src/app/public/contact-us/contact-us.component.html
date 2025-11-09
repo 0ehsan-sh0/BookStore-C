@@ -1,0 +1,89 @@
+<section class="bg-base-200 text-base-content py-16 px-4 md:px-20">
+  <div class="max-w-5xl mx-auto text-right space-y-12">
+
+    <!-- Header -->
+    <div class="text-center space-y-4">
+      <lucide-icon name="messages-square" class="w-12 h-12 mx-auto text-primary"></lucide-icon>
+      <h2 class="text-3xl md:text-4xl font-bold">تماس با ما</h2>
+      <p class="text-base-content/80 max-w-2xl mx-auto">
+        با ما در ارتباط باشید — ما مشتاق شنیدن نظرات، پیشنهادات و سوالات شما هستیم.
+      </p>
+      <div class="divider w-1/3 mx-auto"></div>
+    </div>
+
+    <!-- Contact Info -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+      <div class="card bg-base-100 shadow-md p-6 space-y-3">
+        <lucide-icon name="map-pin" class="w-8 h-8 mx-auto text-secondary"></lucide-icon>
+        <h3 class="font-semibold text-lg">آدرس</h3>
+        <p class="text-base-content/70">تهران، خیابان انقلاب، جنب دانشگاه تهران</p>
+      </div>
+
+      <div class="card bg-base-100 shadow-md p-6 space-y-3">
+        <lucide-icon name="phone" class="w-8 h-8 mx-auto text-success"></lucide-icon>
+        <h3 class="font-semibold text-lg">تلفن</h3>
+        <p class="text-base-content/70">۰۲۱-۱۲۳۴۵۶۷۸</p>
+      </div>
+
+      <div class="card bg-base-100 shadow-md p-6 space-y-3">
+        <lucide-icon name="mail" class="w-8 h-8 mx-auto text-info"></lucide-icon>
+        <h3 class="font-semibold text-lg">ایمیل</h3>
+        <p class="text-base-content/70">support&#64;ketabkadeh.com</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Contact Form -->
+    <div class="bg-base-100 shadow-lg rounded-2xl p-8">
+      <h3 class="text-2xl font-semibold mb-6 flex items-center gap-2">
+        <lucide-icon name="send" class="w-6 h-6 text-primary"></lucide-icon>
+        ارسال پیام
+      </h3>
+
+      <form class="space-y-6 max-w-2xl mx-auto">
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">نام و نام خانوادگی</span>
+          </label>
+          <input type="text" placeholder="مثلاً: علی رضایی" class="input input-bordered w-full" required />
+        </div>
+
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">ایمیل</span>
+          </label>
+          <input type="email" placeholder="example@email.com" class="input input-bordered w-full" required />
+        </div>
+
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">پیام شما</span>
+          </label>
+          <textarea class="textarea textarea-bordered w-full h-32" placeholder="پیام خود را بنویسید..." required></textarea>
+        </div>
+
+        <div class="text-center">
+          <button type="submit" class="btn btn-primary btn-lg gap-2">
+            <lucide-icon name="send-horizontal" class="w-5 h-5"></lucide-icon>
+            ارسال
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Map -->
+    <div class="rounded-2xl overflow-hidden shadow-md">
+      <iframe
+        class="w-full h-80"
+        src="https://maps.google.com/maps?q=Tehran%20Iran&t=&z=14&ie=UTF8&iwloc=&output=embed"
+        allowfullscreen
+        loading="lazy">
+      </iframe>
+    </div>
+  </div>
+</section>
+
+

@@ -16,7 +16,7 @@
 
             <!-- Dynamic book cards -->
             @for (book of newBooks; track book.id) {
-            <div class="card bg-base-200 w-46 h-90 shadow-sm flex-shrink-0 cursor-pointer hover:shadow-md transition"
+            <div class="card bg-base-200 w-46 h-90 shadow-sm flex-shrink-0 cursor-pointer hover:shadow-primary hover:shadow-md transition"
                 (click)="goToBookDetails(book.id)">
                 <figure>
                     @if (book.images && book.images.length > 0) {
@@ -78,7 +78,7 @@
 
             <!-- Dynamic book cards -->
             @for (book of recommendedBooks; track book.id) {
-            <div class="card bg-base-200 w-46 h-90 shadow-sm flex-shrink-0 cursor-pointer hover:shadow-md transition"
+            <div class="card bg-base-200 w-46 h-90 shadow-sm flex-shrink-0 cursor-pointer hover:shadow-primary hover:shadow-md transition"
             (click)="goToBookDetails(book.id)">
                 <figure>
                     @if (book.images && book.images.length > 0) {

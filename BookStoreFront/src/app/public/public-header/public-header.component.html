@@ -32,11 +32,11 @@
         <button class="btn h-8 w-8 btn-secondary btn-xs">
             <i-lucide name="shopping-cart" size="20"></i-lucide>
         </button>
-        <button class="btn btn-sm btn-primary mr-2 hidden md:inline-block">
-            ورود / ثبت نام
+        <button class="btn btn-sm btn-primary mr-2 hidden md:inline-block" (click)="navigateToAuth()">
+            {{ isLoggedIn ? 'خروج' : 'ورود / ثبت نام' }}
         </button>
-        <button class="btn h-8 w-8 mr-2 btn-primary btn-xs md:hidden">
-            <i-lucide name="user-plus" size="20"></i-lucide>
+        <button class="btn h-8 w-8 mr-2 btn-primary btn-xs md:hidden" (click)="navigateToAuth()">
+            <i-lucide [name]="isLoggedIn ? 'LogOut' : 'UserPlus'" size="20"></i-lucide>
         </button>
     </div>
 

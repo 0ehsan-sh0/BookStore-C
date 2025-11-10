@@ -13,6 +13,8 @@ import { HomeComponent } from './public/home/home.component';
 import { BookDetailsComponent } from './public/book-details/book-details.component';
 import { AboutUsComponent } from './public/about-us/about-us.component';
 import { ContactUsComponent } from './public/contact-us/contact-us.component';
+import { LoginComponent } from './public/login/login.component';
+import { RegisterComponent } from './public/register/register.component';
 
 const routes: Routes = [
   {
@@ -36,6 +38,8 @@ const routes: Routes = [
       { path: 'books/:id', component: BookDetailsComponent },
       { path: 'about-us', component: AboutUsComponent },
       { path: 'contact-us', component: ContactUsComponent },
+      { path: 'login', component: LoginComponent },
+      { path: 'register', component: RegisterComponent },
     ],
   },
   { path: '**', redirectTo: '' }, // fallback

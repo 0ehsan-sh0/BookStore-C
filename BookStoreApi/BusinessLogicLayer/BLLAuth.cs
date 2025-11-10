@@ -7,6 +7,12 @@ namespace BookStoreApi.BusinessLogicLayer
 {
     public class BLLAuth(IUserRepository userRepository)
     {
+        public async Task<bool> UserExist(string mobile)
+        {
+            var user = await userRepository.GetByMobileAsync(mobile);
+            if (user is null) return false;
+            return true;
+        }
         public async Task<User?> RegisterAsync(User user)
         {
             var databaseUser = await userRepository.GetByMobileAsync(user.Mobile);
@@ -48,6 +54,12 @@ namespace BookStoreApi.BusinessLogicLayer
 
             await userRepository.UpdateLoggedInAt(user.Mobile);
 
+            return user;
+        }
+
+        public async Task<User?> GetUserByMobileAsync(string mobile)
+        {
+            var user = await userRepository.GetByMobileAsync(mobile);
             return user;
         }
     }

@@ -1,0 +1,169 @@
+<section class="min-h-screen bg-base-200 flex items-center justify-center px-4 py-12">
+  <div class="card w-full max-w-md bg-base-100 shadow-xl">
+    <div class="card-body">
+      <div class="text-center space-y-2 mb-6">
+        <lucide-icon name="user-plus" class="w-10 h-10 mx-auto text-primary"></lucide-icon>
+        <h2 class="text-2xl font-bold">ایجاد حساب کاربری</h2>
+        <p class="text-base-content/70 text-sm">برای ثبت‌نام لطفا اطلاعات خود را وارد کنید</p>
+      </div>
+
+      <form #registerForm="ngForm" (ngSubmit)="onSubmit(registerForm)" class="space-y-4">
+
+        <!-- Mobile -->
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text mb-2">شماره موبایل</span>
+          </label>
+          <input
+            type="tel"
+            name="mobile"
+            [(ngModel)]="mobile"
+            #mobileRef="ngModel"
+            placeholder="09123456789"
+            required
+            pattern="^09\d{9}$"
+            class="input input-bordered w-full"
+          />
+
+          @if (mobileRef.invalid && mobileRef.touched) {
+            <div class="text-error text-xs mt-1">
+              @if (mobileRef.errors?.['required']) {
+                <div>شماره موبایل الزامی است</div>
+              }
+              @if (mobileRef.errors?.['pattern']) {
+                <div>شماره موبایل معتبر نیست</div>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Password -->
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text mb-2">رمز عبور</span>
+          </label>
+          <input
+            type="password"
+            name="password"
+            [(ngModel)]="password"
+            #passwordRef="ngModel"
+            required
+            minlength="6"
+            placeholder="رمز عبور"
+            class="input input-bordered w-full"
+          />
+
+          @if (passwordRef.invalid && passwordRef.touched) {
+            <div class="text-error text-xs mt-1">
+              @if (passwordRef.errors?.['required']) {
+                <div>رمز عبور الزامی است</div>
+              }
+              @if (passwordRef.errors?.['minlength']) {
+                <div>رمز عبور باید حداقل ۶ کاراکتر باشد</div>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text mb-2">تکرار رمز عبور</span>
+          </label>
+          <input
+            type="password"
+            name="confirmPassword"
+            [(ngModel)]="confirmPassword"
+            #confirmPasswordRef="ngModel"
+            required
+            placeholder="تکرار رمز عبور"
+            class="input input-bordered w-full"
+          />
+
+          @if (confirmPasswordRef.touched && confirmPassword !== password) {
+            <div class="text-error text-xs mt-1">
+              رمز عبور و تکرار آن مطابقت ندارند
+            </div>
+          }
+        </div>
+
+        <!-- Code -->
+        <div class="form-control">
+          <div class="flex justify-between items-center">
+            <label class="label">
+              <span class="label-text mb-2">کد تأیید</span>
+            </label>
+            <button
+              type="button"
+              (click)="sendCode()"
+              [disabled]="isSendingCode || countDown > 0"
+              class="btn btn-ghost btn-xs text-info"
+            >
+              {{ countDown > 0 ? countDown + 's' : 'ارسال کد' }}
+            </button>
+          </div>
+
+          <input
+            type="text"
+            maxlength="8"
+            name="code"
+            [(ngModel)]="code"
+            #codeRef="ngModel"
+            required
+            minlength="8"
+            pattern="^[0-9]{8}$"
+            placeholder="کد تأیید ۸ رقمی"
+            class="input input-bordered w-full text-center tracking-widest"
+          />
+
+          @if (codeRef.invalid && codeRef.touched) {
+            <div class="text-error text-xs mt-1">
+              @if (codeRef.errors?.['required']) {
+                <div>کد تأیید الزامی است</div>
+              }
+              @if (codeRef.errors?.['pattern']) {
+                <div>کد باید هشت رقم باشد</div>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Error -->
+        @if (errorMessage) {
+          <div class="alert alert-error py-2 text-sm">
+            <lucide-icon name="alert-circle" class="w-4 h-4"></lucide-icon>
+            <span>{{ errorMessage }}</span>
+          </div>
+        }
+
+        <!-- Success -->
+        @if (successMessage) {
+          <div class="alert alert-success py-2 text-sm">
+            <lucide-icon name="check-circle-2" class="w-4 h-4"></lucide-icon>
+            <span>{{ successMessage }}</span>
+          </div>
+        }
+
+        <!-- Submit -->
+        <div class="form-control mt-6">
+          <button
+            type="submit"
+            [disabled]="loading"
+            class="btn btn-primary w-full gap-2"
+          >
+            <lucide-icon name="user-plus" class="w-5 h-5"></lucide-icon>
+            {{ loading ? 'در حال ثبت‌نام...' : 'ثبت‌نام' }}
+          </button>
+        </div>
+      </form>
+
+      <!-- Login link -->
+      <div class="text-center mt-4">
+        <p class="text-sm text-base-content/70">
+          حساب کاربری دارید؟
+          <a routerLink="/login" class="link link-info">ورود</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

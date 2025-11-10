@@ -40,6 +40,10 @@ import {
   Mail,
   Send,
   SendHorizontal,
+  User,
+  LogOut,
+  LogIn,
+  AlertCircle,
 } from 'lucide-angular';
 import { HeaderComponent } from './admin/header/header.component';
 import { SidebarComponent } from './admin/sidebar/sidebar.component';
@@ -86,6 +90,9 @@ import { PublicBannersComponent } from './public/home/public-banners/public-bann
 import { BookDetailsComponent } from './public/book-details/book-details.component';
 import { AboutUsComponent } from './public/about-us/about-us.component';
 import { ContactUsComponent } from './public/contact-us/contact-us.component';
+import { AlertService } from './ui-service/alert.service';
+import { LoginComponent } from './public/login/login.component';
+import { RegisterComponent } from './public/register/register.component';
 
 @NgModule({
   declarations: [
@@ -126,6 +133,8 @@ import { ContactUsComponent } from './public/contact-us/contact-us.component';
     BookDetailsComponent,
     AboutUsComponent,
     ContactUsComponent,
+    LoginComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
@@ -164,7 +173,11 @@ import { ContactUsComponent } from './public/contact-us/contact-us.component';
       MapPin,
       Mail,
       Send,
-      SendHorizontal
+      SendHorizontal,
+      User,
+      LogOut,
+      LogIn,
+      AlertCircle
     }),
     FormsModule,
   ],
@@ -172,6 +185,7 @@ import { ContactUsComponent } from './public/contact-us/contact-us.component';
     provideHttpClient(withInterceptorsFromDi()),
     { provide: API_URL, useValue: environment.apiUrl },
     provideHttpClient(withInterceptors([baseUrlInterceptor])),
+    AlertService,
   ],
   bootstrap: [AppComponent],
 })

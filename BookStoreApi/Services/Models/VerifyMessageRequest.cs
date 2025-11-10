@@ -23,7 +23,7 @@ namespace BookStoreApi.Services.Models
         public VerifyMessageParameter()
         {
             // Generate random 6-digit code
-            Value = new Random().Next(100000, 999999).ToString();
+            Value = "12345";
         }
     }
 

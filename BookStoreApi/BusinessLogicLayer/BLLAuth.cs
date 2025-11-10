@@ -22,25 +22,21 @@ namespace BookStoreApi.BusinessLogicLayer
             var createdUser = await userRepository.GetByIdAsync(result);
             return createdUser;
         }
-        public async Task<(User? user, bool? isCode)> LoginAsync(string mobile, string code, bool isCode)
+        public async Task<User?> LoginAsync(string mobile, string code, bool isCode)
         {
             var user = await userRepository.GetByMobileAsync(mobile);
-            if (user is null) return (null, false);
+            if (user is null) return null;
 
-            if (VerificationStore.Codes.TryGetValue(mobile, out var storedCode))
-            {
-                if (storedCode == code)
-                {
-                    // Verification successful
-                    VerificationStore.Codes.Remove(mobile); // remove after success
+            VerificationStore.Codes.TryGetValue(mobile, out var storedCode);
 
-                    await userRepository.UpdateLoggedInAt(user.Mobile);
+            if (storedCode is null || storedCode != code) return null;
 
-                    return (user, null);
-                }
-            }
+            // Verification successful
+            VerificationStore.Codes.Remove(mobile); // remove after success
 
-            return (null, true);
+            await userRepository.UpdateLoggedInAt(user.Mobile);
+
+            return user;
         }
 
         public async Task<User?> LoginAsync(string mobile, string password)

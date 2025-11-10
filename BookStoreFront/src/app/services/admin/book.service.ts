@@ -45,6 +45,8 @@ export class BookService {
         },
         error: (err) => {
           this.errorHandler.handleError(err);
+          console.log(err);
+          
         },
       });
   }

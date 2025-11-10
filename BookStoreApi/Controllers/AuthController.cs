@@ -48,7 +48,20 @@ namespace BookStoreApi.Controllers
 
                     var loginResponce = jWTService.Authenticate(user.Mobile, user.Role.ToString());
 
-                    return SuccessResponse("شما با موفقیت وارد شدید.", loginResponce, 201);
+                    Response.Cookies.Append("access_token", loginResponce.AccessToken, new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true, // Always true in production (requires HTTPS)
+                        SameSite = SameSiteMode.Strict, // or Lax if cross-site requests needed
+                        Expires = DateTime.UtcNow.AddSeconds(loginResponce.ExpiresIn)
+                    });
+
+                    return SuccessResponse("شما با موفقیت وارد شدید.", new
+                    {
+                        username = loginResponce.Username,
+                        expiresIn = loginResponce.ExpiresIn
+                    }, 200);
+
                 }
             }
 
@@ -61,13 +74,10 @@ namespace BookStoreApi.Controllers
             if (!string.IsNullOrWhiteSpace(request.Code))
             {
                 // Login with code
-                var (user, isCode) = await bLLAuth.LoginAsync(request.Mobile, request.Code, true);
+                var user = await bLLAuth.LoginAsync(request.Mobile, request.Code, true);
 
                 if (user is null)
-                    if (isCode!.Value)
-                        return ErrorResponse("کد نامعتبر", null, 401);
-                    else
-                        return ErrorResponse("شماره تلفن معتبر نیست", null);
+                    return ErrorResponse("ورود ناموفق", null, 401);
 
                 var loginResponce = jWTService.Authenticate(user.Mobile, user.Role.ToString());
 

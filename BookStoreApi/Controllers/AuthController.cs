@@ -1,10 +1,9 @@
 ﻿using BookStoreApi.BusinessLogicLayer;
 using BookStoreApi.Database.Models;
 using BookStoreApi.RequestHandler.Auth.Requests;
-using BookStoreApi.RequestHandler.Auth.Responses;
+using BookStoreApi.RequestHandler.User.Mappers;
 using BookStoreApi.Services;
 using BookStoreApi.Services.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookStoreApi.Controllers
@@ -119,7 +118,6 @@ namespace BookStoreApi.Controllers
         }
 
         [HttpGet("me")]
-        [Authorize]
         public async Task<IActionResult> GetCurrentUser()
         {
             var mobile = User?.Identity?.Name;
@@ -130,8 +128,7 @@ namespace BookStoreApi.Controllers
             if (user == null)
                 return ErrorResponse("کاربر یافت نشد", null, 404);
 
-            var response = MeResponse.FromEntity(user);
-            return SuccessResponse("اطلاعات کاربر", response, 200);
+            return SuccessResponse("اطلاعات کاربر", user.ToRUser(), 200);
         }
     }
 }

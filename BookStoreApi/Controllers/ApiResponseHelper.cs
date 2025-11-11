@@ -30,16 +30,5 @@ namespace BookStoreApi.Controllers
 
             return StatusCode(status, result);
         }
-
-        protected IActionResult ErrorResponse(string message, object? data, int status = 404)
-        {
-            var result = new
-            {
-                message,
-                errors = data
-            };
-
-            return StatusCode(status, result);
-        }
     }
 }

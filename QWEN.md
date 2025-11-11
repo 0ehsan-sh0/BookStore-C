@@ -57,7 +57,7 @@ Backend:
 Admin,Auth,Public
 Then in each we have :
 Mappers,QueryObjects,Requests,Responses
-remeber if any of them you want to add, add it in the right folder
+remeber if any of them you want to add, add it in the right folder with right file
 
 - foregin services are in the services folder in the backend if you want to add any put it there
 - business logic layer folder is the middle layer between data access and controllers logic goes there

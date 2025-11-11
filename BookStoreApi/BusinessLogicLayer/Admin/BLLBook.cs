@@ -39,7 +39,7 @@ namespace BookStoreApi.BusinessLogicLayer.Admin
                             string relativePath = imageInfo.RelativePath.Trim() + imageInfo.StoredFileName.Trim();
                             relativePaths.Add(relativePath);
                         }
-                        ImageService.DeleteImagesAsync(relativePaths);
+                        ImageService.DeleteImages(relativePaths);
                     }
                     return null;
                 }

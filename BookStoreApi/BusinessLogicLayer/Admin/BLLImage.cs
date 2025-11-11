@@ -36,7 +36,7 @@ namespace BookStoreApi.BusinessLogicLayer.Admin
                             string relativePath = imageInfo.RelativePath.Trim() + imageInfo.StoredFileName.Trim();
                             relativePaths.Add(relativePath);
                         }
-                        ImageService.DeleteImagesAsync(relativePaths);
+                        ImageService.DeleteImages(relativePaths);
                     }
                     return null;
                 }
@@ -64,7 +64,7 @@ namespace BookStoreApi.BusinessLogicLayer.Admin
                     string relativePath = imageInfo.RelativePath.Trim() + imageInfo.StoredFileName.Trim();
                     relativePaths.Add(relativePath);
                 }
-                ImageService.DeleteImagesAsync(relativePaths);
+                ImageService.DeleteImages(relativePaths);
                 return ("مشکلی در اضافه کردن تصاویر پیش آمد", null, 500);
             }
 
@@ -82,7 +82,7 @@ namespace BookStoreApi.BusinessLogicLayer.Admin
                 return ("نمیتوانید تصویر اصلی را حذف کنید.تصویر اصلی را تغییر داده سپس اقدام به حذف کنید", 403);
 
             string path = image.RelativePath.Trim() + image.StoredFileName.Trim();
-            var (_, status) = ImageService.DeleteImageAsync(path);
+            var (_, status) = ImageService.DeleteImage(path);
 
             if (!status)
                 return ("در حذف تصویر مشکلی پیش آمد", 500);

@@ -71,7 +71,7 @@ namespace BookStoreApi.Database.Repositories
                         string relativePath = imageInfo.RelativePath.Trim() + imageInfo.StoredFileName.Trim();
                         relativePaths.Add(relativePath);
                     }
-                    ImageService.DeleteImagesAsync(relativePaths);
+                    ImageService.DeleteImages(relativePaths);
                 }
                 return 0;
             }

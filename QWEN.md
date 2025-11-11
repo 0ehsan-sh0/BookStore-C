@@ -63,3 +63,4 @@ remeber if any of them you want to add, add it in the right folder with right fi
 - business logic layer folder is the middle layer between data access and controllers logic goes there
 - for front if you need to make any model to sync with the backend etc put it in the models folder then use it
 - don't forget in the front use lucid angular for icons it is installed on the project
+- do not forget to add using of a file you added in the backend

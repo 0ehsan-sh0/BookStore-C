@@ -1,4 +1,5 @@
-﻿using BookStoreApi.Database.Interfaces;
+﻿using BookStoreApi.BusinessLogicLayer.Interfaces.Admin;
+using BookStoreApi.Database.Interfaces;
 using BookStoreApi.Database.Models;
 using BookStoreApi.RequestHandler.Admin.Mappers;
 using BookStoreApi.RequestHandler.Admin.QueryObjects.Tag;
@@ -7,7 +8,7 @@ using BookStoreApi.RequestHandler.Admin.Responses.Tag;
 
 namespace BookStoreApi.BusinessLogicLayer.Admin
 {
-    public class BLLTag(ITagRepository repo)
+    public class BLLTag(ITagRepository repo) : IBLLTag
     {
         public async Task<(List<Tag> tags, TagPaginationInfo pagination)> GetAllAsync(QTagGetAll query)
         {

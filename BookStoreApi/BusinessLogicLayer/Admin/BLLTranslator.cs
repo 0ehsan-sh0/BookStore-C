@@ -1,4 +1,5 @@
-﻿using BookStoreApi.Database.Interfaces;
+﻿using BookStoreApi.BusinessLogicLayer.Interfaces.Admin;
+using BookStoreApi.Database.Interfaces;
 using BookStoreApi.Database.Models;
 using BookStoreApi.RequestHandler.Admin.Mappers;
 using BookStoreApi.RequestHandler.Admin.QueryObjects.Translator;
@@ -7,7 +8,7 @@ using BookStoreApi.RequestHandler.Admin.Responses.Translator;
 
 namespace BookStoreApi.BusinessLogicLayer.Admin
 {
-    public class BLLTranslator(ITranslatorRepository repo)
+    public class BLLTranslator(ITranslatorRepository repo) : IBLLTranslator
     {
         public async Task<(List<Translator> translators, TPaginationInfo pagination)> GetAllAsync(QTranslatorGetAll query)
         {

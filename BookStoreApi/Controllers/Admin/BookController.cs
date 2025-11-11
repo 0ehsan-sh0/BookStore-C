@@ -1,4 +1,4 @@
-﻿using BookStoreApi.BusinessLogicLayer.Admin;
+﻿using BookStoreApi.BusinessLogicLayer.Interfaces.Admin;
 using BookStoreApi.RequestHandler.Admin.Mappers;
 using BookStoreApi.RequestHandler.Admin.QueryObjects.Book;
 using BookStoreApi.RequestHandler.Admin.Requests.Book;
@@ -11,7 +11,7 @@ namespace BookStoreApi.Controllers.Admin
     [Route("api/admin/[controller]")]
     [Authorize(Roles = "Admin")]
     [ApiController]
-    public class BookController(BLLBook bLL) : ApiResponseHelper
+    public class BookController(IBLLBook bLL) : ApiResponseHelper
     {
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] CreateBookRequest createBookRequest)
@@ -41,7 +41,7 @@ namespace BookStoreApi.Controllers.Admin
         public async Task<IActionResult> GetAllAsync([FromQuery] QBookGetAll query)
         {
             var (books, pagination) = await bLL.GetAllAsync(query);
-            
+
             BookAllDataListResponse response = new BookAllDataListResponse
             {
                 Books = books.Select(b => b.ToRBookAllData()).ToList(),

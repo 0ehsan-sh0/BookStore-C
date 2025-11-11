@@ -2,7 +2,7 @@
 
 namespace BookStoreApi.Services
 {
-    public static class PasswordHasher
+    public static class PasswordHasherService
     {
         // Configuration constants
         private const int SaltSize = 16; // 128-bit

@@ -1,4 +1,4 @@
-﻿using BookStoreApi.BusinessLogicLayer.Admin;
+﻿using BookStoreApi.BusinessLogicLayer.Interfaces.Admin;
 using BookStoreApi.Controllers;
 using BookStoreApi.RequestHandler.Admin.Mappers;
 using BookStoreApi.RequestHandler.Admin.QueryObjects.Tag;
@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 [Route("api/admin/[controller]")]
 [ApiController]
-public class TagController(BLLTag bLL) : ApiResponseHelper
+public class TagController(IBLLTag bLL) : ApiResponseHelper
 {
     [HttpGet]
     public async Task<IActionResult> GetAllAsync([FromQuery] QTagGetAll query)

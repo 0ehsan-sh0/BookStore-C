@@ -14,7 +14,6 @@ namespace BookStoreApi.Controllers.Admin
         public async Task<IActionResult> GetAllAsync([FromQuery] QCommentGetAll query)
         {
             var (comments, pagination) = await bLL.GetAllAsync(query);
-
             var rComments = comments.Select(c => c.ToRComment()).ToList();
 
             var response = new CommentListResponse
@@ -30,22 +29,26 @@ namespace BookStoreApi.Controllers.Admin
         public async Task<IActionResult> GetByIdAsync([FromRoute] int id)
         {
             var comment = await bLL.GetByIdAsync(id);
-            if (comment is null) return ErrorResponse("نویسنده یافت نشد", null);
+            if (comment is null)
+                return NotFound("نظر مورد نظر یافت نشد");
+
             return SuccessResponse("اطلاعات با موفقیت دریافت شد", comment.ToRComment());
         }
 
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var (isValid, errors) = ModelStateValidation();
-            if (!isValid) return ErrorResponse("اطلاعات به درستی وارد نشده است", errors, 400);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             var (message, status) = await bLL.Delete(id);
 
-            if (status == 204)
-                return NoContent(); // ✅ Correct way to return 204
-
-            return ErrorResponse(message, null, status);
+            return status switch
+            {
+                204 => NoContent(),
+                404 => NotFound(message),
+                _ => StatusCode(status, message)
+            };
         }
 
         [HttpPost("status/{id:int}")]
@@ -53,9 +56,13 @@ namespace BookStoreApi.Controllers.Admin
         {
             var (message, comment, status) = await bLL.SwitchIsConfirmed(id);
 
-            return status == 201
-                ? SuccessResponse(message, comment!.ToRComment(), status)
-                : ErrorResponse(message, null, status);
+            return status switch
+            {
+                201 => SuccessResponse(message, comment!.ToRComment(), status),
+                404 => NotFound(message),
+                500 => StatusCode(500, message),
+                _ => StatusCode(status, message)
+            };
         }
     }
 }

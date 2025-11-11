@@ -18,21 +18,21 @@ namespace BookStoreApi.Controllers.Admin
         {
             var (isValid, errors) = ModelStateValidation();
             if (!isValid)
-                return ErrorResponse("اطلاعات به درستی وارد نشده است", errors, 400);
+                return BadRequest(errors);
 
             var (message, book, status) = await bLL.Create(createBookRequest);
 
             return status == 201
                 ? SuccessResponse(message, book!.ToRBookAllData(), status)
-                : ErrorResponse(message, null, status);
+                : StatusCode(status, message);
         }
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetByIdAsync([FromRoute] int id)
         {
             var book = await bLL.GetByIdAsync(id);
-            if (book is null) return ErrorResponse("کتاب یافت نشد", null);
-
+            if (book is null)
+                return NotFound("کتاب یافت نشد");
 
             return SuccessResponse("اطلاعات با موفقیت دریافت شد", book.ToRBookAllData());
         }
@@ -41,10 +41,7 @@ namespace BookStoreApi.Controllers.Admin
         public async Task<IActionResult> GetAllAsync([FromQuery] QBookGetAll query)
         {
             var (books, pagination) = await bLL.GetAllAsync(query);
-            if (books is null)
-                return ErrorResponse("خطا در بارگذاری اطلاعات", null, 500);
-
-
+            
             BookAllDataListResponse response = new BookAllDataListResponse
             {
                 Books = books.Select(b => b.ToRBookAllData()).ToList(),
@@ -59,27 +56,28 @@ namespace BookStoreApi.Controllers.Admin
         {
             var (isValid, errors) = ModelStateValidation();
             if (!isValid)
-                return ErrorResponse("اطلاعات به درستی وارد نشده است", errors, 400);
+                return BadRequest(errors);
 
             var (message, book, status) = await bLL.Update(updateBookRequest, id);
 
-            return status == 201
+            return status == 200
                 ? SuccessResponse(message, book!.ToRBookAllData(), status)
-                : ErrorResponse(message, null, status);
+                : status == 404
+                    ? NotFound(message)
+                    : StatusCode(status, message);
         }
 
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var (isValid, errors) = ModelStateValidation();
-            if (!isValid) return ErrorResponse("اطلاعات به درستی وارد نشده است", errors, 400);
-
             var (message, status) = await bLL.Delete(id);
 
-            if (status == 204)
-                return NoContent(); // ✅ Correct way to return 204
-
-            return ErrorResponse(message, null, status);
+            return status switch
+            {
+                204 => NoContent(),
+                404 => NotFound(message),
+                _ => StatusCode(status, message)
+            };
         }
     }
 }

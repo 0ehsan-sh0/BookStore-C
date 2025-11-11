@@ -14,36 +14,50 @@ namespace BookStoreApi.Controllers.Admin
         {
             var (isValid, errors) = ModelStateValidation();
             if (!isValid)
-                return ErrorResponse("اطلاعات به درستی وارد نشده است", errors, 400);
+                return BadRequest(errors);
 
-            var (message, Images, status) = await bLL.Create(createImageRequest);
+            var (message, images, status) = await bLL.Create(createImageRequest);
 
-            return status == 201
-                ? SuccessResponse(message, Images!.Select(i => i.ToRImage()).ToList(), status)
-                : ErrorResponse(message, null, status);
+            return status switch
+            {
+                201 => SuccessResponse(message, images!.Select(i => i.ToRImage()).ToList(), status),
+                404 => NotFound(message),
+                500 => StatusCode(500, message),
+                _ => StatusCode(status, message)
+            };
         }
 
         [HttpPatch("{id:int}")]
         public async Task<IActionResult> ChangePrimary([FromRoute] int id)
         {
             var (message, status) = await bLL.ChangePrimary(id);
-            return status == 201
-                ? SuccessResponse(message, null, status)
-                : ErrorResponse(message, null, status);
+
+            return status switch
+            {
+                201 => SuccessResponse(message, null, status),
+                404 => NotFound(message),
+                403 => StatusCode(403, message),
+                500 => StatusCode(500, message),
+                _ => StatusCode(status, message)
+            };
         }
 
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var (isValid, errors) = ModelStateValidation();
-            if (!isValid) return ErrorResponse("اطلاعات به درستی وارد نشده است", errors, 400);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             var (message, status) = await bLL.Delete(id);
 
-            if (status == 204)
-                return NoContent(); // ✅ Correct way to return 204
-
-            return ErrorResponse(message, null, status);
+            return status switch
+            {
+                204 => NoContent(),
+                403 => StatusCode(403, message),
+                404 => NotFound(message),
+                500 => StatusCode(500, message),
+                _ => StatusCode(status, message)
+            };
         }
     }
 }

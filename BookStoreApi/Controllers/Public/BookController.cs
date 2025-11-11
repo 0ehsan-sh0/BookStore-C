@@ -15,7 +15,7 @@ namespace BookStoreApi.Controllers.Public
         {
             var (books, info) = await bLL.GetNewAsync(query.PageSize, query.PageNumber, query.IsRecommended);
             if (books is null)
-                return ErrorResponse("خطا در بارگذاری اطلاعات", null, 500);
+                return StatusCode(500, "خطا در بارگزاری اطلاعات");
 
             BookAllDataListResponse response = new BookAllDataListResponse
             {
@@ -30,7 +30,7 @@ namespace BookStoreApi.Controllers.Public
         public async Task<IActionResult> GetByIdAsync([FromRoute] int id)
         {
             var book = await bLL.GetByIdAsync(id);
-            if (book is null) return ErrorResponse("کتاب یافت نشد", null);
+            if (book is null) return NotFound("کتاب یافت نشد");
             return SuccessResponse("اطلاعات با موفقیت دریافت شد", book.ToPublicBookAllData());
         }
     }

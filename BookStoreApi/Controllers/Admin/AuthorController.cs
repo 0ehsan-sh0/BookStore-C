@@ -31,7 +31,9 @@ namespace BookStoreApi.Controllers.Admin
         public async Task<IActionResult> GetByIdAsync([FromRoute] int id)
         {
             var author = await bLL.GetByIdAsync(id);
-            if (author is null) return ErrorResponse("نویسنده یافت نشد", null);
+            if (author is null)
+                return NotFound("نویسنده یافت نشد");
+
             return SuccessResponse("اطلاعات با موفقیت دریافت شد", author.ToRAuthor());
         }
 
@@ -40,39 +42,42 @@ namespace BookStoreApi.Controllers.Admin
         {
             var (isValid, errors) = ModelStateValidation();
             if (!isValid)
-                return ErrorResponse("اطلاعات به درستی وارد نشده است", errors, 400);
+                return BadRequest(errors);
 
             var (message, author, status) = await bLL.Create(createAuthorRequest);
 
             return status == 201
                 ? SuccessResponse(message, author!.ToRAuthor(), status)
-                : ErrorResponse(message, author, status);
+                : StatusCode(status, message);
         }
 
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateAuthorRequest UAuthor)
         {
             var (isValid, errors) = ModelStateValidation();
-            if (!isValid) return ErrorResponse("اطلاعات به درستی وارد نشده است", errors, 400);
+            if (!isValid)
+                return BadRequest(errors);
 
             var (message, author, status) = await bLL.Update(id, UAuthor);
+
             return status == 200
                 ? SuccessResponse(message, author!.ToRAuthor(), status)
-                : ErrorResponse(message, null, status);
+                : status == 404
+                    ? NotFound(message)
+                    : StatusCode(status, message);
         }
 
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var (isValid, errors) = ModelStateValidation();
-            if (!isValid) return ErrorResponse("اطلاعات به درستی وارد نشده است", errors, 400);
-
             var (message, status) = await bLL.Delete(id);
 
-            if (status == 204)
-                return NoContent(); // ✅ Correct way to return 204
-
-            return ErrorResponse(message, null, status);
+            return status switch
+            {
+                204 => NoContent(),
+                404 => NotFound(message),
+                _ => StatusCode(status, message)
+            };
         }
     }
 }

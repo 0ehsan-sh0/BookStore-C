@@ -15,7 +15,7 @@ namespace BookStoreApi.Controllers
         JWTService jWTService,
         BLLAuth bLLAuth,
         IWebHostEnvironment env
-        ) : ApiResponseHelper
+    ) : ApiResponseHelper
     {
         private readonly bool _isDev = env.IsDevelopment();
 
@@ -36,41 +36,42 @@ namespace BookStoreApi.Controllers
         public async Task<IActionResult> SendCode([FromBody] SendCodeRequest request)
         {
             if (request.IsRegister && await bLLAuth.UserExist(request.Mobile))
-                return ErrorResponse("درخواست نامعتبر", null, 400);
+                return BadRequest("درخواست نامعتبر");
 
             var response = await smsService.SendVerificationAsync(request.Mobile);
 
             if (response == null || response.Status != 1)
-                return ErrorResponse("خطا در ارسال کد", null, 400);
+                return StatusCode(500, "خطا در ارسال کد");
 
             var code = response.Data?.MessageId.ToString() ?? "000000";
             VerificationStore.Codes[request.Mobile] = code;
 
             Console.WriteLine($"[DEBUG] Verification code for {request.Mobile}: {code}");
 
-            return SuccessResponse("کد تایید ارسال شد", null, 201);
+            return Created(string.Empty, new { message = "کد تایید ارسال شد" });
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             if (!VerificationStore.Codes.TryGetValue(request.Mobile, out var storedCode) || storedCode != request.Code)
-                return ErrorResponse("کد نامعتبر", null, 401);
+                return Unauthorized("کد نامعتبر");
 
             VerificationStore.Codes.Remove(request.Mobile);
 
             var user = await bLLAuth.RegisterAsync(new User { Mobile = request.Mobile, Password = request.Password });
             if (user == null)
-                return ErrorResponse("خطا در ثبت نام", null, 500);
+                return StatusCode(500, "خطا در ثبت نام");
 
             var loginResponse = jWTService.Authenticate(user.Mobile, user.Role.ToString());
             SetJwtCookie(loginResponse.AccessToken, loginResponse.ExpiresIn);
 
-            return SuccessResponse("ثبت نام و ورود با موفقیت انجام شد", new
+            return Ok(new
             {
+                message = "ثبت نام و ورود با موفقیت انجام شد",
                 username = loginResponse.Username,
                 expiresIn = loginResponse.ExpiresIn
-            }, 200);
+            });
         }
 
         [HttpPost("login")]
@@ -81,26 +82,27 @@ namespace BookStoreApi.Controllers
             if (!string.IsNullOrWhiteSpace(request.Code))
             {
                 user = await bLLAuth.LoginAsync(request.Mobile, request.Code, true);
-                if (user == null) return ErrorResponse("کد نامعتبر", null, 401);
+                if (user == null) return Unauthorized("کد نامعتبر");
             }
             else if (!string.IsNullOrWhiteSpace(request.Password))
             {
                 user = await bLLAuth.LoginAsync(request.Mobile, request.Password);
-                if (user == null) return ErrorResponse("شماره تلفن یا رمز عبور معتبر نیست", null, 401);
+                if (user == null) return Unauthorized("شماره تلفن یا رمز عبور معتبر نیست");
             }
             else
             {
-                return ErrorResponse("کد یا رمز عبور ارسال نشده است", null, 400);
+                return BadRequest("کد یا رمز عبور ارسال نشده است");
             }
 
             var loginResponse = jWTService.Authenticate(user.Mobile, user.Role.ToString());
             SetJwtCookie(loginResponse.AccessToken, loginResponse.ExpiresIn);
 
-            return SuccessResponse("ورود با موفقیت انجام شد", new
+            return Ok(new
             {
+                message = "ورود با موفقیت انجام شد",
                 username = loginResponse.Username,
                 expiresIn = loginResponse.ExpiresIn
-            }, 200);
+            });
         }
 
         [HttpPost("logout")]
@@ -114,7 +116,7 @@ namespace BookStoreApi.Controllers
                 Path = "/"
             });
 
-            return SuccessResponse("خروج با موفقیت انجام شد.", null, 200);
+            return Ok(new { message = "خروج با موفقیت انجام شد." });
         }
 
         [HttpGet("me")]
@@ -122,13 +124,17 @@ namespace BookStoreApi.Controllers
         {
             var mobile = User?.Identity?.Name;
             if (string.IsNullOrEmpty(mobile))
-                return ErrorResponse("کاربر وارد نشده است", null, 401);
+                return Unauthorized("کاربر وارد نشده است");
 
             var user = await bLLAuth.GetUserByMobileAsync(mobile);
             if (user == null)
-                return ErrorResponse("کاربر یافت نشد", null, 404);
+                return NotFound("کاربر یافت نشد");
 
-            return SuccessResponse("اطلاعات کاربر", user.ToRUser(), 200);
+            return Ok(new
+            {
+                message = "اطلاعات کاربر",
+                data = user.ToRUser()
+            });
         }
     }
 }

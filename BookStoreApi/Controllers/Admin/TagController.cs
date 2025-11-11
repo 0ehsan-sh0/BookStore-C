@@ -1,79 +1,70 @@
 ﻿using BookStoreApi.BusinessLogicLayer.Admin;
+using BookStoreApi.Controllers;
 using BookStoreApi.RequestHandler.Admin.Mappers;
 using BookStoreApi.RequestHandler.Admin.QueryObjects.Tag;
 using BookStoreApi.RequestHandler.Admin.Requests.Tag;
 using BookStoreApi.RequestHandler.Admin.Responses.Tag;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BookStoreApi.Controllers.Admin
+[Route("api/admin/[controller]")]
+[ApiController]
+public class TagController(BLLTag bLL) : ApiResponseHelper
 {
-    [Route("api/admin/[controller]")]
-    [ApiController]
-    public class TagController(BLLTag bLL) : ApiResponseHelper
+    [HttpGet]
+    public async Task<IActionResult> GetAllAsync([FromQuery] QTagGetAll query)
     {
-        [HttpGet]
-        public async Task<IActionResult> GetAllAsync([FromQuery] QTagGetAll query)
+        var (tags, pagination) = await bLL.GetAllAsync(query);
+        var rTags = tags.Select(c => c.ToRTag()).ToList();
+
+        var response = new TagListResponse
         {
-            var (tags, pagination) = await bLL.GetAllAsync(query);
+            Tags = rTags,
+            Pagination = pagination
+        };
 
-            var rTags = tags.Select(c => c.ToRTag()).ToList();
+        return SuccessResponse("اطلاعات با موفقیت دریافت شد", response);
+    }
 
-            var response = new TagListResponse
-            {
-                Tags = rTags,
-                Pagination = pagination
-            };
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetByIdAsync([FromRoute] int id)
+    {
+        var tag = await bLL.GetByIdAsync(id);
+        return tag is null
+            ? SuccessResponse("تگ مورد نظر یافت نشد", null, 404)
+            : SuccessResponse("اطلاعات با موفقیت دریافت شد", tag.ToRTag());
+    }
 
-            return SuccessResponse("اطلاعات با موفقیت دریافت شد", response);
-        }
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateTagRequest createTagRequest)
+    {
+        var (isValid, errors) = ModelStateValidation();
+        if (!isValid)
+            return SuccessResponse("اطلاعات به درستی وارد نشده است", errors, 400);
 
-        [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetByIdAsync([FromRoute] int id)
-        {
-            var tag = await bLL.GetByIdAsync(id);
-            if (tag is null) return ErrorResponse("دسته بندی یافت نشد", null);
-            return SuccessResponse("اطلاعات با موفقیت دریافت شد", tag.ToRTag());
-        }
+        var (message, tag, status) = await bLL.Create(createTagRequest);
+        return SuccessResponse(message, tag?.ToRTag(), status);
+    }
 
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateTagRequest createTagRequest)
-        {
-            var (isValid, errors) = ModelStateValidation();
-            if (!isValid)
-                return ErrorResponse("اطلاعات به درستی وارد نشده است", errors, 400);
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateTagRequest UTag)
+    {
+        var (isValid, errors) = ModelStateValidation();
+        if (!isValid)
+            return SuccessResponse("اطلاعات به درستی وارد نشده است", errors, 400);
 
-            var (message, tag, status) = await bLL.Create(createTagRequest);
+        var (message, tag, status) = await bLL.Update(id, UTag);
+        return SuccessResponse(message, tag?.ToRTag(), status);
+    }
 
-            return status == 201
-                ? SuccessResponse(message, tag!.ToRTag(), status)
-                : ErrorResponse(message, tag, status);
-        }
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete([FromRoute] int id)
+    {
+        var (message, status) = await bLL.Delete(id);
 
-        [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateTagRequest UTag)
-        {
-            var (isValid, errors) = ModelStateValidation();
-            if (!isValid) return ErrorResponse("اطلاعات به درستی وارد نشده است", errors, 400);
+        // Still good to handle 204 properly (no content response)
+        if (status == 204)
+            return NoContent();
 
-            var (message, tag, status) = await bLL.Update(id, UTag);
-
-            return status == 200
-                ? SuccessResponse(message, tag!.ToRTag(), status)
-                : ErrorResponse(message, null, status);
-        }
-
-        [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delete([FromRoute] int id)
-        {
-            var (isValid, errors) = ModelStateValidation();
-            if (!isValid) return ErrorResponse("اطلاعات به درستی وارد نشده است", errors, 400);
-
-            var (message, status) = await bLL.Delete(id);
-
-            if (status == 204)
-                return NoContent(); // ✅ Correct way to return 204
-
-            return ErrorResponse(message, null, status);
-        }
+        return SuccessResponse(message, null, status);
     }
 }

@@ -1,4 +1,4 @@
-﻿using BookStoreApi.BusinessLogicLayer.Interfaces.Admin;
+﻿using BookStoreApi.BusinessLogicLayer.Admin;
 using BookStoreApi.RequestHandler.Admin.Mappers;
 using BookStoreApi.RequestHandler.Admin.Requests.Image;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +7,7 @@ namespace BookStoreApi.Controllers.Admin
 {
     [Route("api/admin/[controller]")]
     [ApiController]
-    public class ImageController(IBLLImage bLL) : ApiResponseHelper
+    public class ImageController(BLLImage bLL) : ApiResponseHelper
     {
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] CreateImageRequest createImageRequest)

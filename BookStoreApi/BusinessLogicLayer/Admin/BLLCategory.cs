@@ -1,5 +1,4 @@
-﻿using BookStoreApi.BusinessLogicLayer.Interfaces.Admin;
-using BookStoreApi.Database.Interfaces;
+﻿using BookStoreApi.Database.Interfaces;
 using BookStoreApi.Database.Models;
 using BookStoreApi.RequestHandler.Admin.Mappers;
 using BookStoreApi.RequestHandler.Admin.QueryObjects.Category;
@@ -8,7 +7,7 @@ using BookStoreApi.RequestHandler.Admin.Responses.Category;
 
 namespace BookStoreApi.BusinessLogicLayer.Admin
 {
-    public class BLLCategory(ICategoryRepository repo) : IBLLCategory
+    public class BLLCategory(ICategoryRepository repo)
     {
         public async Task<(List<Category> categories, CPaginationInfo pagination)> GetAllAsync(QCategoryGetAll query)
         {

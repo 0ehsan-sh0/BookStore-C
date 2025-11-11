@@ -1,12 +1,11 @@
-﻿using BookStoreApi.BusinessLogicLayer.Interfaces;
-using BookStoreApi.Database.Interfaces;
+﻿using BookStoreApi.Database.Interfaces;
 using BookStoreApi.Database.Models;
 using BookStoreApi.Services;
 using BookStoreApi.Services.Models;
 
 namespace BookStoreApi.BusinessLogicLayer
 {
-    public class BLLAuth(IUserRepository userRepository) : IBLLAuth
+    public class BLLAuth(IUserRepository userRepository)
     {
         public async Task<bool> UserExist(string mobile)
         {
@@ -22,7 +21,7 @@ namespace BookStoreApi.BusinessLogicLayer
             user = new User()
             {
                 Mobile = user.Mobile,
-                Password = PasswordHasherService.HashPassword(user.Password),
+                Password = PasswordHasher.HashPassword(user.Password),
             };
 
             var result = await userRepository.CreateAsync(user);
@@ -50,7 +49,7 @@ namespace BookStoreApi.BusinessLogicLayer
         {
             var user = await userRepository.GetByMobileAsync(mobile);
 
-            if (user is null || !PasswordHasherService.VerifyPassword(password, user.Password))
+            if (user is null || !PasswordHasher.VerifyPassword(password, user.Password))
                 return null;
 
             await userRepository.UpdateLoggedInAt(user.Mobile);

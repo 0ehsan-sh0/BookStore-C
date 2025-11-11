@@ -1,4 +1,4 @@
-﻿using BookStoreApi.BusinessLogicLayer.Interfaces.Admin;
+﻿using BookStoreApi.BusinessLogicLayer.Admin;
 using BookStoreApi.RequestHandler.Admin.Mappers;
 using BookStoreApi.RequestHandler.Admin.QueryObjects.Comment;
 using BookStoreApi.RequestHandler.Admin.Responses.Comment;
@@ -8,7 +8,7 @@ namespace BookStoreApi.Controllers.Admin
 {
     [Route("api/admin/[controller]")]
     [ApiController]
-    public class CommentController(IBLLComment bLL) : ApiResponseHelper
+    public class CommentController(BLLComment bLL) : ApiResponseHelper
     {
         [HttpGet]
         public async Task<IActionResult> GetAllAsync([FromQuery] QCommentGetAll query)

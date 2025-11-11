@@ -1,7 +1,5 @@
 using BookStoreApi.BusinessLogicLayer;
 using BookStoreApi.BusinessLogicLayer.Admin;
-using BookStoreApi.BusinessLogicLayer.Interfaces;
-using BookStoreApi.BusinessLogicLayer.Interfaces.Admin;
 using BookStoreApi.Database.Interfaces;
 using BookStoreApi.Database.Repositories;
 using BookStoreApi.Services;
@@ -59,29 +57,29 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddSingleton(typeof(BookStoreApi.Database.DapperUtility));
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<IBLLCategory, BLLCategory>();
+builder.Services.AddScoped<BLLCategory>();
 
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
-builder.Services.AddScoped<IBLLAuthor, BLLAuthor>();
+builder.Services.AddScoped<BLLAuthor>();
 
 builder.Services.AddScoped<ITranslatorRepository, TranslatorRepository>();
-builder.Services.AddScoped<IBLLTranslator, BLLTranslator>();
+builder.Services.AddScoped<BLLTranslator>();
 
 builder.Services.AddScoped<IBookRepository, BookRepository>();
-builder.Services.AddScoped<IBLLBook, BLLBook>();
-builder.Services.AddScoped<BookStoreApi.BusinessLogicLayer.Interfaces.Public.IBLLBook, BookStoreApi.BusinessLogicLayer.Public.BLLBook>();
+builder.Services.AddScoped<BLLBook>();
+builder.Services.AddScoped<BookStoreApi.BusinessLogicLayer.Public.BLLBook>();
 
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
-builder.Services.AddScoped<IBLLImage, BLLImage>();
+builder.Services.AddScoped<BLLImage>();
 
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
-builder.Services.AddScoped<IBLLComment, BLLComment>();
+builder.Services.AddScoped<BLLComment>();
 
 builder.Services.AddScoped<ITagRepository, TagRepository>();
-builder.Services.AddScoped<IBLLTag, BLLTag>();
+builder.Services.AddScoped<BLLTag>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IBLLAuth, BLLAuth>();
+builder.Services.AddScoped<BLLAuth>();
 
 // -------------------------
 // JWT service

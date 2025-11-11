@@ -1,4 +1,4 @@
-﻿using BookStoreApi.BusinessLogicLayer.Interfaces.Admin;
+﻿using BookStoreApi.BusinessLogicLayer.Admin;
 using BookStoreApi.RequestHandler.Admin.Mappers;
 using BookStoreApi.RequestHandler.Admin.QueryObjects.Author;
 using BookStoreApi.RequestHandler.Admin.Requests.Author;
@@ -9,7 +9,7 @@ namespace BookStoreApi.Controllers.Admin
 {
     [Route("api/admin/[controller]")]
     [ApiController]
-    public class AuthorController(IBLLAuthor bLL) : ApiResponseHelper
+    public class AuthorController(BLLAuthor bLL) : ApiResponseHelper
     {
         [HttpGet]
         public async Task<IActionResult> GetAllAsync([FromQuery] QAuthorGetAll query)

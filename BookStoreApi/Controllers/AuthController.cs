@@ -1,4 +1,4 @@
-﻿using BookStoreApi.BusinessLogicLayer.Interfaces;
+﻿using BookStoreApi.BusinessLogicLayer;
 using BookStoreApi.Database.Models;
 using BookStoreApi.RequestHandler.Auth.Requests;
 using BookStoreApi.RequestHandler.User.Mappers;
@@ -13,7 +13,7 @@ namespace BookStoreApi.Controllers
     public class AuthController(
         ISmsIrService smsService,
         JWTService jWTService,
-        IBLLAuth bLLAuth,
+        BLLAuth bLLAuth,
         IWebHostEnvironment env
     ) : ApiResponseHelper
     {

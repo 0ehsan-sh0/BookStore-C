@@ -1,5 +1,4 @@
-﻿using BookStoreApi.BusinessLogicLayer.Interfaces.Admin;
-using BookStoreApi.Database.Interfaces;
+﻿using BookStoreApi.Database.Interfaces;
 using BookStoreApi.Database.Models;
 using BookStoreApi.RequestHandler.Admin.Mappers;
 using BookStoreApi.RequestHandler.Admin.QueryObjects.Book;
@@ -10,7 +9,7 @@ using ImageInfo = BookStoreApi.Services.Models.ImageInfo;
 
 namespace BookStoreApi.BusinessLogicLayer.Admin
 {
-    public class BLLBook(IBookRepository repo, IAuthorRepository authorRepo, ITranslatorRepository translatorRepo, ICategoryRepository categoryRepo, ITagRepository tagRepo) : IBLLBook
+    public class BLLBook(IBookRepository repo, IAuthorRepository authorRepo, ITranslatorRepository translatorRepo, ICategoryRepository categoryRepo, ITagRepository tagRepo)
     {
         public async Task<List<ImageInfo>?> UploadImages(List<IFormFile> images)
         {
@@ -163,10 +162,10 @@ namespace BookStoreApi.BusinessLogicLayer.Admin
 
         }
 
-        public async Task<(List<BookAllData>? books, BPaginationInfo pagination)> GetAllAsync(QBookGetAll query)
+        public async Task<(List<BookAllData>? books, BPaginationInfo info)> GetAllAsync(QBookGetAll query)
         {
-            var (books, pagination) = await repo.GetAllAsync(query);
-            return (books, pagination);
+            var (books, info) = await repo.GetAllAsync(query);
+            return (books, info);
         }
 
         public async Task<BookAllData?> GetByIdAsync(int id)

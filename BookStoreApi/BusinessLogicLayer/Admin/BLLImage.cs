@@ -1,5 +1,4 @@
-﻿using BookStoreApi.BusinessLogicLayer.Interfaces.Admin;
-using BookStoreApi.Database.Interfaces;
+﻿using BookStoreApi.Database.Interfaces;
 using BookStoreApi.Database.Models;
 using BookStoreApi.RequestHandler.Admin.Requests.Image;
 using BookStoreApi.Services;
@@ -7,7 +6,7 @@ using BookStoreApi.Services.Models;
 
 namespace BookStoreApi.BusinessLogicLayer.Admin
 {
-    public class BLLImage(IImageRepository repo) : IBLLImage
+    public class BLLImage(IImageRepository repo)
     {
         public async Task<List<ImageInfo>?> UploadImages(List<IFormFile> images)
         {

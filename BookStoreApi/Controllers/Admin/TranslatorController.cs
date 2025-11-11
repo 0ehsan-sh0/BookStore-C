@@ -1,4 +1,4 @@
-﻿using BookStoreApi.BusinessLogicLayer.Admin;
+﻿using BookStoreApi.BusinessLogicLayer.Interfaces.Admin;
 using BookStoreApi.RequestHandler.Admin.Mappers;
 using BookStoreApi.RequestHandler.Admin.QueryObjects.Translator;
 using BookStoreApi.RequestHandler.Admin.Requests.Translator;
@@ -9,7 +9,7 @@ namespace BookStoreApi.Controllers.Admin
 {
     [Route("api/admin/[controller]")]
     [ApiController]
-    public class TranslatorController(BLLTranslator bLL) : ApiResponseHelper
+    public class TranslatorController(IBLLTranslator bLL) : ApiResponseHelper
     {
         [HttpGet]
         public async Task<IActionResult> GetAllAsync([FromQuery] QTranslatorGetAll query)

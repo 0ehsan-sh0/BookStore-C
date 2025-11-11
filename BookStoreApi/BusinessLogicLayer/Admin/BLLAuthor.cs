@@ -1,4 +1,5 @@
-﻿using BookStoreApi.Database.Interfaces;
+﻿using BookStoreApi.BusinessLogicLayer.Interfaces.Admin;
+using BookStoreApi.Database.Interfaces;
 using BookStoreApi.Database.Models;
 using BookStoreApi.RequestHandler.Admin.Mappers;
 using BookStoreApi.RequestHandler.Admin.QueryObjects.Author;
@@ -7,7 +8,7 @@ using BookStoreApi.RequestHandler.Admin.Responses.Author;
 
 namespace BookStoreApi.BusinessLogicLayer.Admin
 {
-    public class BLLAuthor(IAuthorRepository repo)
+    public class BLLAuthor(IAuthorRepository repo) : IBLLAuthor
     {
         public async Task<(List<Author> authors, APaginationInfo pagination)> GetAllAsync(QAuthorGetAll query)
         {

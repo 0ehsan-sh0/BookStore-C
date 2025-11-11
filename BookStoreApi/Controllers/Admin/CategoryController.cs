@@ -1,4 +1,4 @@
-﻿using BookStoreApi.BusinessLogicLayer.Admin;
+﻿using BookStoreApi.BusinessLogicLayer.Interfaces.Admin;
 using BookStoreApi.RequestHandler.Admin.Mappers;
 using BookStoreApi.RequestHandler.Admin.QueryObjects.Category;
 using BookStoreApi.RequestHandler.Admin.Requests.Category;
@@ -11,7 +11,7 @@ namespace BookStoreApi.Controllers.Admin
     [Route("api/admin/[controller]")]
     [Authorize(Roles = "Admin")]
     [ApiController]
-    public class CategoryController(BLLCategory bLL) : ApiResponseHelper
+    public class CategoryController(IBLLCategory bLL) : ApiResponseHelper
     {
         [HttpGet]
         public async Task<IActionResult> GetAllAsync([FromQuery] QCategoryGetAll query)

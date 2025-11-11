@@ -1,11 +1,12 @@
-﻿using BookStoreApi.Database.Interfaces;
+﻿using BookStoreApi.BusinessLogicLayer.Interfaces.Admin;
+using BookStoreApi.Database.Interfaces;
 using BookStoreApi.Database.Models;
 using BookStoreApi.RequestHandler.Admin.QueryObjects.Comment;
 using BookStoreApi.RequestHandler.Admin.Responses.Comment;
 
 namespace BookStoreApi.BusinessLogicLayer.Admin
 {
-    public class BLLComment(ICommentRepository repo)
+    public class BLLComment(ICommentRepository repo) : IBLLComment
     {
         public async Task<(List<CommentInfo> comments, COPaginationInfo pagination)> GetAllAsync(QCommentGetAll query)
         {

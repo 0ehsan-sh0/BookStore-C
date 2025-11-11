@@ -1,4 +1,4 @@
-﻿using BookStoreApi.BusinessLogicLayer.Public;
+﻿using BookStoreApi.BusinessLogicLayer.Interfaces.Public;
 using BookStoreApi.RequestHandler.Public.Mappers;
 using BookStoreApi.RequestHandler.Public.QueryObjects.Book;
 using BookStoreApi.RequestHandler.Public.Responses.Book;
@@ -8,7 +8,7 @@ namespace BookStoreApi.Controllers.Public
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BookController(BLLBook bLL) : ApiResponseHelper
+    public class BookController(IBLLBook bLL) : ApiResponseHelper
     {
         [HttpGet]
         public async Task<IActionResult> GetNewAsync([FromQuery] QPBookGetAll query)

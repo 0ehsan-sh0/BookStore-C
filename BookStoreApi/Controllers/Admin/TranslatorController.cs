@@ -3,11 +3,13 @@ using BookStoreApi.RequestHandler.Admin.Mappers;
 using BookStoreApi.RequestHandler.Admin.QueryObjects.Translator;
 using BookStoreApi.RequestHandler.Admin.Requests.Translator;
 using BookStoreApi.RequestHandler.Admin.Responses.Translator;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookStoreApi.Controllers.Admin
 {
     [Route("api/admin/[controller]")]
+    [Authorize(Roles = "Admin")]
     [ApiController]
     public class TranslatorController(IBLLTranslator bLL) : ApiResponseHelper
     {

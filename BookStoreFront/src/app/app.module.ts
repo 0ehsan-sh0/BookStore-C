@@ -93,6 +93,7 @@ import { ContactUsComponent } from './public/contact-us/contact-us.component';
 import { AlertService } from './ui-service/alert.service';
 import { LoginComponent } from './public/login/login.component';
 import { RegisterComponent } from './public/register/register.component';
+import { authCredentialsInterceptor } from './interceptors/auth-credentials.interceptor';
 
 @NgModule({
   declarations: [
@@ -184,7 +185,7 @@ import { RegisterComponent } from './public/register/register.component';
   providers: [
     provideHttpClient(withInterceptorsFromDi()),
     { provide: API_URL, useValue: environment.apiUrl },
-    provideHttpClient(withInterceptors([baseUrlInterceptor])),
+    provideHttpClient(withInterceptors([baseUrlInterceptor,authCredentialsInterceptor])),
     AlertService,
   ],
   bootstrap: [AppComponent],

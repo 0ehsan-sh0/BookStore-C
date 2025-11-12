@@ -1,11 +1,13 @@
 ﻿using BookStoreApi.BusinessLogicLayer.Interfaces.Admin;
 using BookStoreApi.RequestHandler.Admin.Mappers;
 using BookStoreApi.RequestHandler.Admin.Requests.Image;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookStoreApi.Controllers.Admin
 {
     [Route("api/admin/[controller]")]
+    [Authorize(Roles = "Admin")]
     [ApiController]
     public class ImageController(IBLLImage bLL) : ApiResponseHelper
     {

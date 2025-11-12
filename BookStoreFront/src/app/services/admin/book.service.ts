@@ -37,7 +37,7 @@ export class BookService {
       .set('PageSize', pageSize.toString())
       .set('Search', search);
     this.http
-      .get<ApiResponse<BookListResponse>>(`${this.apiUrl}`, { params })
+      .get<ApiResponse<BookListResponse>>(`${this.apiUrl}`, { params})
       .subscribe({
         next: (response) => {
           this.books.next([...(response.data?.books ?? [])]);
@@ -63,7 +63,7 @@ export class BookService {
   }
 
   create(book: FormData) {
-    this.http.post<ApiResponse<BookAllData>>(`${this.apiUrl}`, book).subscribe({
+    this.http.post<ApiResponse<BookAllData>>(`${this.apiUrl}`, {book}).subscribe({
       next: (res) => {
         this.books.next([res.data!, ...this.books.value]);
         this.createErrors.set([]); // clear errors
@@ -79,7 +79,7 @@ export class BookService {
 
   update(book: UpdateBookRequest, id: number) {
     this.http
-      .put<ApiResponse<BookAllData>>(`${this.apiUrl}/${id}`, book)
+      .put<ApiResponse<BookAllData>>(`${this.apiUrl}/${id}`, {book})
       .subscribe({
         next: (res) => {
           this.books.next(

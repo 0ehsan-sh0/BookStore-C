@@ -110,9 +110,7 @@ export class AuthService {
       .post<ApiResponse<LogoutResponse>>(
         `${this.apiUrl}/logout`,
         {},
-        {
-          withCredentials: true,
-        }
+        {}
       )
       .subscribe({
         next: () => {
@@ -134,9 +132,7 @@ export class AuthService {
 
   checkAuthStatus() {
     return this.http
-      .get<ApiResponse<MeResponse>>(`${this.apiUrl}/me`, {
-        withCredentials: true, // important!
-      })
+      .get<ApiResponse<MeResponse>>(`${this.apiUrl}/me`)
       .pipe(
         tap({
           next: (response) => {

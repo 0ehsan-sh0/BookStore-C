@@ -4,9 +4,11 @@ using BookStoreApi.RequestHandler.Admin.Mappers;
 using BookStoreApi.RequestHandler.Admin.QueryObjects.Tag;
 using BookStoreApi.RequestHandler.Admin.Requests.Tag;
 using BookStoreApi.RequestHandler.Admin.Responses.Tag;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 [Route("api/admin/[controller]")]
+[Authorize(Roles = "Admin")]
 [ApiController]
 public class TagController(IBLLTag bLL) : ApiResponseHelper
 {

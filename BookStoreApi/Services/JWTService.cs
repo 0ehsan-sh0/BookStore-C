@@ -21,8 +21,8 @@ namespace BookStoreApi.Services
                 Subject = new ClaimsIdentity(
                 [
                     new Claim(JwtRegisteredClaimNames.Name, username.Trim()),
-                    new Claim(JwtRegisteredClaimNames.Sub,username.Trim()),
-                    new Claim(ClaimTypes.Role, role.Trim())
+                    new Claim(ClaimTypes.Role, role.Trim()),
+                    new Claim(ClaimTypes.Name, username.Trim())
                 ]),
                 Expires = tokenExpiryTimeStamp,
                 Issuer = issuer,

@@ -4,6 +4,7 @@ using BookStoreApi.RequestHandler.Auth.Requests;
 using BookStoreApi.RequestHandler.User.Mappers;
 using BookStoreApi.Services;
 using BookStoreApi.Services.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookStoreApi.Controllers
@@ -24,8 +25,8 @@ namespace BookStoreApi.Controllers
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = !_isDev, // secure in prod, false in dev
-                SameSite = _isDev ? SameSiteMode.Lax : SameSiteMode.Strict,
+                Secure = true, // secure in prod, false in dev
+                SameSite = _isDev ? SameSiteMode.None : SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddSeconds(expiresInSeconds),
                 Path = "/"
             };
@@ -120,6 +121,7 @@ namespace BookStoreApi.Controllers
         }
 
         [HttpGet("me")]
+        [Authorize]
         public async Task<IActionResult> GetCurrentUser()
         {
             var mobile = User?.Identity?.Name;

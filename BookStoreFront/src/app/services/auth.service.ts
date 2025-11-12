@@ -140,6 +140,8 @@ export class AuthService {
       .pipe(
         tap({
           next: (response) => {
+            console.log(response);
+            
             this.user.next({
               username: response.data!.mobile,
               accessToken: '', // we don't need it in frontend

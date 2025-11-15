@@ -32,7 +32,7 @@ public class TagController(IBLLTag bLL) : ApiResponseHelper
     {
         var tag = await bLL.GetByIdAsync(id);
         return tag is null
-            ? SuccessResponse("تگ مورد نظر یافت نشد", null, 404)
+            ? NotFound()
             : SuccessResponse("اطلاعات با موفقیت دریافت شد", tag.ToRTag());
     }
 
@@ -41,7 +41,7 @@ public class TagController(IBLLTag bLL) : ApiResponseHelper
     {
         var (isValid, errors) = ModelStateValidation();
         if (!isValid)
-            return SuccessResponse("اطلاعات به درستی وارد نشده است", errors, 400);
+            return BadRequest(errors);
 
         var (message, tag, status) = await bLL.Create(createTagRequest);
         return SuccessResponse(message, tag?.ToRTag(), status);
@@ -52,7 +52,7 @@ public class TagController(IBLLTag bLL) : ApiResponseHelper
     {
         var (isValid, errors) = ModelStateValidation();
         if (!isValid)
-            return SuccessResponse("اطلاعات به درستی وارد نشده است", errors, 400);
+            return BadRequest(errors);
 
         var (message, tag, status) = await bLL.Update(id, UTag);
         return SuccessResponse(message, tag?.ToRTag(), status);

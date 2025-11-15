@@ -25,7 +25,7 @@ namespace BookStoreApi.Controllers
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true, // secure in prod, false in dev
+                Secure = !_isDev, // secure in production
                 SameSite = _isDev ? SameSiteMode.None : SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddSeconds(expiresInSeconds),
                 Path = "/"
@@ -49,7 +49,7 @@ namespace BookStoreApi.Controllers
 
             Console.WriteLine($"[DEBUG] Verification code for {request.Mobile}: {code}");
 
-            return Created(string.Empty, new { message = "کد تایید ارسال شد" });
+            return SuccessResponse("کد تایید ارسال شد", null, 201);
         }
 
         [HttpPost("register")]
@@ -67,9 +67,8 @@ namespace BookStoreApi.Controllers
             var loginResponse = jWTService.Authenticate(user.Mobile, user.Role.ToString());
             SetJwtCookie(loginResponse.AccessToken, loginResponse.ExpiresIn);
 
-            return Ok(new
+            return SuccessResponse("ثبت نام و ورود با موفقیت انجام شد", new
             {
-                message = "ثبت نام و ورود با موفقیت انجام شد",
                 username = loginResponse.Username,
                 expiresIn = loginResponse.ExpiresIn
             });
@@ -98,9 +97,8 @@ namespace BookStoreApi.Controllers
             var loginResponse = jWTService.Authenticate(user.Mobile, user.Role.ToString());
             SetJwtCookie(loginResponse.AccessToken, loginResponse.ExpiresIn);
 
-            return Ok(new
+            return SuccessResponse("ورود با موفقیت انجام شد", new
             {
-                message = "ورود با موفقیت انجام شد",
                 username = loginResponse.Username,
                 expiresIn = loginResponse.ExpiresIn
             });
@@ -117,7 +115,7 @@ namespace BookStoreApi.Controllers
                 Path = "/"
             });
 
-            return Ok(new { message = "خروج با موفقیت انجام شد." });
+            return SuccessResponse("خروج با موفقیت انجام شد.", null);
         }
 
         [HttpGet("me")]
@@ -132,11 +130,7 @@ namespace BookStoreApi.Controllers
             if (user == null)
                 return NotFound("کاربر یافت نشد");
 
-            return Ok(new
-            {
-                message = "اطلاعات کاربر",
-                data = user.ToRUser()
-            });
+            return SuccessResponse("اطلاعات کاربر", user.ToRUser());
         }
     }
 }

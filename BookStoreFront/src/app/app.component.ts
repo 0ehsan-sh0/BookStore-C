@@ -14,18 +14,18 @@ export class AppComponent {
   vcRef!: ViewContainerRef;
   title = 'BookStoreFront';
   theme = 'cupcake';
-    constructor(
-      private alertService: AlertService, 
-      private themeController: ThemeControllerService,
-      private authService: AuthService
-    ) {}
-    ngOnInit() {
+  constructor(
+    private alertService: AlertService,
+    private themeController: ThemeControllerService,
+    private authService: AuthService
+  ) {}
+  ngOnInit() {
     this.themeController.theme.subscribe((theme) => {
       this.theme = theme;
       document.documentElement.setAttribute('data-theme', theme);
     });
 
-      this.authService.checkAuthStatus().subscribe();
+    this.authService.initUser();
   }
 
   ngAfterViewInit() {

@@ -15,11 +15,13 @@ import { AboutUsComponent } from './public/about-us/about-us.component';
 import { ContactUsComponent } from './public/contact-us/contact-us.component';
 import { LoginComponent } from './public/login/login.component';
 import { RegisterComponent } from './public/register/register.component';
+import { adminGuard } from './guards/admin/admin.guard';
 
 const routes: Routes = [
   {
     path: 'admin',
     component: AdminComponent,
+    canActivate: [adminGuard],
     children: [
       { path: 'author', component: AuthorComponent },
       { path: 'translator', component: TranslatorComponent },

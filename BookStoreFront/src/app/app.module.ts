@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -94,6 +94,7 @@ import { AlertService } from './ui-service/alert.service';
 import { LoginComponent } from './public/login/login.component';
 import { RegisterComponent } from './public/register/register.component';
 import { authCredentialsInterceptor } from './interceptors/auth-credentials.interceptor';
+import { AuthService } from './services/auth.service';
 
 @NgModule({
   declarations: [
@@ -135,7 +136,7 @@ import { authCredentialsInterceptor } from './interceptors/auth-credentials.inte
     AboutUsComponent,
     ContactUsComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
   ],
   imports: [
     BrowserModule,
@@ -178,15 +179,16 @@ import { authCredentialsInterceptor } from './interceptors/auth-credentials.inte
       User,
       LogOut,
       LogIn,
-      AlertCircle
+      AlertCircle,
     }),
     FormsModule,
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),
     { provide: API_URL, useValue: environment.apiUrl },
-    provideHttpClient(withInterceptors([baseUrlInterceptor,authCredentialsInterceptor])),
-    AlertService,
+    provideHttpClient(
+      withInterceptors([baseUrlInterceptor, authCredentialsInterceptor])
+    ),
   ],
   bootstrap: [AppComponent],
 })

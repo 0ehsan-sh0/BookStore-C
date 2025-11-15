@@ -17,9 +17,7 @@ export class PublicHeaderComponent {
     private themeController: ThemeControllerService,
     private authService: AuthService,
     private router: Router
-  ) {
-      this.authService.checkAuthStatus();
-  }
+  ) {}
 
   toggleTheme() {
     this.themeController.toggleTheme();

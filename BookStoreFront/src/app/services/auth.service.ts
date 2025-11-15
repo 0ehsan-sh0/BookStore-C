@@ -15,6 +15,7 @@ import {
   MeResponse,
 } from '../models/auth';
 import { ApiResponse } from '../models/apiResponse';
+import { User } from '../models/user';
 
 @Injectable({
   providedIn: 'root',
@@ -29,7 +30,8 @@ export class AuthService {
     private router: Router
   ) {}
 
-  user = new BehaviorSubject<LoginResponse | null>(null);
+  user = new BehaviorSubject<User | null>(null);
+  loginResponse = new BehaviorSubject<LoginResponse | null>(null);
   isLoggedIn$ = new BehaviorSubject<boolean>(false);
   loginErrors: string[] = [];
   registerErrors: string[] = [];
@@ -51,9 +53,12 @@ export class AuthService {
       .subscribe({
         next: (response) => {
           // The access token will be stored in a cookie by the backend
-          this.user.next(response.data!);
+          this.loginResponse.next(response.data!);
           this.isLoggedIn$.next(true);
           this.loginErrors = [];
+          this.checkAuthStatus().subscribe(() => {
+            this.router.navigate(['/']);
+          });
           this.alertService.show('شما با موفقیت وارد شدید.', 'success');
         },
         error: (err) => {
@@ -63,9 +68,6 @@ export class AuthService {
   }
 
   register(mobile: string, password: string, code: string) {
-    this.checkAuthStatus().subscribe(() => {
-      this.router.navigate(['/']);
-    });
     const request: RegisterRequest = {
       mobile,
       password,
@@ -79,9 +81,12 @@ export class AuthService {
       .subscribe({
         next: (response) => {
           // The access token will be stored in a cookie by the backend
-          this.user.next(response.data as LoginResponse); // Cast to LoginResponse since they share similar structure
+          this.loginResponse.next(response.data as LoginResponse); // Cast to LoginResponse since they share similar structure
           this.isLoggedIn$.next(true);
           this.registerErrors = [];
+          this.checkAuthStatus().subscribe(() => {
+            this.router.navigate(['/']);
+          });
           this.alertService.show('ثبت نام با موفقیت انجام شد', 'success');
         },
         error: (err) => {
@@ -107,16 +112,14 @@ export class AuthService {
 
   logout() {
     this.http
-      .post<ApiResponse<LogoutResponse>>(
-        `${this.apiUrl}/logout`,
-        {},
-        {}
-      )
+      .post<ApiResponse<LogoutResponse>>(`${this.apiUrl}/logout`, {}, {})
       .subscribe({
         next: () => {
           // Clear user data
-          this.user.next(null);
+          this.loginResponse.next(null);
+          localStorage.removeItem('user');
           this.isLoggedIn$.next(false);
+          this.user.next(null);
           // Remove the access token cookie
           document.cookie =
             'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
@@ -130,26 +133,25 @@ export class AuthService {
       });
   }
 
+  initUser() {
+    this.checkAuthStatus().subscribe();
+  }
+
   checkAuthStatus() {
-    return this.http
-      .get<ApiResponse<MeResponse>>(`${this.apiUrl}/me`)
-      .pipe(
-        tap({
-          next: (response) => {
-            console.log(response);
-            
-            this.user.next({
-              username: response.data!.mobile,
-              accessToken: '', // we don't need it in frontend
-              expiresIn: 0,
-            });
-            this.isLoggedIn$.next(true);
-          },
-          error: () => {
-            this.user.next(null);
-            this.isLoggedIn$.next(false);
-          },
-        })
-      );
+    return this.http.get<ApiResponse<User>>(`${this.apiUrl}/me`).pipe(
+      tap({
+        next: (response) => {
+          this.user.next(response.data!);
+          // Save to localStorage
+          localStorage.setItem('user', JSON.stringify(response.data!));
+          this.isLoggedIn$.next(true);
+        },
+        error: () => {
+          this.user.next(null);
+          localStorage.removeItem('user');
+          this.isLoggedIn$.next(false);
+        },
+      })
+    );
   }
 }

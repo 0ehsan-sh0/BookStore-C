@@ -25,7 +25,7 @@ namespace BookStoreApi.Controllers
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = !_isDev, // secure in production
+                Secure = true, // secure in production
                 SameSite = _isDev ? SameSiteMode.None : SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddSeconds(expiresInSeconds),
                 Path = "/"
@@ -110,8 +110,8 @@ namespace BookStoreApi.Controllers
             Response.Cookies.Delete("access_token", new CookieOptions
             {
                 HttpOnly = true,
-                Secure = !_isDev,
-                SameSite = _isDev ? SameSiteMode.Lax : SameSiteMode.None,
+                Secure = true,
+                SameSite = _isDev ? SameSiteMode.None : SameSiteMode.Strict,
                 Path = "/"
             });
 

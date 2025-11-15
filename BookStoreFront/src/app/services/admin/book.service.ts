@@ -37,7 +37,7 @@ export class BookService {
       .set('PageSize', pageSize.toString())
       .set('Search', search);
     this.http
-      .get<ApiResponse<BookListResponse>>(`${this.apiUrl}`, { params})
+      .get<ApiResponse<BookListResponse>>(`${this.apiUrl}`, { params })
       .subscribe({
         next: (response) => {
           this.books.next([...(response.data?.books ?? [])]);

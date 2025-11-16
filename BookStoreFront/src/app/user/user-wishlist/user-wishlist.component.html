@@ -1,0 +1,43 @@
+<!-- Wishlist section -->
+<div data-section-panel="wishlist" class="section-panel">
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="text-2xl font-bold">علاقه‌مندی‌ها</h2>
+        <div class="text-sm text-gray-500">کتاب‌های ذخیره شده توسط شما</div>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <!-- example book card (repeat or render) -->
+        <div class="card bg-base-200 w-46 h-90 shadow-sm flex-shrink-0 cursor-pointer hover:shadow-primary hover:shadow-md transition"
+        >
+                <figure>
+                    <!-- Default placeholder image -->
+                    <img class="h-50 object-cover" src="https://placehold.co/300x400?text=No+Image"
+                        alt="کتاب" />
+                </figure>
+
+                <div class="card-body py-0">
+                    <h2 class="card-title truncate mt-2">کتاب</h2>
+                    <p class="truncate text-gray-500">نویسنده</p>
+
+                    <div class="flex mb-5">
+                        <div class="flex flex-col text-right flex-1">
+                            <!-- Show a fake discount example -->
+                            <span class="text-sm text-gray-500 line-through">
+                                 تومان 125000
+                            </span>
+
+                            <div class="indicator">
+                                <span
+                                    class="indicator-item indicator-end badge badge-sm md:badge-md badge-error text-white">
+                                    20%
+                                </span>
+                                <span class="text-lg font-bold"> 100000 تومان</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        <!-- add more cards -->
+    </div>
+</div>

@@ -146,10 +146,11 @@ export class AuthService {
           localStorage.setItem('user', JSON.stringify(response.data!));
           this.isLoggedIn$.next(true);
         },
-        error: () => {
+        error: (err) => {
           this.user.next(null);
           localStorage.removeItem('user');
           this.isLoggedIn$.next(false);
+          this.errorHandler.handleError(err);
         },
       })
     );

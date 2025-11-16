@@ -9,6 +9,7 @@ namespace BookStoreApi.Database.Interfaces
         Task<User?> GetByMobileAsync(string mobile);
         Task<int> CreateAsync(User user);
         Task<User?> UpdateAsync(User userWithId);
+        Task<User?> UpdateByMobileAsync(User userWithMobile);
         Task<bool> DeleteAsync(int id);
         Task<bool> UpdateLoggedInAt(string mobile);
     }

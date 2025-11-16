@@ -15,7 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\User\" />
     <Folder Include="Database\DBModels\" />
     <Folder Include="RequestHandler\Admin\Requests\Comment\" />
     <Folder Include="RequestHandler\Public\Requests\" />

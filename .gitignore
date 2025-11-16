@@ -48,6 +48,9 @@ Generated\ Files/
 # Images folder
 wwwroot/images/**
 
+# AI files
+GEMINI.md
+
 # NUnit
 *.VisualState.xml
 TestResult.xml

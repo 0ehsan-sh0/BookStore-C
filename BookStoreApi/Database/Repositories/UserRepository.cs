@@ -91,6 +91,24 @@ namespace BookStoreApi.Database.Repositories
             return null;
         }
 
+        public async Task<User?> UpdateByMobileAsync(User userWithMobile)
+        {
+            string sql = @"Update U
+                           set Name = @Name,LastName = @LastName
+                           FROM Users U
+                           WHERE Mobile = @Mobile and DeletedAt IS NULL";
+            using var connection = dapperUtility.GetConnection();
+            var parameters = new
+            {
+                userWithMobile.Name,
+                userWithMobile.LastName,
+                userWithMobile.Mobile,
+            };
+            bool result = await connection.ExecuteAsync(sql, parameters) >= 0;
+            if (result) return await GetByMobileAsync(userWithMobile.Mobile);
+            return null;
+        }
+
         public async Task<bool> UpdateLoggedInAt(string mobile)
         {
             string sql = @"Update U

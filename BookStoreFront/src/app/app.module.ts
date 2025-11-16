@@ -95,6 +95,13 @@ import { LoginComponent } from './public/login/login.component';
 import { RegisterComponent } from './public/register/register.component';
 import { authCredentialsInterceptor } from './interceptors/auth-credentials.interceptor';
 import { AuthService } from './services/auth.service';
+import { UserPublicComponent } from './user/user-public/user-public.component';
+import { SidebarUserComponent } from './user/sidebar-user/sidebar-user.component';
+import { UserProfileComponent } from './user/user-profile/user-profile.component';
+import { UserOrdersComponent } from './user/user-orders/user-orders.component';
+import { UserWishlistComponent } from './user/user-wishlist/user-wishlist.component';
+import { UserAddressesComponent } from './user/user-addresses/user-addresses.component';
+import { UserSettingComponent } from './user/user-setting/user-setting.component';
 
 @NgModule({
   declarations: [
@@ -137,7 +144,14 @@ import { AuthService } from './services/auth.service';
     ContactUsComponent,
     LoginComponent,
     RegisterComponent,
-  ],
+    UserPublicComponent,
+    SidebarUserComponent,
+    UserProfileComponent,
+    UserOrdersComponent,
+    UserWishlistComponent,
+    UserAddressesComponent,
+    UserSettingComponent,
+    ],
   imports: [
     BrowserModule,
     AppRoutingModule,

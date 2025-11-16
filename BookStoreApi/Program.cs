@@ -2,6 +2,8 @@ using BookStoreApi.BusinessLogicLayer;
 using BookStoreApi.BusinessLogicLayer.Admin;
 using BookStoreApi.BusinessLogicLayer.Interfaces;
 using BookStoreApi.BusinessLogicLayer.Interfaces.Admin;
+using BookStoreApi.BusinessLogicLayer.Interfaces.UserPanel;
+using BookStoreApi.BusinessLogicLayer.UserPanel;
 using BookStoreApi.Database.Interfaces;
 using BookStoreApi.Database.Repositories;
 using BookStoreApi.Services;
@@ -82,6 +84,7 @@ builder.Services.AddScoped<IBLLTag, BLLTag>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBLLAuth, BLLAuth>();
+builder.Services.AddScoped<IBLLUserPanel, BLLUserPanel>();
 
 // -------------------------
 // JWT service

@@ -16,6 +16,12 @@ import { ContactUsComponent } from './public/contact-us/contact-us.component';
 import { LoginComponent } from './public/login/login.component';
 import { RegisterComponent } from './public/register/register.component';
 import { adminGuard } from './guards/admin/admin.guard';
+import { UserPublicComponent } from './user/user-public/user-public.component';
+import { UserProfileComponent } from './user/user-profile/user-profile.component';
+import { UserOrdersComponent } from './user/user-orders/user-orders.component';
+import { UserWishlistComponent } from './user/user-wishlist/user-wishlist.component';
+import { UserAddressesComponent } from './user/user-addresses/user-addresses.component';
+import { UserSettingComponent } from './user/user-setting/user-setting.component';
 
 const routes: Routes = [
   {
@@ -42,6 +48,17 @@ const routes: Routes = [
       { path: 'contact-us', component: ContactUsComponent },
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
+      {
+        path: 'user',
+        component: UserPublicComponent,
+        children: [
+          { path: '', component: UserProfileComponent },
+          { path: 'orders', component: UserOrdersComponent },
+          { path: 'wishlist', component: UserWishlistComponent },
+          { path: 'addresses', component: UserAddressesComponent },
+          { path: 'settings', component: UserSettingComponent },
+        ],
+      },
     ],
   },
   { path: '**', redirectTo: '' }, // fallback

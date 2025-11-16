@@ -1,5 +1,4 @@
 ﻿using BookStoreApi.BusinessLogicLayer.Interfaces;
-using BookStoreApi.Database.Models;
 using BookStoreApi.RequestHandler.Auth.Requests;
 using BookStoreApi.RequestHandler.User.Mappers;
 using BookStoreApi.Services;
@@ -60,7 +59,7 @@ namespace BookStoreApi.Controllers
 
             VerificationStore.Codes.Remove(request.Mobile);
 
-            var user = await bLLAuth.RegisterAsync(new User { Mobile = request.Mobile, Password = request.Password });
+            var user = await bLLAuth.RegisterAsync(new Database.Models.User { Mobile = request.Mobile, Password = request.Password });
             if (user == null)
                 return StatusCode(500, "خطا در ثبت نام");
 
@@ -77,7 +76,7 @@ namespace BookStoreApi.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            User? user;
+            Database.Models.User? user;
 
             if (!string.IsNullOrWhiteSpace(request.Code))
             {

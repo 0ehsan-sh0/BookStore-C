@@ -29,9 +29,16 @@
 
     <!-- Left -->
     <div class="flex-none">
+        @if (isLoggedIn) {
+        <label for="user-sidebar" class="btn btn-square btn-ghost drawer-button md:hidden">
+            <i-lucide name="user"></i-lucide>
+        </label>
+        }
+
         <button class="btn h-8 w-8 btn-secondary btn-xs">
             <i-lucide name="shopping-cart" size="20"></i-lucide>
         </button>
+        
         <button class="btn btn-sm btn-primary mr-2 hidden md:inline-block" (click)="navigateToAuth()">
             {{ isLoggedIn ? 'خروج' : 'ورود / ثبت نام' }}
         </button>

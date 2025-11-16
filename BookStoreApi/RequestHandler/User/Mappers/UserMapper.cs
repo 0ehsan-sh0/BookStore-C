@@ -1,3 +1,4 @@
+using BookStoreApi.RequestHandler.User.Requests.User;
 using BookStoreApi.RequestHandler.User.Responses.Address;
 using BookStoreApi.RequestHandler.User.Responses.User;
 
@@ -46,6 +47,16 @@ namespace BookStoreApi.RequestHandler.User.Mappers
                     CreatedAt = a.CreatedAt,
                     UpdatedAt = a.UpdatedAt
                 }).ToList()
+            };
+        }
+
+        public static Database.Models.User ToUser(this UpdateUserRequest user, string mobile)
+        {
+            return new Database.Models.User
+            {
+                Mobile = mobile,
+                Name = user.Name,
+                LastName = user.LastName,
             };
         }
     }

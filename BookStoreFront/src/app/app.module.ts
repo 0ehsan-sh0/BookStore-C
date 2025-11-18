@@ -44,6 +44,7 @@ import {
   LogOut,
   LogIn,
   AlertCircle,
+  Home,
 } from 'lucide-angular';
 import { HeaderComponent } from './admin/header/header.component';
 import { SidebarComponent } from './admin/sidebar/sidebar.component';
@@ -102,6 +103,8 @@ import { UserOrdersComponent } from './user/user-orders/user-orders.component';
 import { UserWishlistComponent } from './user/user-wishlist/user-wishlist.component';
 import { UserAddressesComponent } from './user/user-addresses/user-addresses.component';
 import { UserSettingComponent } from './user/user-setting/user-setting.component';
+import { UserHeaderComponent } from './user/user-header/user-header.component';
+import { UserFooterComponent } from './user/user-footer/user-footer.component';
 
 @NgModule({
   declarations: [
@@ -151,6 +154,8 @@ import { UserSettingComponent } from './user/user-setting/user-setting.component
     UserWishlistComponent,
     UserAddressesComponent,
     UserSettingComponent,
+    UserHeaderComponent,
+    UserFooterComponent,
     ],
   imports: [
     BrowserModule,
@@ -194,6 +199,7 @@ import { UserSettingComponent } from './user/user-setting/user-setting.component
       LogOut,
       LogIn,
       AlertCircle,
+      Home
     }),
     FormsModule,
   ],

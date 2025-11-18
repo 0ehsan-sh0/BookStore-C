@@ -4,8 +4,8 @@
         <div class="flex items-center gap-3 mb-4">
             <img src="https://placehold.co/64x64" alt="avatar" class="rounded-full w-16 h-16 object-cover" />
             <div class="text-right">
-                <h3 class="font-bold truncate max-w-45">{{ user?.name ? user?.name : 'نام کاربری وجود ندارد' }} {{ user?.lastName ? user?.lastName : '' }}</h3>
-                <p class="text-sm text-gray-500">مشتری از {{ user?.createdAt! | jalaliDate }}</p>
+                <h3 class="font-bold truncate max-w-45">{{ user.name ? user.name : 'نام کاربری وجود ندارد' }} {{ user.lastName ? user.lastName : '' }}</h3>
+                <p class="text-sm text-gray-500">مشتری از {{ user.createdAt! | jalaliDate }}</p>
             </div>
         </div>
 
@@ -43,7 +43,7 @@
 <div class="drawer z-51">
     <input id="user-sidebar" type="checkbox" class="drawer-toggle" />
     <div class="drawer-side">
-        <label for="public-sidebar" aria-label="close sidebar" class="drawer-overlay"></label>
+        <label for="user-sidebar" aria-label="close sidebar" class="drawer-overlay"></label>
         <ul class="menu bg-base-200 text-base-content min-h-80 min-w-85 sm:w-150 p-4 space-y-3">
             <li><a>پروفایل</a></li>
             <li><a>سفارشات</a></li>

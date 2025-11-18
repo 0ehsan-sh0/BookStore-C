@@ -56,9 +56,8 @@ export class AuthService {
           this.loginResponse.next(response.data!);
           this.isLoggedIn$.next(true);
           this.loginErrors = [];
-          this.checkAuthStatus().subscribe(() => {
-            this.router.navigate(['/']);
-          });
+          this.checkAuthStatus().subscribe();
+          this.router.navigate(['/']);
           this.alertService.show('شما با موفقیت وارد شدید.', 'success');
         },
         error: (err) => {
@@ -84,9 +83,8 @@ export class AuthService {
           this.loginResponse.next(response.data as LoginResponse); // Cast to LoginResponse since they share similar structure
           this.isLoggedIn$.next(true);
           this.registerErrors = [];
-          this.checkAuthStatus().subscribe(() => {
-            this.router.navigate(['/']);
-          });
+          this.checkAuthStatus().subscribe();
+          this.router.navigate(['/']);
           this.alertService.show('ثبت نام با موفقیت انجام شد', 'success');
         },
         error: (err) => {

@@ -11,15 +11,21 @@ import { UserPanelService } from '../../services/user/user-panel.service';
   styleUrl: './user-profile.component.css',
 })
 export class UserProfileComponent {
-  user: User | null = null;
+  user: User = {
+  name: '',
+  lastName: '',
+  mobile: '',
+  // add any other fields your User model requires
+} as User;
 
-  constructor(private authService: AuthService
-    , private userPanelService: UserPanelService
+  constructor(
+    private authService: AuthService,
+    private userPanelService: UserPanelService
   ) {}
 
   ngOnInit() {
     this.authService.user.subscribe((user) => {
-      this.user = user;
+        if (user) this.user = user;
     });
   }
 

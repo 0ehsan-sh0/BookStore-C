@@ -48,17 +48,17 @@ const routes: Routes = [
       { path: 'contact-us', component: ContactUsComponent },
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
-      {
-        path: 'user',
-        component: UserPublicComponent,
-        children: [
-          { path: '', component: UserProfileComponent },
-          { path: 'orders', component: UserOrdersComponent },
-          { path: 'wishlist', component: UserWishlistComponent },
-          { path: 'addresses', component: UserAddressesComponent },
-          { path: 'settings', component: UserSettingComponent },
-        ],
-      },
+    ],
+  },
+  {
+    path: 'user',
+    component: UserPublicComponent,
+    children: [
+      { path: '', component: UserProfileComponent },
+      { path: 'orders', component: UserOrdersComponent },
+      { path: 'wishlist', component: UserWishlistComponent },
+      { path: 'addresses', component: UserAddressesComponent },
+      { path: 'settings', component: UserSettingComponent },
     ],
   },
   { path: '**', redirectTo: '' }, // fallback

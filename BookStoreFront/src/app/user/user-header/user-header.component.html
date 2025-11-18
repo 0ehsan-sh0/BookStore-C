@@ -1,9 +1,6 @@
 <div class="navbar bg-base-200 shadow-sm fixed top-0 left-0 w-full z-50 gap-4">
     <!-- Right -->
     <div class="flex-1">
-        <label for="public-sidebar" class="btn btn-square btn-ghost drawer-button">
-            <i-lucide name="menu"></i-lucide>
-        </label>
         <label class="swap swap-rotate mx-2">
             <!-- this hidden checkbox controls the state -->
             <input type="checkbox" value="synthwave" [checked]="isLight" (click)="toggleTheme()" />
@@ -29,16 +26,14 @@
 
     <!-- Left -->
     <div class="flex-none">
-        @if (isLoggedIn) {
-        <label [routerLink]="['/user']" class="btn btn-square h-8 w-8 ml-2 btn-info drawer-button">
-            <i-lucide name="user" size="20"></i-lucide>
+        <label [routerLink]="['']" class="btn btn-square h-8 w-8 ml-2 btn-info">
+            <i-lucide name="home" size="20"></i-lucide>
         </label>
-        }
 
-        <button class="btn h-8 w-8 btn-secondary btn-xs">
-            <i-lucide name="shopping-cart" size="20"></i-lucide>
-        </button>
-        
+        <label for="user-sidebar" class="btn btn-square h-8 w-8 btn-secondary drawer-button md:hidden">
+            <i-lucide name="menu" size="20"></i-lucide>
+        </label>
+
         <button class="btn btn-sm btn-primary mr-2 hidden md:inline-block" (click)="navigateToAuth()">
             {{ isLoggedIn ? 'خروج' : 'ورود / ثبت نام' }}
         </button>

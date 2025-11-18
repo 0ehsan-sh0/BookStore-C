@@ -9,7 +9,12 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './sidebar-user.component.css',
 })
 export class SidebarUserComponent {
-  user: User | null = null;
+   user: User = {
+  name: '',
+  lastName: '',
+  mobile: '',
+  // add any other fields your User model requires
+} as User;
 
   constructor(private authService: AuthService) {
     this.authService.initUser();
@@ -17,7 +22,7 @@ export class SidebarUserComponent {
 
   ngOnInit() {
     this.authService.user.subscribe((user) => {
-      this.user = user;
+      if(user) this.user = user;
     });
   }
 }

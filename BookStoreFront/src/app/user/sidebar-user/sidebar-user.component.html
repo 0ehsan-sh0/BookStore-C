@@ -45,11 +45,11 @@
     <div class="drawer-side">
         <label for="user-sidebar" aria-label="close sidebar" class="drawer-overlay"></label>
         <ul class="menu bg-base-200 text-base-content min-h-80 min-w-85 sm:w-150 p-4 space-y-3">
-            <li><a>پروفایل</a></li>
-            <li><a>سفارشات</a></li>
-            <li><a>لیست علاقه‌مندی‌ها</a></li>
-            <li><a>آدرس ها</a></li>
-            <li><a>تنظیمات حساب</a></li>
+            <li><a [routerLink]="['/user']" (click)="closeUserSidebar()">پروفایل</a></li>
+            <li><a [routerLink]="['orders']" (click)="closeUserSidebar()">سفارشات</a></li>
+            <li><a [routerLink]="['wishlist']" (click)="closeUserSidebar()">لیست علاقه‌مندی‌ها</a></li>
+            <li><a [routerLink]="['addresses']" (click)="closeUserSidebar()">آدرس ها</a></li>
+            <li><a [routerLink]="['settings']" (click)="closeUserSidebar()">تنظیمات حساب</a></li>
             
         </ul>
     </div>

@@ -1,4 +1,6 @@
-﻿namespace BookStoreApi.RequestHandler.Admin.Responses.Book
+﻿using BookStoreApi.RequestHandler.User.Responses.Author;
+
+namespace BookStoreApi.RequestHandler.User.Responses.Book
 {
     public class RBook
     {
@@ -19,6 +21,6 @@
         public int AuthorId { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-
+        public RAuthor? Author { get; set; }
     }
 }

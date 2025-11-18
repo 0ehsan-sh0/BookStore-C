@@ -138,6 +138,8 @@ namespace BookStoreApi.Database.Repositories
             data.Pages = book.Pages;
             data.PublishYear = book.PublishYear;
             data.Publisher = book.Publisher;
+            data.IsRecommended = book.IsRecommended;
+            data.Stock = book.Stock;
             data.AuthorId = book.AuthorId;
             data.CreatedAt = book.CreatedAt;
             data.UpdatedAt = book.UpdatedAt;

@@ -17,8 +17,10 @@ namespace BookStoreApi.Database.Models
         public string PublishYear { get; set; } = string.Empty;
         public string Publisher { get; set; } = string.Empty;
         public bool IsRecommended { get; set; }
+        public int Stock { get; set; }
         public int AuthorId { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
+        public Author? Author { get; set; }
     }
 }

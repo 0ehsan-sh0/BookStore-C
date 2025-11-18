@@ -56,7 +56,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 // -------------------------
-// Database & BLL services
+// Database & BLL services DI
 // -------------------------
 builder.Services.AddSingleton(typeof(BookStoreApi.Database.DapperUtility));
 
@@ -85,6 +85,13 @@ builder.Services.AddScoped<IBLLTag, BLLTag>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBLLAuth, BLLAuth>();
 builder.Services.AddScoped<IBLLUserPanel, BLLUserPanel>();
+
+builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+
+builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
+builder.Services.AddScoped<IBLLUserInvoice, BLLUserInvoice>();
+
+builder.Services.AddScoped<IInvoiceBooksRepository, InvoiceBooksRepository>();
 
 // -------------------------
 // JWT service

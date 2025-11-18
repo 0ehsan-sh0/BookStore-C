@@ -1,4 +1,5 @@
-﻿using BookStoreApi.RequestHandler.Public.Responses.Author;
+﻿using BookStoreApi.Database.Models;
+using BookStoreApi.RequestHandler.Public.Responses.Author;
 using BookStoreApi.RequestHandler.Public.Responses.Category;
 using BookStoreApi.RequestHandler.Public.Responses.Image;
 using BookStoreApi.RequestHandler.Public.Responses.Tag;
@@ -21,6 +22,8 @@ namespace BookStoreApi.RequestHandler.Public.Responses.Book
         public string PublishYear { get; set; } = string.Empty;
         public string Publisher { get; set; } = string.Empty;
         public bool IsRecommended { get; set; }
+        public int Stock { get; set; }
+
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public List<RTranslator>? Translators { get; set; }
@@ -28,5 +31,7 @@ namespace BookStoreApi.RequestHandler.Public.Responses.Book
         public List<RTag>? Tags { get; set; }
         public List<RImage>? Images { get; set; }
         public RAuthor? Author { get; set; }
+        public List<Invoice>? Invoices { get; set; }
+
     }
 }

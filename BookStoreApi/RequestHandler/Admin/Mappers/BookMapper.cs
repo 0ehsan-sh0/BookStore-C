@@ -24,6 +24,7 @@ namespace BookStoreApi.RequestHandler.Admin.Mappers
                 Publisher = book.Publisher,
                 AuthorId = book.AuthorId,
                 IsRecommended = book.IsRecommended,
+                Stock = book.Stock,
                 CreatedAt = book.CreatedAt,
                 UpdatedAt = book.UpdatedAt,
             };
@@ -46,6 +47,7 @@ namespace BookStoreApi.RequestHandler.Admin.Mappers
                 PublishYear = bookAllData.PublishYear.ToString(),
                 Publisher = bookAllData.Publisher,
                 IsRecommended = bookAllData.IsRecommended,
+                Stock = bookAllData.Stock,
                 CreatedAt = bookAllData.CreatedAt,
                 UpdatedAt = bookAllData.UpdatedAt
             };
@@ -86,6 +88,7 @@ namespace BookStoreApi.RequestHandler.Admin.Mappers
                 Publisher = book.Publisher,
                 AuthorId = book.AuthorId,
                 IsRecommended = book.IsRecommended,
+                Stock = book.Stock,
             };
         }
 
@@ -106,6 +109,7 @@ namespace BookStoreApi.RequestHandler.Admin.Mappers
                 PublishYear = book.PublishYear.ToString(),
                 Publisher = book.Publisher,
                 IsRecommended = book.IsRecommended,
+                Stock = book.Stock,
                 AuthorId = book.AuthorId,
 
             };

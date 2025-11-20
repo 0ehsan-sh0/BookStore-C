@@ -3,9 +3,9 @@ using BookStoreApi.Database.Interfaces;
 using BookStoreApi.Database.Models;
 using BookStoreApi.RequestHandler.Public.Responses.Book;
 
-namespace BookStoreApi.BusinessLogicLayer.Public
+namespace BookStoreApi.BusinessLogicLayer.LogicLayers.Public
 {
-    public class BLLBook(IBookRepository repo) : IBLLBook
+    public class BLLBookPublic(IBookRepository repo) : IBLLBookPublic
     {
         public async Task<(List<BookAllData>? books, BPPaginationInfo info)> GetNewAsync(int pageSize = 20, int pageNumber = 1, bool isRecommended = false)
         {

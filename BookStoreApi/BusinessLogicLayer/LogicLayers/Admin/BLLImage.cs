@@ -5,7 +5,7 @@ using BookStoreApi.RequestHandler.Admin.Requests.Image;
 using BookStoreApi.Services;
 using BookStoreApi.Services.Models;
 
-namespace BookStoreApi.BusinessLogicLayer.Admin
+namespace BookStoreApi.BusinessLogicLayer.LogicLayers.Admin
 {
     public class BLLImage(IImageRepository repo) : IBLLImage
     {

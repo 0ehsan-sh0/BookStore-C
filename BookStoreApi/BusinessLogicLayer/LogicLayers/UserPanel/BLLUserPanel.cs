@@ -1,7 +1,7 @@
 ﻿using BookStoreApi.BusinessLogicLayer.Interfaces.UserPanel;
 using BookStoreApi.Database.Interfaces;
 
-namespace BookStoreApi.BusinessLogicLayer.UserPanel
+namespace BookStoreApi.BusinessLogicLayer.LogicLayers.UserPanel
 {
     public class BLLUserPanel(IUserRepository userRepository) : IBLLUserPanel
     {

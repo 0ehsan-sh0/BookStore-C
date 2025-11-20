@@ -6,7 +6,7 @@ using BookStoreApi.RequestHandler.Admin.QueryObjects.Author;
 using BookStoreApi.RequestHandler.Admin.Requests.Author;
 using BookStoreApi.RequestHandler.Admin.Responses.Author;
 
-namespace BookStoreApi.BusinessLogicLayer.Admin
+namespace BookStoreApi.BusinessLogicLayer.LogicLayers.Admin
 {
     public class BLLAuthor(IAuthorRepository repo) : IBLLAuthor
     {

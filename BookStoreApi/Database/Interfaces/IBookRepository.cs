@@ -15,5 +15,6 @@ namespace BookStoreApi.Database.Interfaces
         Task<int> CreateAsync(Book book, List<ImageInfo> imageInfos, List<int>? translators, List<int> categories, List<int> tags);
         Task<BookAllData?> UpdateAsync(Book bookWithId, List<int>? translators, List<int> categories, List<int> tags);
         Task<bool> DeleteAsync(int id);
+        Task<bool> DecreaseStockBulkAsync(List<(int BookId, int Count)> items);
     }
 }

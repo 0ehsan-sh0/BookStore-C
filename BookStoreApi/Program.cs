@@ -1,9 +1,11 @@
 using BookStoreApi.BusinessLogicLayer;
-using BookStoreApi.BusinessLogicLayer.Admin;
 using BookStoreApi.BusinessLogicLayer.Interfaces;
 using BookStoreApi.BusinessLogicLayer.Interfaces.Admin;
+using BookStoreApi.BusinessLogicLayer.Interfaces.Public;
 using BookStoreApi.BusinessLogicLayer.Interfaces.UserPanel;
-using BookStoreApi.BusinessLogicLayer.UserPanel;
+using BookStoreApi.BusinessLogicLayer.LogicLayers.Admin;
+using BookStoreApi.BusinessLogicLayer.LogicLayers.Public;
+using BookStoreApi.BusinessLogicLayer.LogicLayers.UserPanel;
 using BookStoreApi.Database.Interfaces;
 using BookStoreApi.Database.Repositories;
 using BookStoreApi.Services;
@@ -71,7 +73,7 @@ builder.Services.AddScoped<IBLLTranslator, BLLTranslator>();
 
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IBLLBook, BLLBook>();
-builder.Services.AddScoped<BookStoreApi.BusinessLogicLayer.Interfaces.Public.IBLLBook, BookStoreApi.BusinessLogicLayer.Public.BLLBook>();
+builder.Services.AddScoped<IBLLBookPublic, BLLBookPublic>();
 
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<IBLLImage, BLLImage>();
@@ -87,6 +89,7 @@ builder.Services.AddScoped<IBLLAuth, BLLAuth>();
 builder.Services.AddScoped<IBLLUserPanel, BLLUserPanel>();
 
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+builder.Services.AddScoped<IBLLUserPayment, BLLUserPayment>();
 
 builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
 builder.Services.AddScoped<IBLLUserInvoice, BLLUserInvoice>();

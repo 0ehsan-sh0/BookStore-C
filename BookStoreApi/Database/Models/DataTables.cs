@@ -16,6 +16,18 @@ namespace BookStoreApi.Database.Models
             return dt;
         }
 
+        public static DataTable BookStockDecreaseTable(List<(int BookId, int Count)> items)
+        {
+            var dt = new DataTable();
+            dt.Columns.Add("BookId", typeof(int));
+            dt.Columns.Add("Count", typeof(int));
+
+            foreach (var (BookId, Count) in items)
+                dt.Rows.Add(BookId, Count);
+
+            return dt;
+        }
+
         public static DataTable ImageInfoTypeTable(List<ImageInfo> imageInfos)
         {
             // Columns

@@ -10,6 +10,7 @@ namespace BookStoreApi.RequestHandler.User.Responses.Payment
         public string GatewayId { get; set; } = string.Empty;
         public string PaymentGateway { get; set; } = string.Empty;
         public string ResponseCode { get; set; } = string.Empty;
+        public long Price { get; set; }
         public string? Message { get; set; }
         public PaymentStatus Status { get; set; }
         public string? TransactionCode { get; set; }

@@ -6,7 +6,7 @@ using BookStoreApi.RequestHandler.Admin.QueryObjects.Tag;
 using BookStoreApi.RequestHandler.Admin.Requests.Tag;
 using BookStoreApi.RequestHandler.Admin.Responses.Tag;
 
-namespace BookStoreApi.BusinessLogicLayer.Admin
+namespace BookStoreApi.BusinessLogicLayer.LogicLayers.Admin
 {
     public class BLLTag(ITagRepository repo) : IBLLTag
     {

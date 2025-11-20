@@ -14,6 +14,7 @@ namespace BookStoreApi.RequestHandler.User.Mappers
                 GatewayId = payment.GatewayId,
                 PaymentGateway = payment.PaymentGateway,
                 ResponseCode = payment.ResponseCode,
+                Price = payment.Price,
                 Message = payment.Message,
                 Status = payment.Status,
                 TransactionCode = payment.TransactionCode,

@@ -6,7 +6,7 @@ using BookStoreApi.RequestHandler.Admin.QueryObjects.Translator;
 using BookStoreApi.RequestHandler.Admin.Requests.Translator;
 using BookStoreApi.RequestHandler.Admin.Responses.Translator;
 
-namespace BookStoreApi.BusinessLogicLayer.Admin
+namespace BookStoreApi.BusinessLogicLayer.LogicLayers.Admin
 {
     public class BLLTranslator(ITranslatorRepository repo) : IBLLTranslator
     {

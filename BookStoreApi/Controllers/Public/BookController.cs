@@ -8,7 +8,7 @@ namespace BookStoreApi.Controllers.Public
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BookController(IBLLBook bLL) : ApiResponseHelper
+    public class BookController(IBLLBookPublic bLL) : ApiResponseHelper
     {
         [HttpGet]
         public async Task<IActionResult> GetNewAsync([FromQuery] QPBookGetAll query)

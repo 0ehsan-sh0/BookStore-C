@@ -4,7 +4,7 @@ using BookStoreApi.Database.Models;
 using BookStoreApi.RequestHandler.Admin.QueryObjects.Comment;
 using BookStoreApi.RequestHandler.Admin.Responses.Comment;
 
-namespace BookStoreApi.BusinessLogicLayer.Admin
+namespace BookStoreApi.BusinessLogicLayer.LogicLayers.Admin
 {
     public class BLLComment(ICommentRepository repo) : IBLLComment
     {

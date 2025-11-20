@@ -8,7 +8,7 @@ using BookStoreApi.RequestHandler.Admin.Responses.Book;
 using BookStoreApi.Services;
 using ImageInfo = BookStoreApi.Services.Models.ImageInfo;
 
-namespace BookStoreApi.BusinessLogicLayer.Admin
+namespace BookStoreApi.BusinessLogicLayer.LogicLayers.Admin
 {
     public class BLLBook(IBookRepository repo, IAuthorRepository authorRepo, ITranslatorRepository translatorRepo, ICategoryRepository categoryRepo, ITagRepository tagRepo) : IBLLBook
     {

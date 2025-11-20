@@ -6,7 +6,7 @@ using BookStoreApi.RequestHandler.Admin.QueryObjects.Category;
 using BookStoreApi.RequestHandler.Admin.Requests.Category;
 using BookStoreApi.RequestHandler.Admin.Responses.Category;
 
-namespace BookStoreApi.BusinessLogicLayer.Admin
+namespace BookStoreApi.BusinessLogicLayer.LogicLayers.Admin
 {
     public class BLLCategory(ICategoryRepository repo) : IBLLCategory
     {

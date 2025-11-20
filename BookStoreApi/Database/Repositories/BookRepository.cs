@@ -245,5 +245,26 @@ namespace BookStoreApi.Database.Repositories
                 return null;
             }
         }
+
+        public async Task<bool> DecreaseStockBulkAsync(List<(int BookId, int Count)> items)
+        {
+            var dt = DataTables.BookStockDecreaseTable(items);
+
+            var parameters = new
+            {
+                Items = dt.AsTableValuedParameter("BookStockDecreaseList")
+            };
+
+            using var cn = dapperUtility.GetConnection();
+
+            int affected = await cn.ExecuteAsync(
+                "Books_DecreaseStockBulk",
+                parameters,
+                commandType: CommandType.StoredProcedure
+            );
+
+            return affected > 0;
+        }
+
     }
 }

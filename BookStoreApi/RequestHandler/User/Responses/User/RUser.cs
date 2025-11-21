@@ -1,4 +1,6 @@
 using BookStoreApi.Enums;
+using BookStoreApi.RequestHandler.User.Responses.Address;
+using BookStoreApi.RequestHandler.User.Responses.Invoice;
 
 namespace BookStoreApi.RequestHandler.User.Responses.User
 {
@@ -12,5 +14,7 @@ namespace BookStoreApi.RequestHandler.User.Responses.User
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public DateTime? LoggedInAt { get; set; }
+        public List<RAddress>? Addresses { get; set; }
+        public List<RInvoice>? Invoices { get; set; }
     }
 }

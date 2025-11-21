@@ -17,21 +17,6 @@ namespace BookStoreApi.RequestHandler.User.Mappers
                 Role = user.Role,
                 CreatedAt = user.CreatedAt,
                 UpdatedAt = user.UpdatedAt,
-                LoggedInAt = user.LoggedInAt
-            };
-        }
-
-        public static RUserDetail ToRUserDetail(this Database.Models.User user)
-        {
-            return new RUserDetail
-            {
-                Id = user.Id,
-                Name = user.Name,
-                LastName = user.LastName,
-                Mobile = user.Mobile,
-                Role = user.Role,
-                CreatedAt = user.CreatedAt,
-                UpdatedAt = user.UpdatedAt,
                 LoggedInAt = user.LoggedInAt,
                 Addresses = user.Addresses?.Select(a => new RAddress
                 {
@@ -46,7 +31,8 @@ namespace BookStoreApi.RequestHandler.User.Mappers
                     UserId = a.UserId,
                     CreatedAt = a.CreatedAt,
                     UpdatedAt = a.UpdatedAt
-                }).ToList()
+                }).ToList(),
+                Invoices = user.Invoices?.Select(i => i.ToRInvoice()).ToList()
             };
         }
 

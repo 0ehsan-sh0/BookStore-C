@@ -1,9 +1,11 @@
 ﻿using BookStoreApi.Database.Interfaces;
 using BookStoreApi.Database.Models;
 using BookStoreApi.Enums;
+using BookStoreApi.RequestHandler.User.QueryObjects.Invoice;
 using BookStoreApi.RequestHandler.User.Responses.Invoice;
 using Dapper;
 using System.Data;
+using System.Text.Json;
 
 namespace BookStoreApi.Database.Repositories
 {
@@ -110,14 +112,50 @@ namespace BookStoreApi.Database.Repositories
         }
 
 
-        public Task<(List<Invoice> invoices, InvoicePaginationInfo info)> GetUserInvoicesAsync(int id)
+        public async Task<(List<Invoice> invoices, InvoicePaginationInfo info)> GetUserInvoicesAsync(int id, QUserInvoices query)
         {
-            throw new NotImplementedException();
+            using var connection = dapperUtility.GetConnection();
+            await connection.OpenAsync();
+
+            using var multi = await connection.QueryMultipleAsync(
+                "Get_User_Invoices_By_Id",
+                new { id, query.PageNumber, query.PageSize },
+                commandType: CommandType.StoredProcedure
+            );
+
+            // First result: JSON string
+            var invoicesJson = await multi.ReadFirstOrDefaultAsync<string>();
+            List<Invoice> invoices = [];
+            if (invoicesJson is not null)
+                invoices = JsonSerializer.Deserialize<List<Invoice>>(invoicesJson)!;
+
+            var paginationJson = await multi.ReadFirstOrDefaultAsync<string>();
+            var pagination = JsonSerializer.Deserialize<InvoicePaginationInfo>(paginationJson!);
+
+            return (invoices, pagination!);
         }
 
-        public Task<(List<Invoice> invoices, InvoicePaginationInfo info)> GetUserInvoicesAsync(string mobile)
+        public async Task<(List<Invoice> invoices, InvoicePaginationInfo info)> GetUserInvoicesAsync(string mobile, QUserInvoices query)
         {
-            throw new NotImplementedException();
+            using var connection = dapperUtility.GetConnection();
+            await connection.OpenAsync();
+
+            using var multi = await connection.QueryMultipleAsync(
+                "Get_User_Invoices_By_Mobile",
+                new { mobile, query.PageNumber, query.PageSize },
+                commandType: CommandType.StoredProcedure
+            );
+
+            // First result: JSON string
+            var invoicesJson = await multi.ReadFirstOrDefaultAsync<string>();
+            List<Invoice> invoices = [];
+            if (invoicesJson is not null)
+                invoices = JsonSerializer.Deserialize<List<Invoice>>(invoicesJson)!;
+
+            var paginationJson = await multi.ReadFirstOrDefaultAsync<string>();
+            var pagination = JsonSerializer.Deserialize<InvoicePaginationInfo>(paginationJson!);
+
+            return (invoices, pagination!);
         }
 
         public async Task<(List<InvoiceBooks> books, bool isValid)> GetBooksOfInvoiceAsync(int invoiceId)

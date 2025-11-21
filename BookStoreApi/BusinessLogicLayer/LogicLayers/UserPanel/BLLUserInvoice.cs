@@ -1,7 +1,9 @@
 ﻿using BookStoreApi.BusinessLogicLayer.Interfaces.UserPanel;
 using BookStoreApi.Database.Interfaces;
 using BookStoreApi.Database.Models;
+using BookStoreApi.RequestHandler.User.QueryObjects.Invoice;
 using BookStoreApi.RequestHandler.User.Requests.Invoice;
+using BookStoreApi.RequestHandler.User.Responses.Invoice;
 
 namespace BookStoreApi.BusinessLogicLayer.LogicLayers.UserPanel
 {
@@ -43,6 +45,11 @@ namespace BookStoreApi.BusinessLogicLayer.LogicLayers.UserPanel
                 return ("ایجاد فاکتور با مشکل مواجه شد.", null, 500);
 
             return ("فاکتور با موفقیت ایجاد شد.", invoice, 201);
+        }
+
+        public async Task<(List<Invoice>? invoices, InvoicePaginationInfo pagination)> GetUserInvoicesAsync(string mobile, QUserInvoices query)
+        {
+            return await invoiceRepository.GetUserInvoicesAsync(mobile, query);
         }
 
         public async Task<(string message, Invoice? invoice, int status)> GetByIdAsync(int invoiceId)

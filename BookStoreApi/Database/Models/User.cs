@@ -17,6 +17,7 @@ namespace BookStoreApi.Database.Models
         public DateTime? LoggedInAt { get; set; }
         public DateTime? DeletedAt { get; set; }
         public List<AddressInfo>? Addresses { get; set; }
+        public List<Invoice>? Invoices { get; set; }
     }
 }
 

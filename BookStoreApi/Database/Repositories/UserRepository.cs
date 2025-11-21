@@ -69,6 +69,9 @@ namespace BookStoreApi.Database.Repositories
             if (user is null) return null;
 
             user.Addresses = (await multi.ReadAsync<AddressInfo>()).ToList();
+
+            user.Invoices = (await multi.ReadAsync<Invoice>()).ToList();
+
             return user;
         }
 

@@ -1,6 +1,8 @@
 ﻿using BookStoreApi.BusinessLogicLayer.Interfaces.UserPanel;
 using BookStoreApi.RequestHandler.User.Mappers;
+using BookStoreApi.RequestHandler.User.QueryObjects.Invoice;
 using BookStoreApi.RequestHandler.User.Requests.User;
+using BookStoreApi.RequestHandler.User.Responses.Invoice;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,7 +11,7 @@ namespace BookStoreApi.Controllers.User
     [Route("api/user")]
     [ApiController]
     [Authorize(Roles = "User,Admin")]
-    public class UserPanelController(IBLLUserPanel bllUser) : ApiResponseHelper
+    public class UserPanelController(IBLLUserPanel bllUser, IBLLUserInvoice bLLUserInvoice) : ApiResponseHelper
     {
         [HttpPut]
         public async Task<IActionResult> UpdateAsync([FromBody] UpdateUserRequest user)
@@ -25,6 +27,22 @@ namespace BookStoreApi.Controllers.User
 
 
             return SuccessResponse("اطلاعات با موفقیت بروزرسانی شد", updatedUser.ToRUser());
+        }
+
+        [HttpGet]
+        [Route("invoice")]
+        public async Task<IActionResult> GetAllAsync([FromQuery] QUserInvoices query)
+        {
+            var userMobile = User.Identity?.Name!;
+            var (invoices, pagination) = await bLLUserInvoice.GetUserInvoicesAsync(userMobile, query);
+
+            UserInvoicesList response = new UserInvoicesList
+            {
+                Invoices = invoices?.Select(b => b.ToRInvoice()).ToList(),
+                Pagination = pagination
+            };
+
+            return SuccessResponse("اطلاعات با موفقیت دریافت شد", response);
         }
     }
 }

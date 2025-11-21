@@ -1,5 +1,7 @@
 ﻿using BookStoreApi.Database.Models;
+using BookStoreApi.RequestHandler.User.QueryObjects.Invoice;
 using BookStoreApi.RequestHandler.User.Requests.Invoice;
+using BookStoreApi.RequestHandler.User.Responses.Invoice;
 
 namespace BookStoreApi.BusinessLogicLayer.Interfaces.UserPanel
 {
@@ -7,5 +9,6 @@ namespace BookStoreApi.BusinessLogicLayer.Interfaces.UserPanel
     {
         Task<(string message, Invoice? invoice, int status)> CreateAsync(string userMobile, CreateInvoiceRequest request);
         Task<(string message, Invoice? invoice, int status)> GetByIdAsync(int invoiceId);
+        Task<(List<Invoice>? invoices, InvoicePaginationInfo pagination)> GetUserInvoicesAsync(string mobile, QUserInvoices query);
     }
 }

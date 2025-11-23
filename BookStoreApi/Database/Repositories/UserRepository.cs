@@ -3,6 +3,7 @@ using BookStoreApi.Database.Models;
 using BookStoreApi.Enums;
 using Dapper;
 using System.Data;
+using System.Text.Json;
 
 namespace BookStoreApi.Database.Repositories
 {
@@ -42,16 +43,19 @@ namespace BookStoreApi.Database.Repositories
         {
             using var connection = dapperUtility.GetConnection();
             await connection.OpenAsync();
+
             using var multi = await connection.QueryMultipleAsync(
                 "User_Get_One",
                 new { id },
                 commandType: CommandType.StoredProcedure
             );
 
-            var user = await multi.ReadFirstOrDefaultAsync<User>();
-            if (user is null) return null;
+            // First result: JSON string
+            var userJson = await multi.ReadFirstOrDefaultAsync<string>();
+            User user = new();
+            if (userJson is not null)
+                user = JsonSerializer.Deserialize<User>(userJson)!;
 
-            user.Addresses = (await multi.ReadAsync<AddressInfo>()).ToList();
             return user;
         }
 
@@ -59,18 +63,18 @@ namespace BookStoreApi.Database.Repositories
         {
             using var connection = dapperUtility.GetConnection();
             await connection.OpenAsync();
+
             using var multi = await connection.QueryMultipleAsync(
                 "User_Get_By_Mobile",
                 new { mobile },
                 commandType: CommandType.StoredProcedure
             );
 
-            var user = await multi.ReadFirstOrDefaultAsync<User>();
-            if (user is null) return null;
-
-            user.Addresses = (await multi.ReadAsync<AddressInfo>()).ToList();
-
-            user.Invoices = (await multi.ReadAsync<Invoice>()).ToList();
+            // First result: JSON string
+            var userJson = await multi.ReadFirstOrDefaultAsync<string>();
+            User user = new();
+            if (userJson is not null)
+                user = JsonSerializer.Deserialize<User>(userJson)!;
 
             return user;
         }

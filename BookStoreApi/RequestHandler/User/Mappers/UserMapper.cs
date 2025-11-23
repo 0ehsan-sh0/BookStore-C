@@ -32,7 +32,8 @@ namespace BookStoreApi.RequestHandler.User.Mappers
                     CreatedAt = a.CreatedAt,
                     UpdatedAt = a.UpdatedAt
                 }).ToList(),
-                Invoices = user.Invoices?.Select(i => i.ToRInvoice()).ToList()
+                Invoices = user.Invoices?.Select(i => i.ToRInvoice()).ToList(),
+                WishList = user.WishList?.Select(w => w.ToRBookAllData()).ToList(),
             };
         }
 

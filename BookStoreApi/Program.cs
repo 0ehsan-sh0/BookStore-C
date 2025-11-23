@@ -96,6 +96,8 @@ builder.Services.AddScoped<IBLLUserInvoice, BLLUserInvoice>();
 
 builder.Services.AddScoped<IInvoiceBooksRepository, InvoiceBooksRepository>();
 
+builder.Services.AddScoped<IWishListRepository, WishListRepository>();
+
 // -------------------------
 // JWT service
 // -------------------------

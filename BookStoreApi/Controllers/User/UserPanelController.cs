@@ -2,6 +2,7 @@
 using BookStoreApi.RequestHandler.User.Mappers;
 using BookStoreApi.RequestHandler.User.QueryObjects.Invoice;
 using BookStoreApi.RequestHandler.User.Requests.User;
+using BookStoreApi.RequestHandler.User.Requests.WishList;
 using BookStoreApi.RequestHandler.User.Responses.Invoice;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -43,6 +44,18 @@ namespace BookStoreApi.Controllers.User
             };
 
             return SuccessResponse("اطلاعات با موفقیت دریافت شد", response);
+        }
+
+        [HttpPost]
+        [Route("wishlist")]
+        public async Task<IActionResult> ToggleWishListAsync([FromBody] ToggleWishList request)
+        {
+            var userMobile = User.Identity?.Name!;
+            var (message, wishlistStatus, status) = await bllUser.ToggleWishListAsync(userMobile, request.BookId);
+
+            return status == 404 ?
+                NotFound(message) :
+                SuccessResponse(message, wishlistStatus, status);
         }
     }
 }

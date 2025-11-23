@@ -1,6 +1,9 @@
-﻿namespace BookStoreApi.Database.Models
+﻿using BookStoreApi.RequestHandler.Admin.Responses.Image;
+using BookStoreApi.RequestHandler.User.Responses.Author;
+
+namespace BookStoreApi.RequestHandler.User.Responses.Book
 {
-    public class BookAllData
+    public class RBookAllData
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
@@ -21,11 +24,7 @@
         public string? AuthorName { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-        public List<Translator>? Translators { get; set; }
-        public List<Category>? Categories { get; set; }
-        public List<Tag>? Tags { get; set; }
-        public List<Image>? Images { get; set; }
-        public List<Invoice>? Invoices { get; set; }
-        public Author? Author { get; set; }
+        public RAuthor? Author { get; set; }
+        public List<RImage> Images { get; set; }
     }
 }

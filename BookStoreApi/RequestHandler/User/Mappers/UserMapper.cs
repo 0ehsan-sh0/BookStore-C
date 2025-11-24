@@ -1,5 +1,4 @@
 using BookStoreApi.RequestHandler.User.Requests.User;
-using BookStoreApi.RequestHandler.User.Responses.Address;
 using BookStoreApi.RequestHandler.User.Responses.User;
 
 namespace BookStoreApi.RequestHandler.User.Mappers
@@ -18,20 +17,7 @@ namespace BookStoreApi.RequestHandler.User.Mappers
                 CreatedAt = user.CreatedAt,
                 UpdatedAt = user.UpdatedAt,
                 LoggedInAt = user.LoggedInAt,
-                Addresses = user.Addresses?.Select(a => new RAddress
-                {
-                    Id = a.Id,
-                    Name = a.Name,
-                    LastName = a.LastName,
-                    Phone = a.Phone,
-                    PostCode = a.PostCode,
-                    State = a.State,
-                    City = a.City,
-                    Address = a.Address,
-                    UserId = a.UserId,
-                    CreatedAt = a.CreatedAt,
-                    UpdatedAt = a.UpdatedAt
-                }).ToList(),
+                Addresses = user.Addresses?.Select(a => a.ToRAddress()).ToList(),
                 Invoices = user.Invoices?.Select(i => i.ToRInvoice()).ToList(),
                 WishList = user.WishList?.Select(w => w.ToRBookAllData()).ToList(),
             };

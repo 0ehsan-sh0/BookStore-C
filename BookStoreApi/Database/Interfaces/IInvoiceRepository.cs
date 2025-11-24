@@ -9,7 +9,7 @@ namespace BookStoreApi.Database.Interfaces
     {
         Task<(List<Invoice> invoices, InvoicePaginationInfo info)> GetUserInvoicesAsync(int id, QUserInvoices query);
         Task<(List<Invoice> invoices, InvoicePaginationInfo info)> GetUserInvoicesAsync(string mobile, QUserInvoices query);
-        Task<int> CreateAsync(int userId, List<int> books, List<int> counts);
+        Task<int> CreateAsync(int userId, int addressId, List<int> books, List<int> counts);
         Task<bool> UpdatePaymentStatusAsync(int invoiceId, PaymentStatus status);
         Task<(List<InvoiceBooks> books, bool isValid)> GetBooksOfInvoiceAsync(int invoiceId);
         Task<Invoice?> GetByIdAsync(int id);

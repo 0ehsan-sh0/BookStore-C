@@ -11,7 +11,7 @@ namespace BookStoreApi.Database.Repositories
 {
     public class InvoiceRepository(DapperUtility dapperUtility) : IInvoiceRepository
     {
-        public async Task<int> CreateAsync(int userId, List<int> books, List<int> counts)
+        public async Task<int> CreateAsync(int userId, int addressId, List<int> books, List<int> counts)
         {
             var sql = "Invoice_Insert"; // SP name
 
@@ -22,6 +22,7 @@ namespace BookStoreApi.Database.Repositories
             // Parameters for the stored procedure
             var parameters = new
             {
+                AddressId = addressId,
                 UserId = userId,
                 Books = booksTable.AsTableValuedParameter("IntList"),
                 Counts = countsTable.AsTableValuedParameter("IntList")
@@ -107,6 +108,9 @@ namespace BookStoreApi.Database.Repositories
 
             // 4. User
             invoice.User = await multi.ReadFirstOrDefaultAsync<User>();
+
+            // 5. Address
+            invoice.Address = await multi.ReadFirstOrDefaultAsync<AddressInfo>();
 
             return invoice;
         }

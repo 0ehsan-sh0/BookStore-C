@@ -10,7 +10,8 @@ namespace BookStoreApi.BusinessLogicLayer.LogicLayers.UserPanel
     public class BLLUserInvoice(
         IInvoiceRepository invoiceRepository,
         IBookRepository bookRepository,
-        IUserRepository userRepository) : IBLLUserInvoice
+        IUserRepository userRepository,
+        IAddressRepository addressRepository) : IBLLUserInvoice
     {
         public async Task<(string message, Invoice? invoice, int status)> CreateAsync(string userMobile, CreateInvoiceRequest request)
         {
@@ -18,7 +19,12 @@ namespace BookStoreApi.BusinessLogicLayer.LogicLayers.UserPanel
             if (request.Books == null || request.Counts == null || request.Books.Count != request.Counts.Count)
                 return ("لیست کتاب‌ها یا تعدادها نامعتبر است.", null, 400);
 
-            // 2. Check each book exists and stock is enough
+            // 2. Check for address
+            var address = await addressRepository.GetByIdAsync(request.AddressId);
+            if (address == null)
+                return ("آدرس پیدا نشد.", null, 404);
+
+            // 3. Check each book exists and stock is enough
             for (int i = 0; i < request.Books.Count; i++)
             {
                 int bookId = request.Books[i];
@@ -32,13 +38,17 @@ namespace BookStoreApi.BusinessLogicLayer.LogicLayers.UserPanel
                     return ($"کتاب {book.Name} موجودی کافی ندارد.", null, 409);
             }
 
-            // 3. Get user ID
+            // 4. Get user ID
             var user = await userRepository.GetByMobileAsync(userMobile);
             if (user == null)
                 return ("کاربر پیدا نشد.", null, 404);
 
-            // 4. Create invoice
-            int newInvoiceId = await invoiceRepository.CreateAsync(user.Id, request.Books, request.Counts);
+            // 5. Verify address belongs to user
+            if (user.Id != address.UserId)
+                return ("آدرس پیدا نشد", null, 404);
+
+            // 6. Create invoice
+            int newInvoiceId = await invoiceRepository.CreateAsync(user.Id, address.Id, request.Books, request.Counts);
             var invoice = await invoiceRepository.GetByIdAsync(newInvoiceId);
 
             if (invoice is null)

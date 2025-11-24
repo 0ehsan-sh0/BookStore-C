@@ -16,13 +16,15 @@ namespace BookStoreApi.RequestHandler.User.Mappers
                 PaymentStatus = invoice.PaymentStatus,
                 InvoiceStatus = invoice.InvoiceStatus,
                 UserId = invoice.UserId,
+                AddressId = invoice.AddressId,
                 CreatedAt = invoice.CreatedAt,
                 UpdatedAt = invoice.UpdatedAt,
                 ValidatedAt = invoice.ValidatedAt,
 
                 Books = invoice.Books?.Select(b => b.ToRBook()).ToList(),
                 Payments = invoice.Payments?.Select(p => p.ToRPayment()).ToList(),
-                User = invoice.User?.ToRUser()
+                User = invoice.User?.ToRUser(),
+                Address = invoice.Address?.ToRAddress()
             };
         }
     }

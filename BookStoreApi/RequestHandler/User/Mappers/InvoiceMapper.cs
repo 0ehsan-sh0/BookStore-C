@@ -21,7 +21,7 @@ namespace BookStoreApi.RequestHandler.User.Mappers
                 UpdatedAt = invoice.UpdatedAt,
                 ValidatedAt = invoice.ValidatedAt,
 
-                Books = invoice.Books?.Select(b => b.ToRBook()).ToList(),
+                Books = invoice.Books?.Select(b => b.ToRBookAllData()).ToList(),
                 Payments = invoice.Payments?.Select(p => p.ToRPayment()).ToList(),
                 User = invoice.User?.ToRUser(),
                 Address = invoice.Address?.ToRAddress()

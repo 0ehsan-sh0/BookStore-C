@@ -19,7 +19,7 @@ namespace BookStoreApi.RequestHandler.User.Responses.Invoice
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public DateTime? ValidatedAt { get; set; }
-        public List<RBook>? Books { get; set; }
+        public List<RBookAllData>? Books { get; set; }
         public List<RPayment>? Payments { get; set; }
         public RUser? User { get; set; }
         public RAddress? Address { get; set; }

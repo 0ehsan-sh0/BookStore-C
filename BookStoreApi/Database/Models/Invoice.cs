@@ -15,7 +15,7 @@ namespace BookStoreApi.Database.Models
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public DateTime? ValidatedAt { get; set; }
-        public List<Book>? Books { get; set; }
+        public List<BookAllData>? Books { get; set; }
         public List<Payment>? Payments { get; set; }
         public User? User { get; set; }
         public AddressInfo? Address { get; set; }

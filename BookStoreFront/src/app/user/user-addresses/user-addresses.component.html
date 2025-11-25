@@ -1,27 +1,45 @@
-<!-- Addresses section -->
 <div data-section-panel="addresses" class="section-panel">
-    <div class="flex justify-between mb-4">
-        <h2 class="text-2xl font-bold">آدرس‌های من</h2>
-        <button id="addAddressBtn" class="btn btn-primary btn-sm">افزودن آدرس جدید</button>
-    </div>
+  
+  <div class="flex justify-between mb-4">
+    <h2 class="text-2xl font-bold">آدرس‌های من</h2>
+    <button id="addAddressBtn" class="btn btn-primary btn-sm">
+      افزودن آدرس جدید
+    </button>
+  </div>
 
+  <!-- Empty state -->
+  @if (addresses.length === 0) {
+    <div class="text-center text-gray-400 py-10">
+      هیچ آدرسی ثبت نشده است.
+    </div>
+  }
+
+  <!-- Addresses grid -->
+  @if (addresses.length > 0) {
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <!-- Address card -->
+      
+      @for (address of addresses; track address.id) {
         <div class="card bg-base-200 p-4 shadow-sm text-right">
-            <div class="flex justify-between items-start">
-                <div>
-                    <div class="font-bold">آدرس خانه</div>
-                    <div class="text-sm text-gray-500">تهران، خیابان مثال، پلاک ۱۲</div>
-                    <div class="text-sm text-gray-500 mt-2">تلفن: 0912-xxx-xxxx</div>
-                </div>
+          <div class="flex justify-between items-start">
 
-                <div class="flex flex-col gap-2">
-                    <button class="btn btn-ghost btn-sm">ویرایش</button>
-                    <button class="btn btn-ghost btn-sm">حذف</button>
-                </div>
+            <div>
+              <div class="font-bold truncate">{{ address.name }} {{ address.lastName }}</div>
+              <div class="text-sm text-gray-500 break-words">
+                {{ address.state }}, {{ address.city }}, {{ address.address }}
+              </div>
+              <div class="text-sm text-gray-500 mt-2">تلفن: {{ address.phone }}</div>
+              <div class="text-sm text-gray-500 mt-1">کد پستی: {{ address.postCode }}</div>
             </div>
-        </div>
 
-        <!-- More addresses -->
+            <div class="flex flex-col gap-2">
+              <button class="btn btn-ghost btn-sm">ویرایش</button>
+            </div>
+
+          </div>
+        </div>
+      }
+
     </div>
+  }
+
 </div>

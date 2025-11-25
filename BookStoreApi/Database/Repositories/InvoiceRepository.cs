@@ -78,33 +78,7 @@ namespace BookStoreApi.Database.Repositories
             invoice.Payments = (await multi.ReadAsync<Payment>()).ToList();
 
             // 3. Books (include PurchasedCount from InvoiceBooks)
-            var booksWithCount = await multi.ReadAsync<dynamic>();
-            var booksList = new List<Book>();
-            foreach (var b in booksWithCount)
-            {
-                booksList.Add(new Book
-                {
-                    Id = b.Id,
-                    Name = b.Name,
-                    EnglishName = b.EnglishName,
-                    Description = b.Description,
-                    Price = b.Price,
-                    PrintSeries = b.PrintSeries,
-                    ISBN = b.ISBN,
-                    CoverType = b.CoverType,
-                    Format = b.Format,
-                    Pages = b.Pages,
-                    PublishYear = b.PublishYear,
-                    Publisher = b.Publisher,
-                    Stock = b.Stock,
-                    AuthorId = b.AuthorId,
-                    CreatedAt = b.CreatedAt,
-                    UpdatedAt = b.UpdatedAt,
-                    // You can add a custom property for purchased count if needed
-                    // PurchasedCount = b.PurchasedCount
-                });
-            }
-            invoice.Books = booksList;
+            invoice.Books = (await multi.ReadAsync<BookAllData>()).ToList();
 
             // 4. User
             invoice.User = await multi.ReadFirstOrDefaultAsync<User>();

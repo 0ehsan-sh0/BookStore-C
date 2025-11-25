@@ -5,14 +5,14 @@
     <div class="text-sm text-gray-500">نمایش تاریخ‌ها، وضعیت و جزئیات سفارش</div>
   </div>
 
-  <!-- @if invoices empty -->
+  <!-- Empty state -->
   @if (invoices.length === 0) {
     <div class="text-center text-gray-400 py-10">
       هیچ سفارشی ثبت نشده است.
     </div>
   }
 
-  <!-- @if invoices exist -->
+  <!-- Invoices -->
   @if (invoices.length > 0) {
 
     <div class="space-y-4">
@@ -26,23 +26,34 @@
             <div class="text-right">
               <div class="font-semibold">سفارش #{{ invoice.id }}</div>
               <div class="text-sm text-gray-500">
-                تاریخ:
-                {{ invoice.createdAt! | jalaliDate }}
+                تاریخ: {{ invoice.createdAt! | jalaliDate }}
               </div>
             </div>
 
             <!-- Price -->
             <div class="text-right">
               <div class="text-sm text-gray-500">مبلغ</div>
-              <div class="font-bold">
-                {{ invoice.finalTotalPrice | number }} تومان
-              </div>
+              <div class="font-bold">{{ invoice.finalTotalPrice | number }} تومان</div>
+            </div>
+
+            <!-- First 3 Book Images -->
+            <div class="flex gap-2">
+              @if (invoice.books && invoice.books.length > 0) {
+                @for (book of invoice.books.slice(0,3); track book.id) {
+                  <img 
+                    class="h-16 w-12 object-cover rounded shadow-sm"
+                    [src]="getBookImageUrl(book)"
+                    alt="{{ book.name }}"
+                  />
+                }
+              } @else {
+                <div class="text-gray-400 text-sm">کتابی وجود ندارد</div>
+              }
             </div>
 
             <!-- Status -->
             <div class="text-right">
               <div class="text-sm text-gray-500">وضعیت</div>
-
               @if (invoice.invoiceStatus === 1) {
                 <div class="badge badge-success">صادر شده</div>
               } @else if (invoice.invoiceStatus === 2) {

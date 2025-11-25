@@ -6,6 +6,7 @@ import { AlertService } from '../../ui-service/alert.service';
 import { ErrorHandlerService } from '../error-handler.service';
 import { BehaviorSubject } from 'rxjs';
 import { Invoice, InvoicePaginationInfo, UserInvoicesList } from '../../models/invoice';
+import { Address, AddressListResponse, AddressPaginationInfo } from '../../models/address';
 
 @Injectable({
   providedIn: 'root',
@@ -20,8 +21,12 @@ export class UserPanelService {
   ) {}
 
   user = new BehaviorSubject<User | null>(null);
+
   invoices = new BehaviorSubject<Invoice[] | null>(null);
   invoicePagination = new BehaviorSubject<InvoicePaginationInfo | null>(null);
+
+  addresses = new BehaviorSubject<Address[] | null>(null);
+  addressPagination = new BehaviorSubject<AddressPaginationInfo | null>(null);
 
   updateUser(user: User) {
     this.http.put<ApiResponse<User>>(`${this.apiUrl}`, user).subscribe({
@@ -47,6 +52,22 @@ export class UserPanelService {
       next: (response) => {
         this.invoices.next(response.data?.invoices as Invoice[]);
         this.invoicePagination.next(response.data?.pagination as InvoicePaginationInfo);
+      },
+      error: (err) => {
+        this.errorHandler.handleError(err);
+      },
+    });
+  }
+
+  getUserAddresses(pageNumber: number = 1, pageSize: number = 10) {
+    const params = new HttpParams()
+      .set('PageNumber', pageNumber.toString())
+      .set('PageSize', pageSize.toString())
+
+    this.http.get<ApiResponse<AddressListResponse>>(`${this.apiUrl}/address`, { params }).subscribe({
+      next: (response) => {
+        this.addresses.next(response.data?.addresses as Address[]);
+        this.addressPagination.next(response.data?.pagination as AddressPaginationInfo);
       },
       error: (err) => {
         this.errorHandler.handleError(err);

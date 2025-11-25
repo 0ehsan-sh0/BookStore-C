@@ -7,3 +7,10 @@ export interface ApiResponse<T> {
 }
 
 export const API_URL = new InjectionToken<string>('API_URL');
+
+export interface PaginationInfo {
+  totalCount: number | null;
+  pageSize: number | null;
+  pageNumber: number | null;
+  totalPages: number | null;
+}

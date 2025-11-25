@@ -1,38 +1,72 @@
-<!-- Orders section -->
 <div data-section-panel="orders" class="section-panel">
-    <div class="flex items-center justify-between mb-4">
-        <h2 class="text-2xl font-bold">سفارش‌ها</h2>
-        <div class="text-sm text-gray-500">نمایش تاریخ‌ها، وضعیت و جزئیات سفارش</div>
+
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-2xl font-bold">سفارش‌ها</h2>
+    <div class="text-sm text-gray-500">نمایش تاریخ‌ها، وضعیت و جزئیات سفارش</div>
+  </div>
+
+  <!-- @if invoices empty -->
+  @if (invoices.length === 0) {
+    <div class="text-center text-gray-400 py-10">
+      هیچ سفارشی ثبت نشده است.
     </div>
+  }
+
+  <!-- @if invoices exist -->
+  @if (invoices.length > 0) {
 
     <div class="space-y-4">
-        <!-- example order card -->
-        <div class="card bg-base-200 shadow-sm ">
-            <div class="card-body flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
 
-                <div class="text-right">
-                    <div class="font-semibold">سفارش #۱۲۳۴</div>
-                    <div class="text-sm text-gray-500">تاریخ: ۱۴۰۲/۰۳/۱۲</div>
-                </div>
+      @for (invoice of invoices; track invoice.id) {
 
-                <div class="text-right">
-                    <div class="text-sm text-gray-500">مبلغ</div>
-                    <div class="font-bold">۳۵۰,۰۰۰ تومان</div>
-                </div>
+        <div class="card bg-base-200 shadow-sm">
+          <div class="card-body flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
 
-                <div class="text-right">
-                    <div class="text-sm text-gray-500">وضعیت</div>
-                    <div class="badge badge-success">ارسال شده</div>
-                </div>
-
-                <div class="flex gap-2">
-                    <button class="btn btn-ghost btn-sm">نمایش جزئیات</button>
-                    <button class="btn btn-outline btn-sm">پیگیری</button>
-                </div>
+            <!-- Invoice ID + Date -->
+            <div class="text-right">
+              <div class="font-semibold">سفارش #{{ invoice.id }}</div>
+              <div class="text-sm text-gray-500">
+                تاریخ:
+                {{ invoice.createdAt! | jalaliDate }}
+              </div>
             </div>
+
+            <!-- Price -->
+            <div class="text-right">
+              <div class="text-sm text-gray-500">مبلغ</div>
+              <div class="font-bold">
+                {{ invoice.finalTotalPrice | number }} تومان
+              </div>
+            </div>
+
+            <!-- Status -->
+            <div class="text-right">
+              <div class="text-sm text-gray-500">وضعیت</div>
+
+              @if (invoice.invoiceStatus === 1) {
+                <div class="badge badge-success">صادر شده</div>
+              } @else if (invoice.invoiceStatus === 2) {
+                <div class="badge badge-warning">پیش فاکتور</div>
+              } @else if (invoice.invoiceStatus === 3) {
+                <div class="badge badge-error">ابطال شده</div>
+              } @else {
+                <div class="badge badge-neutral">نامشخص</div>
+              }
+            </div>
+
+            <!-- Actions -->
+            <div class="flex gap-2">
+              <button class="btn btn-ghost btn-sm">نمایش جزئیات</button>
+              <button class="btn btn-outline btn-sm">پیگیری</button>
+            </div>
+
+          </div>
         </div>
+
+      }
+
     </div>
 
-    <!-- empty state example -->
-    <!-- Repeat real orders or render dynamically -->
+  }
+
 </div>

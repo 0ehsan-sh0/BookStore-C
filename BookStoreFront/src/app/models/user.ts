@@ -1,4 +1,6 @@
 import { Address } from "./address";
+import { BookAllData } from "./book";
+import { Invoice } from "./invoice";
 
 export interface User {
   id: number;
@@ -10,6 +12,8 @@ export interface User {
   updatedAt?: string | null;
   loggedInAt?: string | null;
   addresses?: Address[];
+  invoices?: Invoice[];
+  wishList?: BookAllData[];
 }
 
 export enum UserRole {

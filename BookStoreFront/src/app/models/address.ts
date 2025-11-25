@@ -1,3 +1,5 @@
+import { PaginationInfo } from "./apiResponse";
+
 export interface Address {
   id: number;
   name: string;
@@ -10,4 +12,11 @@ export interface Address {
   userId: number;
   createdAt?: string | null;
   updatedAt?: string | null;
+}
+
+export interface AddressPaginationInfo extends PaginationInfo {}
+
+export interface AddressListResponse {
+  addresses?: Address[] | null;
+  pagination?: AddressPaginationInfo | null;
 }

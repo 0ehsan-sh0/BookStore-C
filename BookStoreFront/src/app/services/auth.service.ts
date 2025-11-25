@@ -113,7 +113,6 @@ export class AuthService {
         next: () => {
           // Clear user data
           this.loginResponse.next(null);
-          localStorage.removeItem('user');
           this.isLoggedIn$.next(false);
           this.user.next(null);
           // Remove the access token cookie
@@ -138,15 +137,11 @@ export class AuthService {
       tap({
         next: (response) => {
           this.user.next(response.data!);
-          // Save to localStorage
-          localStorage.setItem('user', JSON.stringify(response.data!));
           this.isLoggedIn$.next(true);
         },
         error: (err) => {
           this.user.next(null);
-          localStorage.removeItem('user');
           this.isLoggedIn$.next(false);
-          this.errorHandler.handleError(err);
         },
       })
     );

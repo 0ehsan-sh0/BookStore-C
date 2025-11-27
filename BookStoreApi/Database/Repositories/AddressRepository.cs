@@ -11,8 +11,6 @@ namespace BookStoreApi.Database.Repositories
     {
         public async Task<int> CreateAsync(AddressInfo address)
         {
-            using var connection = dapperUtility.GetConnection();
-
             var sql = @"
                  INSERT INTO Addresses (Name, LastName, Phone, PostCode, State, City, Address, UserId)
                  VALUES (@Name, @LastName, @Phone, @PostCode, @State, @City, @Address, @UserId);
@@ -30,8 +28,19 @@ namespace BookStoreApi.Database.Repositories
                 address.UserId
             };
 
-            int insertedId = await connection.ExecuteScalarAsync<int>(sql, parameters);
-            return insertedId;
+            try
+            {
+                using var connection = dapperUtility.GetConnection();
+
+                int insertedId = await connection.ExecuteScalarAsync<int>(sql, parameters);
+                return insertedId;
+            }
+            catch (Exception e)
+            {
+                return -1;
+
+            }
+
         }
 
         public async Task<(List<AddressInfo> addresses, AddressPaginationInfo info)> GetUserAddressesAsync(int userId, QUserAddress query)

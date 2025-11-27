@@ -32,6 +32,7 @@ export class CreateComponent {
       }
     });
   }
+  
   onSubmit(form: NgForm) {
     let author: CreateAuthorRequest = {
       name: form.value.name,

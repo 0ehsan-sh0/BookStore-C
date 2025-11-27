@@ -2,7 +2,7 @@
   
   <div class="flex justify-between mb-4">
     <h2 class="text-2xl font-bold">آدرس‌های من</h2>
-    <button id="addAddressBtn" class="btn btn-primary btn-sm">
+    <button id="addAddressBtn" class="btn btn-primary btn-sm" (click)="create()">
       افزودن آدرس جدید
     </button>
   </div>
@@ -43,3 +43,7 @@
   }
 
 </div>
+
+<app-modal #createAddress id="createAddress">
+  <app-user-address-create (created)="closeDialog('createAddressModal')"></app-user-address-create>
+</app-modal>

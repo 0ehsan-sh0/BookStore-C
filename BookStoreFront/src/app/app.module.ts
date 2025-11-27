@@ -105,6 +105,7 @@ import { UserAddressesComponent } from './user/user-addresses/user-addresses.com
 import { UserSettingComponent } from './user/user-setting/user-setting.component';
 import { UserHeaderComponent } from './user/user-header/user-header.component';
 import { UserFooterComponent } from './user/user-footer/user-footer.component';
+import { UserAddressCreateComponent } from './user/user-addresses/user-address-create/user-address-create.component';
 
 @NgModule({
   declarations: [
@@ -156,6 +157,7 @@ import { UserFooterComponent } from './user/user-footer/user-footer.component';
     UserSettingComponent,
     UserHeaderComponent,
     UserFooterComponent,
+    UserAddressCreateComponent,
     ],
   imports: [
     BrowserModule,

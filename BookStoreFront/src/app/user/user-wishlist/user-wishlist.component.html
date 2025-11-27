@@ -7,7 +7,7 @@
   <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
 
     @for (book of wishlist; track book.id) {
-      <div class="card bg-base-200 w-46 h-90 shadow-sm cursor-pointer hover:shadow-primary hover:shadow-md transition">
+      <div (click)="goToBookDetails(book.id)" class="card bg-base-200 w-46 h-90 shadow-sm cursor-pointer hover:shadow-primary hover:shadow-md transition">
 
         <figure>
           <img

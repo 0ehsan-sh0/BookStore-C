@@ -24,10 +24,10 @@ export class UserAddressService {
     private errorHandler: ErrorHandlerService
   ) {}
 
-  addresses = new BehaviorSubject<Address[] | null>(null);
+  addresses = new BehaviorSubject<Address[]>([]);
   addressPagination = new BehaviorSubject<AddressPaginationInfo | null>(null);
 
-  address = new BehaviorSubject<Address | null>(null);
+  address = new BehaviorSubject<Address>({} as Address);
   createErrors = signal<string[]>([]);
   updateErrors = signal<string[]>([]);
   created = signal<boolean>(false);
@@ -53,12 +53,24 @@ export class UserAddressService {
       });
   }
 
+  getById(id: number) {
+    this.http.get<ApiResponse<Address>>(`${this.apiUrl}/${id}`).subscribe({
+      next: (res) => {
+        this.address.next(res.data as Address);
+      },
+      error: (err) => {
+        this.errorHandler.handleError(err);
+      },
+    });
+  }
+
   create(address: CreateAddressRequest) {
     this.http.post<ApiResponse<Address>>(`${this.apiUrl}`, address).subscribe({
       next: (res) => {
         this.address.next(res.data as Address);
-        this.addresses.next([res.data!, ...this.addresses.value!]);
+        this.addresses.next([res.data!, ...this.addresses.value]);
 
+        this.createErrors.set([]); // clear errors
         this.created.set(true); // emit created address
         this.alertService.show('آدرس با موفقیت ایجاد شد', 'success');
       },
@@ -75,6 +87,16 @@ export class UserAddressService {
       .subscribe({
         next: (res) => {
           this.address.next(res.data as Address);
+          this.addresses.next(
+            this.addresses.value.map((a) =>
+              a.id === res.data!.id ? res.data! : a
+            )
+          );
+          console.log(res);
+          
+          console.log(res.data);
+          
+          this.updateErrors.set([]); // clear errors
           this.updated.set(true); // emit updated address
           this.alertService.show('آدرس با موفقیت به‌روزرسانی شد', 'success');
         },

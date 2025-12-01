@@ -32,6 +32,17 @@ namespace BookStoreApi.Controllers.User
             return SuccessResponse("آدرس‌های کاربر با موفقیت بازیابی شد.", response);
         }
 
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetById([FromRoute] int id)
+        {
+            var mobile = User.Identity?.Name;
+            var (message, address, status) = await bLL.GetById(mobile!, id);
+
+            return status == 200
+                ? SuccessResponse(message, address!.ToRAddress(), status)
+                : NotFound(message);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateAddressRequest createaddressRequest)
         {

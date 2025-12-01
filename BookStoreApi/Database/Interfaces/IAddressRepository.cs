@@ -9,6 +9,6 @@ namespace BookStoreApi.Database.Interfaces
         Task<(List<AddressInfo> addresses, AddressPaginationInfo info)> GetUserAddressesAsync(int userId, QUserAddress query);
         Task<AddressInfo?> GetByIdAsync(int id);
         Task<int> CreateAsync(AddressInfo address);
-        Task<AddressInfo?> UpdateAsync(AddressInfo addressWithId);
+        Task<bool> UpdateAsync(AddressInfo addressWithId);
     }
 }

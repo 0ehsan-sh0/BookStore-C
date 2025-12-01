@@ -9,5 +9,6 @@ namespace BookStoreApi.BusinessLogicLayer.Interfaces.UserPanel
         Task<(List<AddressInfo>? addresses, AddressPaginationInfo? info)> GetUserAddressesAsync(string mobile, QUserAddress query);
         Task<(string message, AddressInfo? address, int status)> CreateAsync(string mobile, AddressInfo address);
         Task<(string message, AddressInfo? address, int status)> UpdateAsync(string mobile, AddressInfo addressWithId);
+        Task<(string message, AddressInfo? address, int status)> GetById(string mobile, int id);
     }
 }

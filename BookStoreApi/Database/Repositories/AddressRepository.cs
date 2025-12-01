@@ -79,7 +79,7 @@ namespace BookStoreApi.Database.Repositories
             return result;
         }
 
-        public async Task<AddressInfo?> UpdateAsync(AddressInfo addressWithId)
+        public async Task<bool> UpdateAsync(AddressInfo addressWithId)
         {
             string sql = @"
                 UPDATE A
@@ -110,10 +110,7 @@ namespace BookStoreApi.Database.Repositories
 
             bool result = await connection.ExecuteAsync(sql, parameters) > 0;
 
-            if (result)
-                return await GetByIdAsync(addressWithId.Id); // reuse your GetByIdAsync method
-
-            return null;
+            return result;
         }
     }
 }

@@ -21,6 +21,18 @@ namespace BookStoreApi.BusinessLogicLayer.LogicLayers.UserPanel
             return ("آدرس با موفقیت ایجاد شد.", createdAddress, 201);
         }
 
+        public async Task<(string message, AddressInfo? address, int status)> GetById(string mobile, int id)
+        {
+            var user = await userRepository.GetByMobileAsync(mobile);
+            if (user == null) return ("کاربر پیدا نشد.", null, 404);
+
+            var existingAddress = await repo.GetByIdAsync(id);
+            if (existingAddress == null || existingAddress.UserId != user.Id)
+                return ("آدرس پیدا نشد.", null, 404);
+
+            return ("آدرس با موفقیت بازیابی شد.", existingAddress, 200);
+        }
+
         public async Task<(List<AddressInfo>? addresses, AddressPaginationInfo? info)> GetUserAddressesAsync(string mobile, QUserAddress query)
         {
             var user = await userRepository.GetByMobileAsync(mobile);
@@ -38,8 +50,16 @@ namespace BookStoreApi.BusinessLogicLayer.LogicLayers.UserPanel
             if (existingAddress == null || existingAddress.UserId != user.Id)
                 return ("آدرس پیدا نشد.", null, 404);
 
-            var updatedAddress = await repo.UpdateAsync(addressWithId);
-            return ("آدرس با موفقیت به‌روزرسانی شد.", updatedAddress, 200);
+            var updated = await repo.UpdateAsync(addressWithId);
+
+            if (updated)
+            {
+                var updatedAddress = await repo.GetByIdAsync(addressWithId.Id);
+                return ("آدرس با موفقیت به‌روزرسانی شد.", updatedAddress, 200);
+            }
+
+            return ("خطا در به‌روزرسانی آدرس.", null, 500);
+
         }
     }
 }

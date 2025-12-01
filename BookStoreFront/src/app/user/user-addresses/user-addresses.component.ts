@@ -13,6 +13,7 @@ import { UserAddressService } from '../../services/user/user-address.service';
 export class UserAddressesComponent {
   addresses: Address[] = [];
   createAddressModal = viewChild<ModalComponent>('createAddress');
+  updateAddressModal = viewChild<ModalComponent>('updateAddress');
 
   constructor(private userAddressService: UserAddressService) {
     // update addresses on init
@@ -28,10 +29,18 @@ export class UserAddressesComponent {
       case 'createAddressModal':
         this.createAddressModal()!.close();
         break;
+      case 'updateAddressModal':
+        this.updateAddressModal()!.close();
+        break;
     }
   }
 
   create() {
     this.createAddressModal()!.open();
+  }
+
+  update(id: number) {
+    this.userAddressService.getById(id);
+    this.updateAddressModal()!.open();
   }
 }

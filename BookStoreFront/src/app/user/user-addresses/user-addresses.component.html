@@ -32,7 +32,7 @@
             </div>
 
             <div class="flex flex-col gap-2">
-              <button class="btn btn-ghost btn-sm">ویرایش</button>
+              <button class="btn btn-ghost btn-sm" (click)="update(address.id)">ویرایش</button>
             </div>
 
           </div>
@@ -46,4 +46,8 @@
 
 <app-modal #createAddress id="createAddress">
   <app-user-address-create (created)="closeDialog('createAddressModal')"></app-user-address-create>
+</app-modal>
+
+<app-modal #updateAddress id="updateAddress">
+  <app-user-address-update (updated)="closeDialog('updateAddressModal')"></app-user-address-update>
 </app-modal>

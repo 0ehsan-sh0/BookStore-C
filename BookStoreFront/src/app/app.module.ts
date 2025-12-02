@@ -45,6 +45,10 @@ import {
   LogIn,
   AlertCircle,
   Home,
+  CreditCard,
+  ShoppingBag,
+  Minus,
+  Trash2,
 } from 'lucide-angular';
 import { HeaderComponent } from './admin/header/header.component';
 import { SidebarComponent } from './admin/sidebar/sidebar.component';
@@ -107,6 +111,9 @@ import { UserHeaderComponent } from './user/user-header/user-header.component';
 import { UserFooterComponent } from './user/user-footer/user-footer.component';
 import { UserAddressCreateComponent } from './user/user-addresses/user-address-create/user-address-create.component';
 import { UserAddressUpdateComponent } from './user/user-addresses/user-address-update/user-address-update.component';
+import { UserCartComponent } from './user/user-cart/user-cart.component';
+import { UserCartItemComponent } from './user/user-cart/user-cart-item/user-cart-item.component';
+import { UserCartCheckoutComponent } from './user/user-cart/user-cart-checkout/user-cart-checkout.component';
 
 @NgModule({
   declarations: [
@@ -160,6 +167,9 @@ import { UserAddressUpdateComponent } from './user/user-addresses/user-address-u
     UserFooterComponent,
     UserAddressCreateComponent,
     UserAddressUpdateComponent,
+    UserCartComponent,
+    UserCartItemComponent,
+    UserCartCheckoutComponent,
     ],
   imports: [
     BrowserModule,
@@ -203,7 +213,11 @@ import { UserAddressUpdateComponent } from './user/user-addresses/user-address-u
       LogOut,
       LogIn,
       AlertCircle,
-      Home
+      Home,
+      CreditCard,
+      ShoppingBag,
+      Minus,
+      Trash2
     }),
     FormsModule,
   ],

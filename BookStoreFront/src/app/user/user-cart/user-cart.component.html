@@ -1,0 +1,45 @@
+<div class="mx-2 md:mx-20 mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+
+  <!-- LEFT: Cart Items -->
+  <div class="lg:col-span-2">
+
+    <div class="flex items-center mb-4">
+      <i-lucide name="shopping-cart" size="28" strokeWidth="2" class="ml-2"></i-lucide>
+      <h2 class="text-2xl font-bold">سبد خرید</h2>
+    </div>
+
+    @if (cartItems.length === 0) {
+    <div class="card bg-base-200 p-6 text-center">
+      <i-lucide name="shopping-bag" size="50" class="mx-auto opacity-60"></i-lucide>
+      <p class="mt-4 text-gray-500 text-lg">سبد خرید شما خالی است</p>
+    </div>
+    } @else {
+    <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
+      @for (item of cartItems; track item.id) {
+
+      <app-user-cart-item [item]="item" (quantityChanged)="updateQuantity($event)" (removed)="removeFromCart($event)" />
+      }
+    </div>
+
+    }
+
+  </div>
+
+  <!-- RIGHT: Checkout Summary -->
+  <div class="lg:col-span-1">
+
+    <div class="sticky top-8">
+
+      <div class="flex items-center mb-4">
+        <i-lucide name="receipt" size="26" strokeWidth="2" class="ml-2"></i-lucide>
+        <h3 class="text-xl font-bold">خلاصه سفارش</h3>
+      </div>
+
+      <app-user-cart-checkout [tax]="tax" [totalPrice]="totalPrice" [discount]="discount" [finalPrice]="finalPrice"
+        (checkoutClicked)="goToCheckout()" />
+
+    </div>
+
+  </div>
+
+</div>

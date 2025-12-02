@@ -21,3 +21,10 @@ export enum UserRole {
   User = 2,
   // add the rest if they exist
 }
+
+export interface CartSummary {
+  totalPrice: number;
+  tax: number;
+  discount: number;
+  finalPrice: number;
+}

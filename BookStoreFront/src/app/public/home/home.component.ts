@@ -3,6 +3,8 @@ import { BookPublicService } from '../../services/Public/book-public.service';
 import { ImageService } from '../../services/image.service';
 import { BookAllData } from '../../models/book';
 import { Router } from '@angular/router';
+import { UserCartService } from '../../services/user/user-cart.service';
+import { AlertService } from '../../ui-service/alert.service';
 
 @Component({
   selector: 'app-home',
@@ -16,7 +18,9 @@ export class HomeComponent implements OnInit {
   constructor(
     public bookService: BookPublicService,
     public imageService: ImageService,
-    private router: Router
+    private router: Router,
+    private cartService: UserCartService,
+    private alertService: AlertService
   ) {
     this.bookService.newBooks.subscribe((books) => {
       this.newBooks = books;
@@ -32,5 +36,10 @@ export class HomeComponent implements OnInit {
 
   goToBookDetails(bookId: number) {
     this.router.navigate(['/books', bookId]);
+  }
+
+  addToCart(book: BookAllData) {
+    this.cartService.addToCart({ ...book, quantity: 1 });
+    this.alertService.show('کتاب با موفقیت به سبد خرید اضافه شد');
   }
 }

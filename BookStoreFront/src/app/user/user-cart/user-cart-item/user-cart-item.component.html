@@ -1,0 +1,36 @@
+<div class="card bg-base-200 shadow-sm p-4 flex gap-1 items-center hover:shadow-md transition">
+
+  <!-- Product Image -->
+  <img [src]="getImage(item)" class="min-w-28 h-40 object-cover rounded-xl" />
+
+  <!-- Info -->
+  <h3 class="font-bold text-lg line-clamp-1">{{ item.name }}</h3>
+
+  <p class="text-sm text-gray-500">{{ item.author?.name }}</p>
+
+  <!-- Price -->
+  <div class="text-primary font-bold mt-3 text-lg">
+    {{ item.price | number:'1.0-0' }} تومان
+  </div>
+
+
+    <!-- Quantity Controls -->
+    <div class="flex w-full justify-between mb-2">
+      <button class="btn btn-sm btn-outline" (click)="decrease(item)">
+        <i-lucide name="minus" size="18"></i-lucide>
+      </button>
+
+      <span class="font-bold text-lg w-8 text-center">{{ item.quantity }}</span>
+
+      <button class="btn btn-sm btn-outline" (click)="increase(item)">
+        <i-lucide name="plus" size="18"></i-lucide>
+      </button>
+    </div>
+
+    <!-- Remove -->
+    <button class="btn btn-error btn-sm flex items-center gap-1 w-full" (click)="remove(item.id)">
+      <i-lucide name="trash-2" size="18"></i-lucide>
+      حذف
+    </button>
+
+  </div>

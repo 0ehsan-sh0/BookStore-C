@@ -35,10 +35,15 @@
         </label>
         }
 
-        <button class="btn h-8 w-8 btn-secondary btn-xs">
-            <i-lucide name="shopping-cart" size="20"></i-lucide>
-        </button>
-        
+        <div class="indicator">
+            @if (cartItemCount > 0) {
+            <span class="indicator-item badge badge-error badge-sm">{{ cartItemCount }}</span>
+            }
+            <button [routerLink]="['/cart']" class="btn h-8 w-8 btn-secondary">
+                <i-lucide name="shopping-cart" size="20"></i-lucide>
+            </button>
+        </div>
+
         <button class="btn btn-sm btn-primary mr-2 hidden md:inline-block" (click)="navigateToAuth()">
             {{ isLoggedIn ? 'خروج' : 'ورود / ثبت نام' }}
         </button>

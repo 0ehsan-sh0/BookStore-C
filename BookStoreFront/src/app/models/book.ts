@@ -37,6 +37,7 @@ export interface BookAllData {
   publishYear: string;
   publisher: string;
   isRecommended: boolean;
+  quantity: number;
   authorId: number;
   createdAt?: Date;
   updatedAt?: Date;

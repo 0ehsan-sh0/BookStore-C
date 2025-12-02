@@ -1,6 +1,10 @@
 <div class="navbar bg-base-200 shadow-sm fixed top-0 left-0 w-full z-50 gap-4">
     <!-- Right -->
     <div class="flex-1">
+        <label [routerLink]="['']" class="btn btn-square h-8 w-8 ml-2 btn-info">
+            <i-lucide name="home" size="20"></i-lucide>
+        </label>
+
         <label class="swap swap-rotate mx-2">
             <!-- this hidden checkbox controls the state -->
             <input type="checkbox" value="synthwave" [checked]="isLight" (click)="toggleTheme()" />
@@ -26,11 +30,16 @@
 
     <!-- Left -->
     <div class="flex-none">
-        <label [routerLink]="['']" class="btn btn-square h-8 w-8 ml-2 btn-info">
-            <i-lucide name="home" size="20"></i-lucide>
-        </label>
+         <div class="indicator">
+            @if (cartItemCount > 0) {
+            <span class="indicator-item badge badge-error badge-sm">{{ cartItemCount }}</span>
+            }
+            <button [routerLink]="['/cart']" class="btn h-8 w-8 btn-secondary">
+                <i-lucide name="shopping-cart" size="20"></i-lucide>
+            </button>
+        </div>
 
-        <label for="user-sidebar" class="btn btn-square h-8 w-8 btn-secondary drawer-button md:hidden">
+        <label for="user-sidebar" class="btn btn-square h-8 w-8 btn-secondary mr-2 drawer-button md:hidden">
             <i-lucide name="menu" size="20"></i-lucide>
         </label>
 

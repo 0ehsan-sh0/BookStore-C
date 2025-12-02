@@ -1,0 +1,31 @@
+<div class="card bg-base-200 shadow-md p-5 text-right w-full rounded-2xl">
+
+  <div class="flex justify-between my-1 text-gray-600">
+    <span>جمع کل کالاها</span>
+    <span>{{ totalPrice | number:'1.0-0' }} تومان</span>
+  </div>
+
+  <div class="flex justify-between my-1 text-gray-600">
+    <span>مالیات (۹٪)</span>
+    <span>{{ tax | number:'1.0-0' }} تومان</span>
+  </div>
+
+  <div class="flex justify-between my-1 text-error font-semibold">
+    <span>تخفیف</span>
+    <span>{{ discount | number:'1.0-0' }} تومان</span>
+  </div>
+
+  <div class="divider my-2"></div>
+
+  <div class="flex justify-between font-bold text-xl text-primary">
+    <span>مبلغ قابل پرداخت</span>
+    <span>{{ finalPrice | number:'1.0-0' }} تومان</span>
+  </div>
+
+  <button class="btn btn-primary w-full mt-5 flex items-center justify-center gap-2"
+          (click)="checkout()">
+    <i-lucide name="credit-card" size="20"></i-lucide>
+    ادامه فرایند خرید
+  </button>
+
+</div>

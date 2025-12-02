@@ -53,7 +53,7 @@
 
                         <!-- prevent card click here -->
                         <button class="btn btn-primary btn-sm flex-none text-primary-content"
-                            (click)="$event.stopPropagation()">
+                            (click)="addToCart(book); $event.stopPropagation()">
                             خرید
                         </button>
                     </div>
@@ -79,7 +79,7 @@
             <!-- Dynamic book cards -->
             @for (book of recommendedBooks; track book.id) {
             <div class="card bg-base-200 w-46 h-90 shadow-sm flex-shrink-0 cursor-pointer hover:shadow-primary hover:shadow-md transition"
-            (click)="goToBookDetails(book.id)">
+                (click)="goToBookDetails(book.id)">
                 <figure>
                     @if (book.images && book.images.length > 0) {
                     <!-- Use primary image if exists -->
@@ -117,7 +117,7 @@
                         </div>
 
                         <button class="btn btn-primary btn-sm flex-none text-primary-content"
-                        (click)="$event.stopPropagation()">
+                            (click)="addToCart(book); $event.stopPropagation()">
                             خرید
                         </button>
                     </div>

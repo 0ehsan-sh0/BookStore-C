@@ -1,7 +1,9 @@
-<app-public-header></app-public-header>
-<app-public-sidebar></app-public-sidebar>
-<!-- body -->
-<div class="pt-16">
-    <router-outlet></router-outlet>
+<div class="flex flex-col min-h-screen">
+    <app-public-header></app-public-header>
+    <app-public-sidebar></app-public-sidebar>
+    <!-- body -->
+    <div class="flex-grow pt-16">
+        <router-outlet></router-outlet>
+    </div>
+    <app-public-footer></app-public-footer>
 </div>
-<app-public-footer></app-public-footer>

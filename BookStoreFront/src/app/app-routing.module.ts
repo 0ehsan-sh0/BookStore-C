@@ -22,6 +22,7 @@ import { UserOrdersComponent } from './user/user-orders/user-orders.component';
 import { UserWishlistComponent } from './user/user-wishlist/user-wishlist.component';
 import { UserAddressesComponent } from './user/user-addresses/user-addresses.component';
 import { UserSettingComponent } from './user/user-setting/user-setting.component';
+import { UserCartComponent } from './user/user-cart/user-cart.component';
 
 const routes: Routes = [
   {
@@ -48,6 +49,7 @@ const routes: Routes = [
       { path: 'contact-us', component: ContactUsComponent },
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
+      { path: 'cart', component: UserCartComponent },
     ],
   },
   {
@@ -59,6 +61,7 @@ const routes: Routes = [
       { path: 'wishlist', component: UserWishlistComponent },
       { path: 'addresses', component: UserAddressesComponent },
       { path: 'settings', component: UserSettingComponent },
+      
     ],
   },
   { path: '**', redirectTo: '' }, // fallback

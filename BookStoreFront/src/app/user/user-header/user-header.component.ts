@@ -2,21 +2,26 @@ import { Component } from '@angular/core';
 import { ThemeControllerService } from '../../ui-service/theme-controller.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { UserCartService } from '../../services/user/user-cart.service';
 
 @Component({
   selector: 'app-user-header',
   standalone: false,
   templateUrl: './user-header.component.html',
-  styleUrl: './user-header.component.css'
+  styleUrl: './user-header.component.css',
 })
 export class UserHeaderComponent {
- public isLight = true;
+  public isLight = true;
   isLoggedIn = false;
+  cartItemCount = 0;
+  private cartSubscription: Subscription | undefined; // To manage subscription
 
   constructor(
     private themeController: ThemeControllerService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private userCartService: UserCartService
   ) {}
 
   toggleTheme() {
@@ -33,6 +38,13 @@ export class UserHeaderComponent {
     this.authService.isLoggedIn$.subscribe((isLoggedIn) => {
       this.isLoggedIn = isLoggedIn;
     });
+
+    // Subscribe to the cart item count observable
+    this.cartSubscription = this.userCartService.itemCount$.subscribe(
+      (count) => {
+        this.cartItemCount = count;
+      }
+    );
   }
 
   navigateToAuth() {
@@ -42,6 +54,13 @@ export class UserHeaderComponent {
     } else {
       // Navigate to login
       this.router.navigate(['/login']);
+    }
+  }
+
+  ngOnDestroy(): void {
+    // Unsubscribe to prevent memory leaks when the component is destroyed
+    if (this.cartSubscription) {
+      this.cartSubscription.unsubscribe();
     }
   }
 }

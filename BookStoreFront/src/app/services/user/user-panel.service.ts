@@ -24,6 +24,7 @@ export class UserPanelService {
 
   invoices = new BehaviorSubject<Invoice[] | null>(null);
   invoicePagination = new BehaviorSubject<InvoicePaginationInfo | null>(null);
+  userInvoice = new BehaviorSubject<Invoice | null>(null);
 
   updateUser(user: User) {
     this.http.put<ApiResponse<User>>(`${this.apiUrl}`, user).subscribe({
@@ -49,6 +50,18 @@ export class UserPanelService {
       next: (response) => {
         this.invoices.next(response.data?.invoices as Invoice[]);
         this.invoicePagination.next(response.data?.pagination as InvoicePaginationInfo);
+      },
+      error: (err) => {
+        this.errorHandler.handleError(err);
+      },
+    });
+  }
+
+  getUserInvoice(id: number) {
+    this.http.get<ApiResponse<Invoice>>(`${this.apiUrl}/invoice/${id}`).subscribe({
+      next: (response) => {
+        this.userInvoice.next(response.data as Invoice);
+        
       },
       error: (err) => {
         this.errorHandler.handleError(err);

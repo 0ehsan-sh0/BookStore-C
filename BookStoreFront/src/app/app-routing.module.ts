@@ -23,6 +23,8 @@ import { UserWishlistComponent } from './user/user-wishlist/user-wishlist.compon
 import { UserAddressesComponent } from './user/user-addresses/user-addresses.component';
 import { UserSettingComponent } from './user/user-setting/user-setting.component';
 import { UserCartComponent } from './user/user-cart/user-cart.component';
+import { CheckoutComponent } from './user/checkout/checkout.component';
+import { UserInvoiceComponent } from './user/user-invoice/user-invoice.component';
 
 const routes: Routes = [
   {
@@ -53,6 +55,14 @@ const routes: Routes = [
     ],
   },
   {
+    path: 'purchase',
+    component: PublicComponent,
+    children: [
+      { path: 'checkout', component: CheckoutComponent },
+      { path: 'invoice/:id', component: UserInvoiceComponent },
+    ],
+  },
+  {
     path: 'user',
     component: UserPublicComponent,
     children: [
@@ -61,9 +71,9 @@ const routes: Routes = [
       { path: 'wishlist', component: UserWishlistComponent },
       { path: 'addresses', component: UserAddressesComponent },
       { path: 'settings', component: UserSettingComponent },
-      
     ],
   },
+
   { path: '**', redirectTo: '' }, // fallback
 ];
 

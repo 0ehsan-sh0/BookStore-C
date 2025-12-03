@@ -62,11 +62,16 @@ namespace BookStoreApi.BusinessLogicLayer.LogicLayers.UserPanel
             return await invoiceRepository.GetUserInvoicesAsync(mobile, query);
         }
 
-        public async Task<(string message, Invoice? invoice, int status)> GetByIdAsync(int invoiceId)
+        public async Task<(string message, Invoice? invoice, int status)> GetByIdAsync(string mobile, int invoiceId)
         {
+            var user = await userRepository.GetByMobileAsync(mobile);
+            if (user == null)
+                return ("کاربر پیدا نشد.", null, 404);
+
             var invoice = await invoiceRepository.GetByIdAsync(invoiceId);
-            if (invoice is null)
+            if (invoice is null || invoice.UserId != user.Id)
                 return ("فاکتور پیدا نشد.", null, 404);
+
 
             return ("فاکتور با موفقیت بارگذاری شد.", invoice, 200);
         }

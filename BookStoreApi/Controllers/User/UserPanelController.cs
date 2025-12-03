@@ -30,9 +30,8 @@ namespace BookStoreApi.Controllers.User
             return SuccessResponse("اطلاعات با موفقیت بروزرسانی شد", updatedUser.ToRUser());
         }
 
-        [HttpGet]
-        [Route("invoice")]
-        public async Task<IActionResult> GetAllAsync([FromQuery] QUserInvoices query)
+        [HttpGet("invoice")]
+        public async Task<IActionResult> GetInvoicesAsync([FromQuery] QUserInvoices query)
         {
             var userMobile = User.Identity?.Name!;
             var (invoices, pagination) = await bLLUserInvoice.GetUserInvoicesAsync(userMobile, query);
@@ -44,6 +43,17 @@ namespace BookStoreApi.Controllers.User
             };
 
             return SuccessResponse("اطلاعات با موفقیت دریافت شد", response);
+        }
+
+        [HttpGet("invoice/{id:int}")]
+        public async Task<IActionResult> GetInvoiceAsync([FromRoute] int id)
+        {
+            var userMobile = User.Identity?.Name!;
+            var (message, invoice, status) = await bLLUserInvoice.GetByIdAsync(userMobile, id);
+
+            return status == 404 ?
+                NotFound(message) :
+                SuccessResponse(message, invoice, status);
         }
 
         [HttpPost]

@@ -1,0 +1,114 @@
+<div class="container mx-auto p-4 md:p-8">
+
+  <!-- Loading Spinner -->
+  @if (isLoading) {
+    <div class="text-center p-12">
+      <span class="loading loading-lg loading-spinner text-primary"></span>
+    </div>
+  }
+
+  <!-- Invoice Content -->
+  @if (!isLoading && invoice) {
+    <div id="invoice" class="card bg-base-200 shadow-xl print:shadow-none">
+      <div class="card-body">
+        
+        <!-- Invoice Header -->
+        <div class="flex justify-between items-start mb-6">
+          <div>
+            <h1 class="text-3xl font-bold">فاکتور</h1>
+            <p class="text-gray-500">شماره فاکتور: #{{ invoice.id }}</p>
+            <p class="text-gray-500">تاریخ ثبت: {{ invoice.createdAt | date:'yyyy/MM/dd' }}</p>
+          </div>
+          <div>
+            <h2 class="text-xl font-bold">کتاب‌کده</h2>
+            <p class="text-sm">فروشگاه آنلاین کتاب</p>
+            <div class="badge h-10 mt-1" 
+                 [class.badge-success]="invoice.paymentStatus === PaymentStatus.Completed"
+                 [class.badge-warning]="invoice.paymentStatus === PaymentStatus.Initiated"
+                 [class.badge-error]="invoice.paymentStatus === PaymentStatus.Failed">
+              {{ getPaymentStatusText(invoice.paymentStatus) }}
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Address and Payment Details -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <h3 class="font-bold mb-2">ارسال به:</h3>
+            <p class="font-semibold">{{ invoice.address?.name }} {{ invoice.address?.lastName }}</p>
+            <p>{{ invoice.address?.state }}, {{ invoice.address?.city }}, {{ invoice.address?.address }}</p>
+            <p>کدپستی: {{ invoice.address?.postCode }}</p>
+            <p>تلفن: {{ invoice.address?.phone }}</p>
+          </div>
+          <div>
+            <h3 class="font-bold mb-2">جزئیات پرداخت:</h3>
+            @if(invoice.payments && invoice.payments.length > 0) {
+              <p>درگاه پرداخت: {{ invoice.payments[0].paymentGateway }}</p>
+              <p>کد تراکنش: {{ invoice.payments[0].transactionCode }}</p>
+            }
+            <p>مبلغ کل: <span class="font-bold">{{ invoice.finalTotalPrice | number }} تومان</span></p>
+          </div>
+        </div>
+
+        <!-- Books Table -->
+        <h3 class="font-bold mb-2">اقلام سفارش:</h3>
+        <div class="overflow-x-auto">
+          <table class="table w-full">
+            <thead>
+              <tr>
+                <th>کتاب</th>
+                <th class="text-center">تعداد</th>
+                <th class="text-center">قیمت واحد</th>
+                <th class="text-right">مجموع</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (book of invoice.books; track book.id) {
+                <tr>
+                  <td>{{ book.name }}</td>
+                  <td class="text-center">{{ book.quantity }}</td>
+                  <td class="text-center">{{ book.price | number }}</td>
+                  <td class="text-right">{{ (book.price * book.quantity) | number }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Totals -->
+        <div class="grid grid-cols-2 gap-4 ml-auto max-w-sm text-right">
+          <span>جمع جزء:</span>
+          <span>{{ invoice.totalPrice | number }} تومان</span>
+          
+          <span>مالیات (۹٪):</span>
+          <span>{{ invoice.maliat | number }} تومان</span>
+
+          <span class="font-bold text-lg">مبلغ نهایی:</span>
+          <span class="font-bold text-lg">{{ invoice.finalTotalPrice | number }} تومان</span>
+        </div>
+
+        <!-- Actions -->
+        <div class="card-actions justify-end mt-8 print:hidden">
+          <button class="btn btn-ghost" (click)="print()">
+            <i-lucide name="printer" class="ml-2"></i-lucide>
+            چاپ
+          </button>
+          <a routerLink="/user/orders" class="btn btn-primary">بازگشت به لیست سفارشات</a>
+        </div>
+
+      </div>
+    </div>
+  } @else if (!isLoading) {
+    <!-- Error/Not Found Message -->
+    <div class="text-center p-12">
+        <i-lucide name="alert-triangle" size="48" class="mx-auto text-warning"></i-lucide>
+        <h2 class="mt-4 text-2xl font-bold">فاکتور مورد نظر یافت نشد</h2>
+        <p class="text-gray-500">ممکن است لینک شما اشتباه باشد یا این فاکتور حذف شده باشد.</p>
+        <a routerLink="/user/orders" class="btn btn-primary mt-6">بازگشت به لیست سفارشات</a>
+    </div>
+  }
+</div>

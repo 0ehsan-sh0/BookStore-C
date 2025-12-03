@@ -29,4 +29,10 @@ export interface UserInvoicesList {
   pagination: InvoicePaginationInfo | null;
 }
 
+export interface CreateInvoiceRequest {
+  addressId: number;
+  books: number[]; // Array of book IDs
+  counts: number[]; // Array of quantities
+}
+
 export interface InvoicePaginationInfo extends PaginationInfo {}

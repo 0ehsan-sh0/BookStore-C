@@ -51,6 +51,7 @@ namespace BookStoreApi.RequestHandler.User.Mappers
                 Publisher = bookAllData.Publisher,
                 IsRecommended = bookAllData.IsRecommended,
                 Stock = bookAllData.Stock,
+                Quantity = bookAllData.Quantity,
                 CreatedAt = bookAllData.CreatedAt,
                 UpdatedAt = bookAllData.UpdatedAt
             };

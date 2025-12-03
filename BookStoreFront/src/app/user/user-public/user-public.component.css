@@ -1,0 +1,18 @@
+/* In styles.css */
+
+html, body {
+  height: 100%; /* The root elements must have a height */
+  margin: 0;
+}
+
+.app-layout {
+  display: flex;
+  flex-direction: column; /* Stack children (header, main, footer) vertically */
+  min-height: 100vh;     /* Make the layout at least as tall as the viewport */
+}
+
+.app-layout main {
+  flex-grow: 1;          /* This is the magic! It makes the main content take up all extra space */
+  /* Add padding-top to account for the height of your fixed header */
+  padding-top: 80px; /* Adjust this value to match your header's height */
+}

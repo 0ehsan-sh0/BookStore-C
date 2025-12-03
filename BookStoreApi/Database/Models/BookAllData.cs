@@ -16,6 +16,7 @@
         public string Publisher { get; set; } = string.Empty;
         public bool IsRecommended { get; set; }
         public int Stock { get; set; }
+        public int? Quantity { get; set; }
 
         public int AuthorId { get; set; }
         public string? AuthorName { get; set; }

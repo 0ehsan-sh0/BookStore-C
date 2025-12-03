@@ -28,7 +28,8 @@
 
     <!-- Dynamic book cards -->
     @for (book of filteredBooks; track book.id) {
-    <div class="card bg-base-200 w-[calc(50%-0.5rem)] sm:w-[calc(33.3333%-1rem)] md:w-[calc(25%-1rem)] lg:w-[calc(20%-1rem)] xl:w-[calc(16.6667%-1rem)] cursor-pointer hover:shadow-primary hover:shadow-md transition"
+    <div
+      class="card bg-base-200 w-[calc(50%-0.5rem)] sm:w-[calc(33.3333%-1rem)] md:w-[calc(25%-1rem)] lg:w-[calc(20%-1rem)] xl:w-[calc(16.6667%-1rem)] cursor-pointer hover:shadow-primary hover:shadow-md transition"
       (click)="goToBookDetails(book.id)">
       <figure>
         @if (book.images && book.images.length > 0) {
@@ -66,7 +67,7 @@
           </div>
 
           <button class="btn btn-primary btn-sm flex-none text-primary-content"
-          (click)="$event.stopPropagation()">
+            (click)="addToCart(book); $event.stopPropagation()">
             خرید
           </button>
         </div>

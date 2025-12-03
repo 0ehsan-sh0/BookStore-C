@@ -1,0 +1,6 @@
+@media print {
+  /* --- 1. Hide everything on the page by default --- */
+  .footer-print, .footer-print * {
+    visibility: hidden;
+  }
+}

@@ -8,7 +8,7 @@ namespace BookStoreApi.BusinessLogicLayer.Interfaces.UserPanel
     public interface IBLLUserInvoice
     {
         Task<(string message, Invoice? invoice, int status)> CreateAsync(string userMobile, CreateInvoiceRequest request);
-        Task<(string message, Invoice? invoice, int status)> GetByIdAsync(int invoiceId);
+        Task<(string message, Invoice? invoice, int status)> GetByIdAsync(string mobile, int invoiceId);
         Task<(List<Invoice>? invoices, InvoicePaginationInfo pagination)> GetUserInvoicesAsync(string mobile, QUserInvoices query);
     }
 }

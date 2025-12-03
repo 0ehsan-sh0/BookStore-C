@@ -1,19 +1,29 @@
 import { Injectable } from '@angular/core';
 import { BookAllData } from '../../models/book';
 import { CartSummary } from '../../models/user';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
+import { Address } from '../../models/address';
+import { HttpClient } from '@angular/common/http';
+import { ErrorHandlerService } from '../error-handler.service';
+import { ApiResponse } from '../../models/apiResponse';
+import { CreateInvoiceRequest } from '../../models/invoice';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserCartService {
-  private storageKey = 'user_cart';
+  private readonly apiUrl = 'api/user/purchase';
+  private cartStorageKey = 'ketabkade_cart_books';
+  private addressStorageKey = 'ketabkade_cart_address';
   private cart: BookAllData[] = [];
   private _itemCount = new BehaviorSubject<number>(0);
   // Expose it as an Observable for components to subscribe to
   itemCount$: Observable<number> = this._itemCount.asObservable();
 
-  constructor() {
+  constructor(
+    private http: HttpClient,
+    private errorHandler: ErrorHandlerService
+  ) {
     this.loadCart();
   }
 
@@ -22,16 +32,58 @@ export class UserCartService {
     this._itemCount.next(count); // Emit the new count
   }
   // ---------------------------------------------------
+  // --- PURCHASE (CHECKOUT) ---
+  // ---------------------------------------------------
+  purchase(): Observable<ApiResponse<any>> {
+    // 1. Get the required data from local storage and state
+    const address = this.getAddress();
+    const cartItems = this.getCart();
+
+    // 2. Validate that we have an address and items
+    if (!address || !address.id) {
+      // Return an observable that emits an error immediately
+      return throwError(() => new Error('No address selected.'));
+    }
+    if (!cartItems || cartItems.length === 0) {
+      return throwError(() => new Error('Cart is empty.'));
+    }
+
+    // 3. Prepare the request payload
+    const payload: CreateInvoiceRequest = {
+      addressId: address.id,
+      books: cartItems.map(item => item.id), // Create an array of book IDs
+      counts: cartItems.map(item => item.quantity), // Create an array of quantities
+    };
+
+    // 4. Make the API call
+    return this.http.post<ApiResponse<any>>(this.apiUrl, payload).pipe(
+      tap((response) => {
+        // This 'tap' operator runs on success BEFORE the subscriber in the component
+        if (response.data) {
+          // 5. Clear cart and address from local storage on successful purchase
+          this.clearCart();
+          this.clearAddress();
+        }
+      }),
+      catchError(err => {
+        // 6. Use the existing error handler for any API errors
+        this.errorHandler.handleError(err);
+        return throwError(() => err); // Re-throw the error for the component's error block
+      })
+    );
+  }
+  
+  // ---------------------------------------------------
   // LOAD CART FROM LOCALSTORAGE
   // ---------------------------------------------------
   private loadCart() {
     try {
-      const data = localStorage.getItem(this.storageKey);
+      const data = localStorage.getItem(this.cartStorageKey);
       this.cart = data ? JSON.parse(data) : [];
       this.updateItemCount();
     } catch {
       this.cart = [];
-      localStorage.removeItem(this.storageKey);
+      localStorage.removeItem(this.cartStorageKey);
       this.updateItemCount();
     }
   }
@@ -40,7 +92,7 @@ export class UserCartService {
   // SAVE CART TO LOCALSTORAGE
   // ---------------------------------------------------
   private saveCart() {
-    localStorage.setItem(this.storageKey, JSON.stringify(this.cart));
+    localStorage.setItem(this.cartStorageKey, JSON.stringify(this.cart));
     this.updateItemCount();
   }
 
@@ -91,7 +143,7 @@ export class UserCartService {
   // ---------------------------------------------------
   clearCart() {
     this.cart = [];
-    localStorage.removeItem(this.storageKey);
+    localStorage.removeItem(this.cartStorageKey);
     this.updateItemCount();
   }
 
@@ -135,5 +187,41 @@ export class UserCartService {
       discount,
       finalPrice,
     };
+  }
+
+  // --- ADDRESS MANAGEMENT ---
+  // ---------------------------------------------------
+  // SAVE ADDRESS TO LOCALSTORAGE
+  // ---------------------------------------------------
+  saveAddress(address: Address): void {
+    try {
+      localStorage.setItem(this.addressStorageKey, JSON.stringify(address));
+    } catch (e) {
+      console.error('Error saving address to local storage:', e);
+    }
+  }
+
+  // ---------------------------------------------------
+  // GET ADDRESS FROM LOCALSTORAGE
+  // ---------------------------------------------------
+  getAddress(): Address | null {
+    try {
+      const data = localStorage.getItem(this.addressStorageKey);
+      return data ? JSON.parse(data) : null;
+    } catch (e) {
+      console.error('Error loading address from local storage:', e);
+      return null;
+    }
+  }
+
+  // ---------------------------------------------------
+  // CLEAR SAVED ADDRESS
+  // ---------------------------------------------------
+  clearAddress(): void {
+    try {
+      localStorage.removeItem(this.addressStorageKey);
+    } catch (e) {
+      console.error('Error clearing address from local storage:', e);
+    }
   }
 }

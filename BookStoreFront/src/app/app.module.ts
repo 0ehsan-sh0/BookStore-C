@@ -49,6 +49,10 @@ import {
   ShoppingBag,
   Minus,
   Trash2,
+  PlusCircle,
+  CheckCircle,
+  Printer,
+  AlertTriangle,
 } from 'lucide-angular';
 import { HeaderComponent } from './admin/header/header.component';
 import { SidebarComponent } from './admin/sidebar/sidebar.component';
@@ -114,6 +118,8 @@ import { UserAddressUpdateComponent } from './user/user-addresses/user-address-u
 import { UserCartComponent } from './user/user-cart/user-cart.component';
 import { UserCartItemComponent } from './user/user-cart/user-cart-item/user-cart-item.component';
 import { UserCartCheckoutComponent } from './user/user-cart/user-cart-checkout/user-cart-checkout.component';
+import { CheckoutComponent } from './user/checkout/checkout.component';
+import { UserInvoiceComponent } from './user/user-invoice/user-invoice.component';
 
 @NgModule({
   declarations: [
@@ -170,6 +176,8 @@ import { UserCartCheckoutComponent } from './user/user-cart/user-cart-checkout/u
     UserCartComponent,
     UserCartItemComponent,
     UserCartCheckoutComponent,
+    CheckoutComponent,
+    UserInvoiceComponent,
     ],
   imports: [
     BrowserModule,
@@ -217,7 +225,11 @@ import { UserCartCheckoutComponent } from './user/user-cart/user-cart-checkout/u
       CreditCard,
       ShoppingBag,
       Minus,
-      Trash2
+      Trash2,
+      PlusCircle,
+      CheckCircle,
+      Printer,
+      AlertTriangle
     }),
     FormsModule,
   ],

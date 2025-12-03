@@ -34,7 +34,7 @@ namespace BookStoreApi.Controllers.User
                 return StatusCode(payStatus, payMessage);
 
             // 4. Reload invoice with payments
-            var (_, fullInvoice, _) = await invoiceBLL.GetByIdAsync(invoice.Id);
+            var (_, fullInvoice, _) = await invoiceBLL.GetByIdAsync(userMobile, invoice.Id);
             if (fullInvoice == null)
                 return StatusCode(500, "خطا در بارگذاری اطلاعات فاکتور.");
 

@@ -1,0 +1,19 @@
+@media print {
+  /* --- 1. Hide everything on the page by default --- */
+  body * {
+    visibility: hidden;
+  }
+
+  /* --- 2. Make the invoice area and everything inside it visible --- */
+  #invoice, #invoice * {
+    visibility: visible;
+  }
+
+  /* --- 3. Position the invoice at the top of the print page --- */
+  #invoice {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+}

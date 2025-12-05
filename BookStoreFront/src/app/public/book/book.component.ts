@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { BookAllData } from '../../models/book';
+import { BookAllData, BPaginationInfo } from '../../models/book';
 import { BookPublicService } from '../../services/Public/book-public.service';
 import { ImageService } from '../../services/image.service';
 import { Router } from '@angular/router';
@@ -15,6 +15,12 @@ import { UserCartService } from '../../services/user/user-cart.service';
 export class BookComponent implements OnInit {
   books: BookAllData[] = [];
   filteredBooks: BookAllData[] = [];
+  pagination: BPaginationInfo = {
+    pageNumber: 1,
+    pageSize: 20,
+    totalCount: 0,
+    totalPages: 1,
+  };
 
   searchTerm: string = '';
   sortOption: string = 'newest';
@@ -29,7 +35,10 @@ export class BookComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadBooks();
-    this.bookService.getNewBooks();
+    this.bookService.getNewBooks(
+      this.pagination.pageNumber,
+      this.pagination.pageSize
+    );
   }
 
   loadBooks(): void {
@@ -37,6 +46,12 @@ export class BookComponent implements OnInit {
       this.books = data;
       this.filteredBooks = [...this.books];
       this.applySort();
+    });
+
+    this.bookService.newBooksPagination.subscribe((pagination) => {
+      if (pagination) {
+        this.pagination = pagination;
+      }
     });
   }
 
@@ -86,8 +101,32 @@ export class BookComponent implements OnInit {
     this.router.navigate(['/books', bookId]);
   }
 
-    addToCart(book: BookAllData) {
+  addToCart(book: BookAllData) {
     this.cartService.addToCart({ ...book, quantity: 1 });
     this.alertService.show('کتاب با موفقیت به سبد خرید اضافه شد');
+  }
+
+  changePage(page: number) {
+    if (page !== this.pagination.pageNumber) {
+      this.bookService.getNewBooks(page, this.pagination.pageSize);
+    }
+  }
+
+  getPageArray(): number[] {
+    const total = this.pagination.totalPages;
+    const current = this.pagination.pageNumber;
+
+    const pages: number[] = [];
+
+    for (let i = 1; i <= total; i++) {
+      if (i === 1 || i === total || (i >= current - 1 && i <= current + 1)) {
+        pages.push(i);
+      } else if (i === current - 2 || i === current + 2) {
+        pages.push(-1); // use -1 as ellipsis
+      }
+    }
+    console.log(pages);
+
+    return [...new Set(pages)];
   }
 }

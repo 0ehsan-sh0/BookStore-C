@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { AlertService } from '../../ui-service/alert.service';
 import { ErrorHandlerService } from '../error-handler.service';
 import { BehaviorSubject } from 'rxjs';
-import { BookAllData, BookListResponse } from '../../models/book';
+import { BookAllData, BookListResponse, BPaginationInfo } from '../../models/book';
 import { ApiResponse } from '../../models/apiResponse';
 
 @Injectable({
@@ -19,6 +19,8 @@ export class BookPublicService {
   ) {}
 
   newBooks = new BehaviorSubject<BookAllData[]>([]);
+  newBooksPagination = new BehaviorSubject<BPaginationInfo | null>(null);
+
   recommendedBooks = new BehaviorSubject<BookAllData[]>([]);
   book = new BehaviorSubject<BookAllData | null>(null);
 
@@ -43,6 +45,7 @@ export class BookPublicService {
             this.recommendedBooks.next(response.data?.books || []);
           } else {
             this.newBooks.next(response.data?.books || []);
+            this.newBooksPagination.next(response.data?.pagination as BPaginationInfo);
           }
         },
         error: (err) => {

@@ -75,6 +75,30 @@
     </div>
     }
   </div>
+
+  <div class="flex items-center justify-center my-5" *ngIf="pagination.totalPages > 1">
+    <button class="btn btn-md" [disabled]="pagination.pageNumber === 1" (click)="changePage(pagination.pageNumber - 1)">
+      قبلی
+    </button>
+
+    <ng-container *ngFor="let page of getPageArray()">
+      <button class="btn btn-md" [ngClass]="{
+    'btn-disabled': page === -1,
+    'btn-primary' : page === pagination.pageNumber,
+  }" (click)="changePage(page)">
+        @if (page === -1) {
+        ...
+        } @else {
+        {{ page }}
+        }
+      </button>
+    </ng-container>
+
+    <button class="btn btn-md" [disabled]="pagination.pageNumber === pagination.totalPages"
+      (click)="changePage(pagination.pageNumber + 1)">
+      بعدی
+    </button>
+  </div>
   } @else {
   <div class="text-center text-gray-500 mt-20 text-lg">
     کتابی یافت نشد.

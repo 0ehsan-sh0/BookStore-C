@@ -1,3 +1,4 @@
+import { PaginationInfo } from "./apiResponse";
 import { Author } from "./author";
 import { Category } from "./category";
 import { Image } from "./image";
@@ -54,12 +55,8 @@ export interface BookListResponse {
   pagination?: BPaginationInfo;
 }
 
-export interface BPaginationInfo {
-  totalCount: number;
-  pageSize: number;
-  pageNumber: number;
-  totalPages: number;
-}
+export interface BPaginationInfo extends PaginationInfo {}
+
 
 export interface CreateBookRequest {
   name: string;

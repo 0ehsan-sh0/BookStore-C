@@ -5,6 +5,7 @@ export interface Category {
   mainCategoryId?: number;
   createdAt?: Date;
   updatedAt?: Date;
+  subCategories?: Category[];
 }
 
 export interface CPaginationInfo {

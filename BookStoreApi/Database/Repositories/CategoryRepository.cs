@@ -4,6 +4,7 @@ using BookStoreApi.RequestHandler.Admin.QueryObjects.Category;
 using BookStoreApi.RequestHandler.Admin.Responses.Category;
 using Dapper;
 using System.Data;
+using System.Text.Json;
 
 namespace BookStoreApi.Database.Repositories
 {
@@ -68,6 +69,25 @@ namespace BookStoreApi.Database.Repositories
             using var connection = dapperUtility.GetConnection();
             var result = await connection.QueryFirstOrDefaultAsync<Category>(sql, new { Url }, commandType: CommandType.StoredProcedure);
             return result;
+        }
+
+        public async Task<List<Category>> GetCategoriesWithSubAsync()
+        {
+            using var connection = dapperUtility.GetConnection();
+            await connection.OpenAsync();
+
+            using var multi = await connection.QueryMultipleAsync(
+                "Category_Get_By_Sub_Categories",
+                commandType: CommandType.StoredProcedure
+            );
+
+            // First result: JSON string
+            var categoriesJson = await multi.ReadFirstOrDefaultAsync<string>();
+            List<Category> categories = [];
+            if (categoriesJson is not null)
+                categories = JsonSerializer.Deserialize<List<Category>>(categoriesJson)!;
+
+            return categories;
         }
 
         public async Task<Category?> UpdateAsync(Category c)

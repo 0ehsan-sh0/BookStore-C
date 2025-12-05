@@ -64,6 +64,7 @@ builder.Services.AddSingleton(typeof(BookStoreApi.Database.DapperUtility));
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IBLLCategory, BLLCategory>();
+builder.Services.AddScoped<IBLLCategoryPublic, BLLCategoryPublic>();
 
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 builder.Services.AddScoped<IBLLAuthor, BLLAuthor>();

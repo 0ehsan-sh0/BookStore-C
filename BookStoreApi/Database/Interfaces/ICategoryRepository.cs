@@ -7,6 +7,7 @@ namespace BookStoreApi.Database.Interfaces
     public interface ICategoryRepository
     {
         Task<(List<Category> categories, CPaginationInfo info)> GetAllAsync(QCategoryGetAll query);
+        Task<List<Category>> GetCategoriesWithSubAsync();
         Task<Category?> GetByIdAsync(int id);
         Task<Category?> GetByUrlAsync(string Url);
         Task<int> CreateAsync(Category category);

@@ -13,8 +13,7 @@ namespace BookStoreApi.RequestHandler.Public.Mappers
                 Name = category.Name,
                 Url = category.Url,
                 MainCategoryId = category.MainCategoryId,
-                CreatedAt = category.CreatedAt,
-                UpdatedAt = category.UpdatedAt,
+                SubCategories = category.SubCategories?.Select(c => c.ToPublicCategory()).ToList(),
             };
         }
 

@@ -7,77 +7,96 @@
 
   <!-- Empty state -->
   @if (invoices.length === 0) {
-    <div class="text-center text-gray-400 py-10">
-      هیچ سفارشی ثبت نشده است.
-    </div>
+  <div class="text-center text-gray-400 py-10">
+    هیچ سفارشی ثبت نشده است.
+  </div>
   }
 
   <!-- Invoices -->
   @if (invoices.length > 0) {
 
-    <div class="space-y-4">
+  <div class="space-y-4">
 
-      @for (invoice of invoices; track invoice.id) {
+    @for (invoice of invoices; track invoice.id) {
 
-        <div class="card bg-base-200 shadow-sm">
-          <div class="card-body flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div class="card bg-base-200 shadow-sm">
+      <div class="card-body flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
 
-            <!-- Invoice ID + Date -->
-            <div class="text-right">
-              <div class="font-semibold">سفارش #{{ invoice.id }}</div>
-              <div class="text-sm text-gray-500">
-                تاریخ: {{ invoice.createdAt! | jalaliDate }}
-              </div>
-            </div>
-
-            <!-- Price -->
-            <div class="text-right">
-              <div class="text-sm text-gray-500">مبلغ</div>
-              <div class="font-bold">{{ invoice.finalTotalPrice | number }} تومان</div>
-            </div>
-
-            <!-- First 3 Book Images -->
-            <div class="flex gap-2">
-              @if (invoice.books && invoice.books.length > 0) {
-                @for (book of invoice.books.slice(0,3); track book.id) {
-                  <img 
-                    class="h-16 w-12 object-cover rounded shadow-sm"
-                    [src]="getBookImageUrl(book)"
-                    alt="{{ book.name }}"
-                  />
-                }
-              } @else {
-                <div class="text-gray-400 text-sm">کتابی وجود ندارد</div>
-              }
-            </div>
-
-            <!-- Status -->
-            <div class="text-right">
-              <div class="text-sm text-gray-500">وضعیت</div>
-              @if (invoice.invoiceStatus === 1) {
-                <div class="badge badge-success">صادر شده</div>
-              } @else if (invoice.invoiceStatus === 2) {
-                <div class="badge badge-warning">پیش فاکتور</div>
-              } @else if (invoice.invoiceStatus === 3) {
-                <div class="badge badge-error">ابطال شده</div>
-              } @else {
-                <div class="badge badge-neutral">نامشخص</div>
-              }
-            </div>
-
-            <!-- Actions -->
-            <div class="flex gap-2">
-              <button [routerLink]="['/purchase/invoice', invoice.id]" class="btn btn-ghost btn-sm">نمایش جزئیات</button>
-              <button class="btn btn-outline btn-sm">پیگیری</button>
-            </div>
-
+        <!-- Invoice ID + Date -->
+        <div class="text-right">
+          <div class="font-semibold">سفارش #{{ invoice.id }}</div>
+          <div class="text-sm text-gray-500">
+            تاریخ: {{ invoice.createdAt! | jalaliDate }}
           </div>
         </div>
 
-      }
+        <!-- Price -->
+        <div class="text-right">
+          <div class="text-sm text-gray-500">مبلغ</div>
+          <div class="font-bold">{{ invoice.finalTotalPrice | number }} تومان</div>
+        </div>
 
+        <!-- First 3 Book Images -->
+        <div class="flex gap-2">
+          @if (invoice.books && invoice.books.length > 0) {
+          @for (book of invoice.books.slice(0,3); track book.id) {
+          <img class="h-16 w-12 object-cover rounded shadow-sm" [src]="getBookImageUrl(book)" alt="{{ book.name }}" />
+          }
+          } @else {
+          <div class="text-gray-400 text-sm">کتابی وجود ندارد</div>
+          }
+        </div>
+
+        <!-- Status -->
+        <div class="text-right">
+          <div class="text-sm text-gray-500">وضعیت</div>
+          @if (invoice.invoiceStatus === 1) {
+          <div class="badge badge-success">صادر شده</div>
+          } @else if (invoice.invoiceStatus === 2) {
+          <div class="badge badge-warning">پیش فاکتور</div>
+          } @else if (invoice.invoiceStatus === 3) {
+          <div class="badge badge-error">ابطال شده</div>
+          } @else {
+          <div class="badge badge-neutral">نامشخص</div>
+          }
+        </div>
+
+        <!-- Actions -->
+        <div class="flex gap-2">
+          <button [routerLink]="['/purchase/invoice', invoice.id]" class="btn btn-ghost btn-sm">نمایش جزئیات</button>
+          <button class="btn btn-outline btn-sm">پیگیری</button>
+        </div>
+
+      </div>
     </div>
 
+    }
+
+  </div>
+
+  <div class="flex items-center justify-center my-5" *ngIf="pagination.totalPages > 1">
+    <button class="btn btn-md" [disabled]="pagination.pageNumber === 1" (click)="changePage(pagination.pageNumber - 1)">
+      قبلی
+    </button>
+
+    <ng-container *ngFor="let page of getPageArray()">
+      <button class="btn btn-md" [ngClass]="{
+    'btn-disabled': page === -1,
+    'btn-primary' : page === pagination.pageNumber,
+  }" (click)="changePage(page)">
+        @if (page === -1) {
+        ...
+        } @else {
+        {{ page }}
+        }
+      </button>
+    </ng-container>
+
+    <button class="btn btn-md" [disabled]="pagination.pageNumber === pagination.totalPages"
+      (click)="changePage(pagination.pageNumber + 1)">
+      بعدی
+    </button>
+  </div>
   }
 
 </div>

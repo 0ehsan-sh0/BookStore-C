@@ -33,7 +33,7 @@ export class UserAddressService {
   created = signal<boolean>(false);
   updated = signal<boolean>(false);
 
-  getUserAddresses(pageNumber: number = 1, pageSize: number = 10) {
+  getUserAddresses(pageNumber: number = 1, pageSize: number = 20) {
     const params = new HttpParams()
       .set('PageNumber', pageNumber.toString())
       .set('PageSize', pageSize.toString());

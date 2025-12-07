@@ -5,6 +5,8 @@ import { BookPublicService } from '../../services/Public/book-public.service';
 import { ImageService } from '../../services/image.service';
 import { AlertService } from '../../ui-service/alert.service';
 import { UserCartService } from '../../services/user/user-cart.service';
+import { CommentPublicService } from '../../services/Public/comment-public.service';
+import { Comment, COPaginationInfo } from '../../models/comment';
 
 @Component({
   selector: 'app-book-details',
@@ -21,7 +23,7 @@ export class BookDetailsComponent {
     private bookService: BookPublicService,
     private imageService: ImageService,
     private alertService: AlertService,
-    private cartService: UserCartService
+    private cartService: UserCartService,
   ) {}
 
   ngOnInit(): void {
@@ -36,6 +38,7 @@ export class BookDetailsComponent {
     }
   }
 
+
   getPrimaryImage(): string {
     if (!this.book?.images || this.book.images.length === 0) {
       return 'https://placehold.co/400x600?text=No+Image';
@@ -46,9 +49,8 @@ export class BookDetailsComponent {
   }
 
   addToCart(book: BookAllData | null) {
-    if (!book) 
-      return;
-  
+    if (!book) return;
+
     this.cartService.addToCart(book);
     this.alertService.show('کتاب با موفقیت به سبد خرید اضافه شد');
   }

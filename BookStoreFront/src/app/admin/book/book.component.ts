@@ -135,6 +135,6 @@ export class BookComponent {
   }
 
   changeRecommended(id: number) {
-    this.bookService.ToggleRecomended(id);
+    this.bookService.toggleRecomended(id);
   }
 }

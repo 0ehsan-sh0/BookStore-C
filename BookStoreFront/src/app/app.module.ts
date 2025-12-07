@@ -53,6 +53,8 @@ import {
   CheckCircle,
   Printer,
   AlertTriangle,
+  MessageCircle,
+  Info,
 } from 'lucide-angular';
 import { HeaderComponent } from './admin/header/header.component';
 import { SidebarComponent } from './admin/sidebar/sidebar.component';
@@ -120,6 +122,7 @@ import { UserCartItemComponent } from './user/user-cart/user-cart-item/user-cart
 import { UserCartCheckoutComponent } from './user/user-cart/user-cart-checkout/user-cart-checkout.component';
 import { CheckoutComponent } from './user/checkout/checkout.component';
 import { UserInvoiceComponent } from './user/user-invoice/user-invoice.component';
+import { BookCommentsComponent } from './public/book-comments/book-comments.component';
 
 @NgModule({
   declarations: [
@@ -178,6 +181,7 @@ import { UserInvoiceComponent } from './user/user-invoice/user-invoice.component
     UserCartCheckoutComponent,
     CheckoutComponent,
     UserInvoiceComponent,
+    BookCommentsComponent,
     ],
   imports: [
     BrowserModule,
@@ -229,7 +233,9 @@ import { UserInvoiceComponent } from './user/user-invoice/user-invoice.component
       PlusCircle,
       CheckCircle,
       Printer,
-      AlertTriangle
+      AlertTriangle,
+      MessageCircle,
+      Info
     }),
     FormsModule,
   ],

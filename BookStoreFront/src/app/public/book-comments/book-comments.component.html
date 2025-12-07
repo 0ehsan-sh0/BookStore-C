@@ -1,0 +1,82 @@
+<div class="divider my-10"></div>
+
+<h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
+    <lucide-icon name="message-circle" class="w-6 h-6"></lucide-icon>
+    نظرات کاربران
+</h2>
+
+<!-- Loading -->
+@if (commentsLoading) {
+<div class="flex justify-center my-10">
+    <span class="loading loading-spinner loading-lg"></span>
+</div>
+}
+
+<!-- No comments -->
+@if (!commentsLoading && comments.length === 0) {
+<div class="text-center text-gray-500 py-10">
+    <lucide-icon name="info" class="w-10 h-10 mx-auto mb-3"></lucide-icon>
+    هنوز نظری برای این کتاب ثبت نشده است.
+</div>
+}
+
+<!-- Comments list -->
+@if (!commentsLoading && comments.length > 0) {
+<div class="space-y-4">
+
+    @for (c of comments; track c.id) {
+
+    <div class="card bg-base-200 shadow-md p-4">
+        <div class="flex items-start justify-between">
+
+            <!-- User info -->
+            <div class="flex items-center gap-3">
+                <div class="avatar placeholder">
+                    <div class="bg-neutral text-neutral-content rounded-full w-12">
+                        <span>{{ c.user?.name?.charAt(0) ?? '?' }}</span>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="font-semibold text-right">{{ c.user?.name ?? "کاربر" }} {{ c.user?.lastName ?? "ناشناس" }}
+                    </p>
+                    <p class="text-xs text-gray-500 text-right">
+                        {{ c.createdAt | jalaliDate }}
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Comment text -->
+        <p class="mt-3 text-right leading-relaxed">{{ c.comment }}</p>
+    </div>
+
+    }
+    <div class="flex items-center justify-center my-5" *ngIf="pagination.totalPages > 1">
+        <button class="btn btn-md" [disabled]="pagination.pageNumber === 1"
+            (click)="changePage(pagination.pageNumber - 1)">
+            قبلی
+        </button>
+
+        <ng-container *ngFor="let page of getPageArray()">
+            <button class="btn btn-md" [ngClass]="{
+    'btn-disabled': page === -1,
+    'btn-primary' : page === pagination.pageNumber,
+  }" (click)="changePage(page)">
+                @if (page === -1) {
+                ...
+                } @else {
+                {{ page }}
+                }
+            </button>
+        </ng-container>
+
+        <button class="btn btn-md" [disabled]="pagination.pageNumber === pagination.totalPages"
+            (click)="changePage(pagination.pageNumber + 1)">
+            بعدی
+        </button>
+    </div>
+</div>
+
+}

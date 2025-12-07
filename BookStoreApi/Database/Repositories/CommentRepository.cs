@@ -2,8 +2,10 @@
 using BookStoreApi.Database.Models;
 using BookStoreApi.RequestHandler.Admin.QueryObjects.Comment;
 using BookStoreApi.RequestHandler.Admin.Responses.Comment;
+using BookStoreApi.RequestHandler.Public.Responses.Comment;
 using Dapper;
 using System.Data;
+using System.Text.Json;
 
 namespace BookStoreApi.Database.Repositories
 {
@@ -32,6 +34,28 @@ namespace BookStoreApi.Database.Repositories
             var pagination = await multi.ReadFirstOrDefaultAsync<COPaginationInfo>();
 
             return (comments, pagination!);
+        }
+
+        public async Task<(List<CommentInfo> comments, CommentPaginationInfo info)> GetBookCommentsAsync(int bookId, int pageNumber, int pageSize)
+        {
+            using var connection = dapperUtility.GetConnection();
+
+            using var multi = await connection.QueryMultipleAsync(
+                "Comment_Get_Book_JSON",
+                new { BookId = bookId, PageNumber = pageNumber, PageSize = pageSize },
+                commandType: CommandType.StoredProcedure
+            );
+
+            var commentsJson = await multi.ReadFirstOrDefaultAsync<string>();
+            List<CommentInfo> comments = new();
+
+            if (commentsJson != null)
+                comments = JsonSerializer.Deserialize<List<CommentInfo>>(commentsJson)!;
+
+            var paginationJson = await multi.ReadFirstOrDefaultAsync<string>();
+            var pagination = JsonSerializer.Deserialize<CommentPaginationInfo>(paginationJson!)!;
+
+            return (comments, pagination);
         }
 
         public async Task<CommentInfo?> GetByIdAsync(int id)

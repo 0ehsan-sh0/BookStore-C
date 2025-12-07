@@ -11,6 +11,7 @@ import {
   UpdateBookRequest,
 } from '../../models/book';
 import { ApiResponse } from '../../models/apiResponse';
+import { CommentListResponse } from '../../models/comment';
 
 @Injectable({
   providedIn: 'root',
@@ -115,7 +116,7 @@ export class BookService {
     });
   }
 
-  ToggleRecomended(id: number) {
+  toggleRecomended(id: number) {
     return this.http
       .post<ApiResponse<BookAllData>>(`${this.apiUrl}/recommended/${id}`, null)
       .subscribe({

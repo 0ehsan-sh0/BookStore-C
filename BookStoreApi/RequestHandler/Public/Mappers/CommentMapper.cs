@@ -1,22 +1,21 @@
 ﻿using BookStoreApi.Database.Models;
-using BookStoreApi.RequestHandler.Admin.Responses.Comment;
+using BookStoreApi.RequestHandler.Public.Responses.Comment;
 
-namespace BookStoreApi.RequestHandler.Admin.Mappers
+namespace BookStoreApi.RequestHandler.Public.Mappers
 {
     public static class CommentMapper
     {
-        public static RComment ToRComment(this CommentInfo comment)
+        public static RComment ToPublicComment(this CommentInfo comment)
         {
             return new RComment
             {
-                Id = comment.Id,
                 Comment = comment.Comment,
                 Status = comment.Status,
-                ForeignTable = comment.ForeignTable,
-                ForeignId = comment.ForeignId,
                 UserId = comment.UserId,
                 CreatedAt = comment.CreatedAt,
                 UpdatedAt = comment.UpdatedAt,
+
+                User = comment.User?.ToPublicUser(),
             };
         }
     }

@@ -1,3 +1,5 @@
+import { User } from './user';
+
 export interface Comment {
   id: number;
   comment: string;
@@ -6,6 +8,8 @@ export interface Comment {
   foreignId: number;
   createdAt: Date;
   updatedAt: Date;
+  userId: number;
+  user?: User;
 }
 
 export interface CommentListResponse {

@@ -9,7 +9,10 @@ namespace BookStoreApi.Database.Models
         public bool Status { get; set; }
         public string ForeignTable { get; set; } = string.Empty;
         public int ForeignId { get; set; }
+        public int UserId { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+        public User? User { get; set; }
+        public BookAllData? Book { get; set; }
     }
 }

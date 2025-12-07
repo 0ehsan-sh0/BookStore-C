@@ -29,6 +29,8 @@
                 <td>تعداد صفحات</td>
                 <td>تاریخ انتشار</td>
                 <td>انتشارات</td>
+                <td>موجودی انبار</td>
+                <td>وضعیت پیشنهاد</td>
                 <td>نویسنده</td>
                 <td>دسته بندی ها</td>
                 <td>مترجمان</td>
@@ -76,6 +78,11 @@
                 <td class="text-lg truncate max-w-100">{{book.pages}}</td>
                 <td class="text-lg truncate max-w-100">{{book.publishYear}}</td>
                 <td class="text-lg truncate max-w-100">{{book.publisher}}</td>
+                <td class="text-lg truncate max-w-100">{{book.stock}}</td>
+                <td class="flex justify-center">
+                    <input type="checkbox" [checked]="book.isRecommended" class="checkbox checkbox-primary h-10 w-10"
+                        (click)="changeRecommended(book.id)" />
+                </td>
                 <td class="text-lg truncate max-w-100"><a [routerLink]="['/admin/author']" class="link">{{book.author?.id}} -
                         {{book.author?.name}}</a>
                 </td>

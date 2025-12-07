@@ -50,7 +50,9 @@ namespace BookStoreApi.Database.Repositories
                 TranslatorIds = translatorIds.AsTableValuedParameter("IntList"),
                 CategoryIds = categoryIds.AsTableValuedParameter("IntList"),
                 TagIds = tagIds.AsTableValuedParameter("IntList"),
-                IsRecommended = false
+                IsRecommended = false,
+                book.Stock
+
             };
 
             // Database call and inserting the book and relationships
@@ -84,6 +86,18 @@ namespace BookStoreApi.Database.Repositories
             int result = await connection.ExecuteAsync(sql, new { id });
             if (result == 1) return true;
             return false;
+        }
+
+        public async Task<bool> ToggleIsRecommended(int id)
+        {
+            const string sql = @"UPDATE Books
+                         SET IsRecommended = 1 - IsRecommended
+                         WHERE Id = @id";
+
+            using var connection = dapperUtility.GetConnection();
+            int result = await connection.ExecuteAsync(sql, new { id });
+
+            return result == 1;
         }
 
         public async Task<(List<BookAllData>? books, BPaginationInfo info)> GetAllAsync(QBookGetAll query)
@@ -228,7 +242,7 @@ namespace BookStoreApi.Database.Repositories
                 TranslatorIds = translatorIds.AsTableValuedParameter("IntList"),
                 CategoryIds = categoryIds.AsTableValuedParameter("IntList"),
                 TagIds = tagIds.AsTableValuedParameter("IntList"),
-                bookWithId.IsRecommended
+                bookWithId.Stock
             };
 
             // Database call and inserting the book and relationships

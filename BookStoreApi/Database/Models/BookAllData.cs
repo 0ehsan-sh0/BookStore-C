@@ -27,6 +27,7 @@
         public List<Tag>? Tags { get; set; }
         public List<Image>? Images { get; set; }
         public List<Invoice>? Invoices { get; set; }
+        public List<CommentInfo>? Comments { get; set; }
         public Author? Author { get; set; }
     }
 }

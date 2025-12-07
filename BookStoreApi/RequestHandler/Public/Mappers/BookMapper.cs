@@ -21,7 +21,6 @@ namespace BookStoreApi.RequestHandler.Public.Mappers
                 Pages = bookAllData.Pages.ToString(),
                 PublishYear = bookAllData.PublishYear.ToString(),
                 IsRecommended = bookAllData.IsRecommended,
-                Stock = bookAllData.Stock,
                 Publisher = bookAllData.Publisher,
                 CreatedAt = bookAllData.CreatedAt,
                 UpdatedAt = bookAllData.UpdatedAt

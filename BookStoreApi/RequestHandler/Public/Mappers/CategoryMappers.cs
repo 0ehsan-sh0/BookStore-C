@@ -9,7 +9,6 @@ namespace BookStoreApi.RequestHandler.Public.Mappers
         {
             return new RCategory
             {
-                Id = category.Id,
                 Name = category.Name,
                 Url = category.Url,
                 MainCategoryId = category.MainCategoryId,

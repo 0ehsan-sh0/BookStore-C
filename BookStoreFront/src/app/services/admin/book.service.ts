@@ -3,7 +3,13 @@ import { Injectable, signal } from '@angular/core';
 import { AlertService } from '../../ui-service/alert.service';
 import { ErrorHandlerService } from '../error-handler.service';
 import { BehaviorSubject } from 'rxjs';
-import { BookAllData, BookListResponse, BPaginationInfo, CreateBookRequest, UpdateBookRequest } from '../../models/book';
+import {
+  BookAllData,
+  BookListResponse,
+  BPaginationInfo,
+  CreateBookRequest,
+  UpdateBookRequest,
+} from '../../models/book';
 import { ApiResponse } from '../../models/apiResponse';
 
 @Injectable({
@@ -46,7 +52,6 @@ export class BookService {
         error: (err) => {
           this.errorHandler.handleError(err);
           console.log(err);
-          
         },
       });
   }
@@ -63,29 +68,29 @@ export class BookService {
   }
 
   create(book: FormData) {
-    this.http.post<ApiResponse<BookAllData>>(`${this.apiUrl}`, {book}).subscribe({
-      next: (res) => {
-        this.books.next([res.data!, ...this.books.value]);
-        this.createErrors.set([]); // clear errors
-        this.created.set(true); // emit created book
-        this.alertService.show('کتاب با موفقیت ایجاد شد', 'success');
-      },
-      error: (err) => {
-        this.created.set(false);
-        this.createErrors.set(this.errorHandler.handleError(err));
-      },
-    });
+    this.http
+      .post<ApiResponse<BookAllData>>(`${this.apiUrl}`, book )
+      .subscribe({
+        next: (res) => {
+          this.books.next([res.data!, ...this.books.value]);
+          this.createErrors.set([]); // clear errors
+          this.created.set(true); // emit created book
+          this.alertService.show('کتاب با موفقیت ایجاد شد', 'success');
+        },
+        error: (err) => {
+          this.created.set(false);
+          this.createErrors.set(this.errorHandler.handleError(err));
+        },
+      });
   }
 
   update(book: UpdateBookRequest, id: number) {
     this.http
-      .put<ApiResponse<BookAllData>>(`${this.apiUrl}/${id}`, {book})
+      .put<ApiResponse<BookAllData>>(`${this.apiUrl}/${id}`, book)
       .subscribe({
         next: (res) => {
           this.books.next(
-            this.books.value.map((a) =>
-              a.id === res.data!.id ? res.data! : a
-            )
+            this.books.value.map((a) => (a.id === res.data!.id ? res.data! : a))
           );
           this.updateErrors.set([]); // clear errors
           this.updated.set(true); // emit updated book
@@ -108,5 +113,22 @@ export class BookService {
         this.errorHandler.handleError(err);
       },
     });
+  }
+
+  ToggleRecomended(id: number) {
+    return this.http
+      .post<ApiResponse<BookAllData>>(`${this.apiUrl}/recommended/${id}`, null)
+      .subscribe({
+        next: (res) => {
+          this.books.next(
+            this.books.value.map((a) => (a.id === res.data!.id ? res.data! : a))
+          );
+          this.alertService.show('وضعیت پیشنهاد کتاب با موفقیت تغییر کرد', 'success');
+          
+        },
+        error: (err) => {
+          this.errorHandler.handleError(err);
+        },
+      });
   }
 }

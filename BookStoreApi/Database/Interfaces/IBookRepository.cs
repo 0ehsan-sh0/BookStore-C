@@ -16,5 +16,6 @@ namespace BookStoreApi.Database.Interfaces
         Task<BookAllData?> UpdateAsync(Book bookWithId, List<int>? translators, List<int> categories, List<int> tags);
         Task<bool> DeleteAsync(int id);
         Task<bool> DecreaseStockBulkAsync(List<(int BookId, int Count)> items);
+        Task<bool> ToggleIsRecommended(int id);
     }
 }

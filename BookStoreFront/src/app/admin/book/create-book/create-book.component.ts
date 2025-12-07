@@ -92,6 +92,7 @@ export class CreateBookComponent {
     formData.append('pages', form.value.pages);
     formData.append('publishYear', form.value.publishYear);
     formData.append('publisher', form.value.publisher);
+    formData.append('stock', form.value.stock);
     formData.append('authorId', this.selectedAuthor!.toString());
 
     // Files

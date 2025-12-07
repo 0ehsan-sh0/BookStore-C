@@ -100,6 +100,14 @@
             placeholder="نام ناشر" />
     </div>
 
+    <!-- Stock -->
+    <div class="space-y-2 mb-3">
+        <label class="label">موجودی انبار :</label>
+        <input type="number" class="input sm:input-lg w-full" name="stock" [(ngModel)]="book.stock" required min="1"
+            #stock="ngModel" [class.input-error]="stock.invalid && stock.touched"
+            placeholder="موجودی انبار" />
+    </div>
+
     <!-- Author -->
     <div class="space-y-2 mb-3">
         <label class="label">جستجوی نویسنده :</label>

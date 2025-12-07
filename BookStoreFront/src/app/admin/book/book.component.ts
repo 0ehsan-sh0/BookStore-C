@@ -133,4 +133,8 @@ export class BookComponent {
         break;
     }
   }
+
+  changeRecommended(id: number) {
+    this.bookService.ToggleRecomended(id);
+  }
 }

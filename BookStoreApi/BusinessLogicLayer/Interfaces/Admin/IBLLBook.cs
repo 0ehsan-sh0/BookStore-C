@@ -12,5 +12,6 @@ namespace BookStoreApi.BusinessLogicLayer.Interfaces.Admin
         Task<(string message, int status)> Delete(int id);
         Task<BookAllData?> GetByIdAsync(int id);
         Task<(List<BookAllData>? books, BPaginationInfo pagination)> GetAllAsync(QBookGetAll query);
+        Task<BookAllData?> ToggleIsRecommended(int id);
     }
 }

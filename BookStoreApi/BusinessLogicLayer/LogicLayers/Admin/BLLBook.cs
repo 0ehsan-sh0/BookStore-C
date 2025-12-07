@@ -185,5 +185,16 @@ namespace BookStoreApi.BusinessLogicLayer.LogicLayers.Admin
 
             return ("کتاب با موفقیت حذف شد", 204);
         }
+
+        public async Task<BookAllData?> ToggleIsRecommended(int id)
+        {
+            var book = await repo.GetByIdAsync(id);
+            if (book is null) return null;
+
+            var hasChanged = await repo.ToggleIsRecommended(id);
+            if (hasChanged) return await repo.GetByIdAsync(id);
+
+            return null;
+        }
     }
 }

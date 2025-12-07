@@ -27,6 +27,15 @@ namespace BookStoreApi.Controllers.Admin
                 : StatusCode(status, message);
         }
 
+        [HttpPost("Recommended/{id:int}")]
+        public async Task<IActionResult> ToggleIsRecommended([FromRoute] int id)
+        {
+            var book = await bLL.ToggleIsRecommended(id);
+            if (book is null) return NotFound();
+
+            return SuccessResponse("با موفقیت تغییر داده شد", book.ToRBookAllData(), 201);
+        }
+
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetByIdAsync([FromRoute] int id)
         {
@@ -60,7 +69,7 @@ namespace BookStoreApi.Controllers.Admin
 
             var (message, book, status) = await bLL.Update(updateBookRequest, id);
 
-            return status == 200
+            return status == 201
                 ? SuccessResponse(message, book!.ToRBookAllData(), status)
                 : status == 404
                     ? NotFound(message)

@@ -29,9 +29,8 @@ namespace BookStoreApi.RequestHandler.Admin.Requests.Book
         public short PublishYear { get; set; }
         [Required(ErrorMessage = "وارد کردن نام انتشارات الزامی است")]
         public string Publisher { get; set; } = string.Empty;
-        [Required(ErrorMessage = "وارد کردن پیشنهاد الزامی است")]
-        public bool IsRecommended { get; set; } = false;
         [Required(ErrorMessage = "موجودی انبار لازم است")]
+        [Range(0, int.MaxValue, ErrorMessage = "موجودی انبار نمیتواند منفی یا بیش از حد مجاز باشد.")]
         public int Stock { get; set; }
         [Required(ErrorMessage = "نویسنده الزامی است")]
         [PositiveNumber(ErrorMessage = "شناسه نویسنده نمیتواند صفر یا منفی باشد")]

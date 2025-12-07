@@ -87,7 +87,6 @@ namespace BookStoreApi.RequestHandler.Admin.Mappers
                 PublishYear = book.PublishYear.ToString(),
                 Publisher = book.Publisher,
                 AuthorId = book.AuthorId,
-                IsRecommended = book.IsRecommended,
                 Stock = book.Stock,
             };
         }
@@ -108,7 +107,6 @@ namespace BookStoreApi.RequestHandler.Admin.Mappers
                 Pages = book.Pages.ToString(),
                 PublishYear = book.PublishYear.ToString(),
                 Publisher = book.Publisher,
-                IsRecommended = book.IsRecommended,
                 Stock = book.Stock,
                 AuthorId = book.AuthorId,
 

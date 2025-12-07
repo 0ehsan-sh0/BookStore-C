@@ -9,6 +9,7 @@ namespace BookStoreApi.Database.Interfaces
     {
         Task<(List<CommentInfo> comments, COPaginationInfo info)> GetAllAsync(QCommentGetAll query);
         Task<CommentInfo?> GetByIdAsync(int id);
+        Task<int> CreateAsync(CommentInfo comment);
         Task<bool> DeleteAsync(int id);
         Task<bool> SwitchIsConfirmedAsync(int id);
         Task<(List<CommentInfo> comments, CommentPaginationInfo info)> GetBookCommentsAsync(int bookId, int pageNumber, int pageSize);

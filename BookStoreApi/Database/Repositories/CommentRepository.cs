@@ -11,6 +11,28 @@ namespace BookStoreApi.Database.Repositories
 {
     public class CommentRepository(DapperUtility dapperUtility) : ICommentRepository
     {
+        public async Task<int> CreateAsync(CommentInfo comment)
+        {
+            using var connection = dapperUtility.GetConnection();
+
+            var sql = @"
+            INSERT INTO Comments (Comment, Status, ForeignTable, ForeignId, UserId)
+            VALUES (@Comment, @Status, @ForeignTable, @ForeignId, @UserId);
+            SELECT CAST(SCOPE_IDENTITY() as int);";
+
+            var parameters = new
+            {
+                Comment = string.IsNullOrWhiteSpace(comment.Comment) ? null : comment.Comment,
+                Status = false,
+                comment.ForeignTable,
+                comment.ForeignId,
+                comment.UserId
+            };
+
+            int insertedId = await connection.ExecuteScalarAsync<int>(sql, parameters);
+            return insertedId;
+        }
+
         public async Task<bool> DeleteAsync(int id)
         {
             string sql = "DELETE FROM Comments WHERE Id = @id";

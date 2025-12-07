@@ -81,6 +81,7 @@ builder.Services.AddScoped<IBLLImage, BLLImage>();
 
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<IBLLComment, BLLComment>();
+builder.Services.AddScoped<IBLLUserComment, BLLUserComment>();
 
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<IBLLTag, BLLTag>();

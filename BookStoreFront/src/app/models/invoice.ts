@@ -36,3 +36,8 @@ export interface CreateInvoiceRequest {
 }
 
 export interface InvoicePaginationInfo extends PaginationInfo {}
+
+export interface InvoiceListResponse {
+  invoices: Invoice[];
+  pagination: InvoicePaginationInfo;
+}

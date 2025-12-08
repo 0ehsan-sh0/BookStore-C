@@ -1,5 +1,6 @@
 ﻿using BookStoreApi.Database.Models;
 using BookStoreApi.Enums;
+using BookStoreApi.RequestHandler.Admin.QueryObjects.Invoice;
 using BookStoreApi.RequestHandler.User.QueryObjects.Invoice;
 using BookStoreApi.RequestHandler.User.Responses.Invoice;
 
@@ -7,6 +8,7 @@ namespace BookStoreApi.Database.Interfaces
 {
     public interface IInvoiceRepository
     {
+        Task<(List<Invoice> invoices, RequestHandler.Admin.Responses.Invoice.InvoicePaginationInfo info)> GetAllAsync(QInvoiceGetAll query);
         Task<(List<Invoice> invoices, InvoicePaginationInfo info)> GetUserInvoicesAsync(int id, QUserInvoices query);
         Task<(List<Invoice> invoices, InvoicePaginationInfo info)> GetUserInvoicesAsync(string mobile, QUserInvoices query);
         Task<int> CreateAsync(int userId, int addressId, List<int> books, List<int> counts);

@@ -25,6 +25,8 @@ import { UserSettingComponent } from './user/user-setting/user-setting.component
 import { UserCartComponent } from './user/user-cart/user-cart.component';
 import { CheckoutComponent } from './user/checkout/checkout.component';
 import { UserInvoiceComponent } from './user/user-invoice/user-invoice.component';
+import { InvoiceComponent } from './admin/invoice/invoice.component';
+import { PaymentComponent } from './admin/payment/payment.component';
 
 const routes: Routes = [
   {
@@ -38,6 +40,8 @@ const routes: Routes = [
       { path: 'book', component: BookComponent },
       { path: 'tag', component: TagComponent },
       { path: 'comment', component: CommentComponent },
+      { path: 'invoice', component: InvoiceComponent },
+      { path: 'payment', component: PaymentComponent },
     ],
   },
   {

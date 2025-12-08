@@ -6,7 +6,7 @@ import { AuthService } from '../../services/auth.service';
   selector: 'app-login',
   standalone: false,
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
   mobile: string = '';
@@ -19,12 +19,7 @@ export class LoginComponent {
   isSendingCode = false;
   countDown = 0;
 
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {
-    
-  }
+  constructor(private authService: AuthService, private router: Router) {}
 
   toggleLoginMethod(useCode: boolean) {
     this.showCodeLogin = useCode;
@@ -45,7 +40,7 @@ export class LoginComponent {
     this.isSendingCode = true;
     this.errorMessage = null;
 
-    this.authService.sendCode(this.mobile);
+    this.authService.sendCode(this.mobile, false);
 
     setTimeout(() => {
       this.isSendingCode = false;
@@ -77,7 +72,7 @@ export class LoginComponent {
 
     this.authService.login(this.mobile, password, code);
 
-    this.authService.isLoggedIn$.subscribe(isLoggedIn => {
+    this.authService.isLoggedIn$.subscribe((isLoggedIn) => {
       this.loading = false;
       if (isLoggedIn) {
         this.router.navigate(['/']);

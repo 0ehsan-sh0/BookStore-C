@@ -56,6 +56,8 @@ import {
   MessageCircle,
   Info,
   MessageCirclePlus,
+  ScrollText,
+  DollarSign,
 } from 'lucide-angular';
 import { HeaderComponent } from './admin/header/header.component';
 import { SidebarComponent } from './admin/sidebar/sidebar.component';
@@ -125,6 +127,9 @@ import { CheckoutComponent } from './user/checkout/checkout.component';
 import { UserInvoiceComponent } from './user/user-invoice/user-invoice.component';
 import { BookCommentsComponent } from './public/book-comments/book-comments.component';
 import { CreateBookCommentComponent } from './public/book-comments/create-book-comment/create-book-comment.component';
+import { InvoiceComponent } from './admin/invoice/invoice.component';
+import { PaymentComponent } from './admin/payment/payment.component';
+import { InvoiceItemsComponent } from './admin/invoice/invoice-items/invoice-items.component';
 
 @NgModule({
   declarations: [
@@ -185,6 +190,9 @@ import { CreateBookCommentComponent } from './public/book-comments/create-book-c
     UserInvoiceComponent,
     BookCommentsComponent,
     CreateBookCommentComponent,
+    InvoiceComponent,
+    PaymentComponent,
+    InvoiceItemsComponent,
     ],
   imports: [
     BrowserModule,
@@ -239,7 +247,9 @@ import { CreateBookCommentComponent } from './public/book-comments/create-book-c
       AlertTriangle,
       MessageCircle,
       Info,
-      MessageCirclePlus
+      MessageCirclePlus,
+      ScrollText,
+      DollarSign
     }),
     FormsModule,
   ],

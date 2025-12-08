@@ -1,6 +1,7 @@
 ﻿using BookStoreApi.Database.Interfaces;
 using BookStoreApi.Database.Models;
 using BookStoreApi.Enums;
+using BookStoreApi.RequestHandler.Admin.QueryObjects.Invoice;
 using BookStoreApi.RequestHandler.User.QueryObjects.Invoice;
 using BookStoreApi.RequestHandler.User.Responses.Invoice;
 using Dapper;
@@ -162,6 +163,29 @@ namespace BookStoreApi.Database.Repositories
             {
                 return (new List<InvoiceBooks>(), false);
             }
+        }
+
+        public async Task<(List<Invoice> invoices, RequestHandler.Admin.Responses.Invoice.InvoicePaginationInfo info)> GetAllAsync(QInvoiceGetAll query)
+        {
+            using var connection = dapperUtility.GetConnection();
+            await connection.OpenAsync();
+
+            using var multi = await connection.QueryMultipleAsync(
+                "Invoice_Get_All",
+                new { query.PageNumber, query.PageSize, query.Search },
+                commandType: CommandType.StoredProcedure
+            );
+
+            // First result: JSON string
+            var invoicesJson = await multi.ReadFirstOrDefaultAsync<string>();
+            List<Invoice> invoices = [];
+            if (invoicesJson is not null)
+                invoices = JsonSerializer.Deserialize<List<Invoice>>(invoicesJson)!;
+
+            var paginationJson = await multi.ReadFirstOrDefaultAsync<string>();
+            var pagination = JsonSerializer.Deserialize<RequestHandler.Admin.Responses.Invoice.InvoicePaginationInfo>(paginationJson!);
+
+            return (invoices, pagination!);
         }
     }
 }

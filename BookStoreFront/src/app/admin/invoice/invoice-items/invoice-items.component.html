@@ -1,0 +1,35 @@
+<h2 class="text-xl font-bold mb-3">کتاب‌های فاکتور</h2>
+
+<div class="space-y-4" *ngIf="books && books.length > 0; else noBooks">
+    @for (b of books; track b.id) {
+    <div class="flex items-center gap-4 p-4 border border-neutral rounded-lg">
+
+        <!-- Image -->
+        @for (image of b.images; track image.id) {
+        @if (image.isPrimary) {
+        <div class="text-lg">
+            <div class="avatar">
+                <div class="w-16 h-24">
+                    <img [src]="imageService.getUrl(image.relativePath, image.storedFileName)" />
+                </div>
+            </div>
+        </div>
+        }
+        }
+
+        <!-- Info -->
+        <div class="flex-1">
+            <div class="font-bold text-lg">{{ b.name }}</div>
+            <div class="text-gray-500">تعداد: {{ b.quantity }}</div>
+            <div class="font-bold">
+                قیمت: {{ b.price | number }} تومان
+            </div>
+        </div>
+
+    </div>
+    }
+</div>
+
+<ng-template #noBooks>
+    <p class="text-center text-gray-500 py-10">هیچ کتابی یافت نشد.</p>
+</ng-template>

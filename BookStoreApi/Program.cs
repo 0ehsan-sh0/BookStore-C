@@ -92,9 +92,11 @@ builder.Services.AddScoped<IBLLUserPanel, BLLUserPanel>();
 
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddScoped<IBLLUserPayment, BLLUserPayment>();
+builder.Services.AddScoped<IBLLPayment, BLLPayment>();
 
 builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
 builder.Services.AddScoped<IBLLUserInvoice, BLLUserInvoice>();
+builder.Services.AddScoped<IBLLInvoice, BLLInvoice>();
 
 builder.Services.AddScoped<IInvoiceBooksRepository, InvoiceBooksRepository>();
 

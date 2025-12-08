@@ -28,7 +28,7 @@ export class AuthorService {
     private alertService: AlertService,
     private errorHandler: ErrorHandlerService
   ) {}
-
+ 
   authors = new BehaviorSubject<Author[]>([]);
   author = new BehaviorSubject<Author>({} as Author);
   pagination = new BehaviorSubject<APaginationInfo>({

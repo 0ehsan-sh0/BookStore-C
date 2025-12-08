@@ -1,0 +1,164 @@
+<h2 class="text-2xl font-bold mb-5">لیست فاکتورها</h2>
+
+<div class="flex space-x-4 mb-5">
+    <input type="text" [(ngModel)]="searchText" class="input input-lg flex-8 pr-5"
+        placeholder="جستجو در فاکتور ها ..." />
+    <button class="btn btn-lg btn-accent flex-1" (click)="onSearch()">جستجو</button>
+</div>
+
+<div class="divider"></div>
+
+<div class="overflow-x-auto">
+    <table class="table table-pin-cols w-full">
+        <thead>
+            <tr>
+                <th>شناسه</th>
+                <th>کاربر</th>
+                <td>موبایل</td>
+                <td>آدرس</td>
+                <td>قیمت نهایی</td>
+                <td>وضعیت فاکتور</td>
+                <td>وضعیت پرداخت</td>
+                <td>تاریخ</td>
+                <td>کتاب‌ها</td>
+                <td>پرداخت‌ها</td>
+            </tr>
+        </thead>
+
+        <tbody>
+            @for (invoice of invoices; track invoice.id) {
+            <tr>
+                <!-- Invoice ID -->
+                <th class="font-bold text-lg">{{ invoice.id }}</th>
+
+                <!-- User Info -->
+                <td>
+                    <div class="max-w-35 truncate">
+                        {{ invoice.user?.name }} {{ invoice.user?.lastName }}
+                    </div>
+                </td>
+                <td>
+                    <div class="max-w-25 truncate">
+                        {{ invoice.user?.mobile }}
+                    </div>
+                </td>
+
+                <!-- Address -->
+                <td>
+                    <div class="max-w-40 truncate">
+                        {{ invoice.address?.state }} - {{ invoice.address?.city }}
+                    </div>
+                </td>
+
+                <!-- Final Price -->
+                <td class="font-bold">
+                    <div class="max-w-35 truncate">
+                        {{ invoice.finalTotalPrice | number }} تومان
+                    </div>
+                </td>
+
+                <!-- Invoice Status -->
+                <td>
+                    <span class="badge badge-primary text-xs h-8 max-w-35">
+                        {{ getInvoiceStatusText(invoice.invoiceStatus) }}
+                    </span>
+                </td>
+
+                <!-- Payment Status -->
+                <td>
+                    <span class="badge text-xs h-8 w-30" [ngClass]="{
+                            'badge-success': invoice.paymentStatus === 1,
+                            'badge-error': invoice.paymentStatus === 2,
+                            'badge-warning': invoice.paymentStatus === 3
+                        }">
+                        {{ getPaymentStatusText(invoice.paymentStatus) }}
+                    </span>
+                </td>
+
+                <!-- Dates -->
+                <td>
+                    <div class="w-35">
+                        {{ invoice.createdAt ?? '' | jalaliDate:true }}
+                        <br />
+                        <small class="text-gray-500">
+                            تایید: {{ invoice.validatedAt ? (invoice.validatedAt | jalaliDate:true) : '-' }}
+                        </small>
+                    </div>
+                </td>
+
+                <!-- Books -->
+                <td>
+                    <ul class="text-sm list-disc pr-3">
+                        @if(invoice.books) {
+                        <button class="btn w-30 gap-3" (click)="showInvoiceBooks(invoice)">
+                            <i-lucide name="book" size="18"></i-lucide> کتاب‌ها
+                        </button>
+                        }
+                    </ul>
+                </td>
+
+                <!-- Payments -->
+                <td>
+                    <ul class="text-sm list-disc pr-3 w-40">
+                        @if(invoice.payments) {
+                        @for(pay of invoice.payments; track pay.id) {
+                        <li>
+                            {{ pay.paymentGateway }} - {{ pay.price | number }}
+                            <br />
+                            <small class="text-gray-500">{{ pay.status }}</small>
+                        </li>
+                        }
+                        }
+                    </ul>
+                </td>
+            </tr>
+            }
+        </tbody>
+
+        <tfoot>
+            <tr>
+                <th>شناسه</th>
+                <th>کاربر</th>
+                <td>موبایل</td>
+                <td>آدرس</td>
+                <td>قیمت نهایی</td>
+                <td>وضعیت فاکتور</td>
+                <td>وضعیت پرداخت</td>
+                <td>تاریخ</td>
+                <td>کتاب‌ها</td>
+                <td>پرداخت‌ها</td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<!-- Pagination -->
+<div class="flex flex-wrap justify-center my-5" *ngIf="pagination.totalPages > 1">
+    <button class="btn btn-md sm:btn-lg" [disabled]="pagination.pageNumber === 1"
+        (click)="changePage(pagination.pageNumber - 1)">
+        قبلی
+    </button>
+
+    <ng-container *ngFor="let page of getPageArray()">
+        <button class="btn btn-md sm:btn-lg" [ngClass]="{
+                'btn-disabled': page === -1,
+                'btn-primary': page === pagination.pageNumber
+            }" (click)="changePage(page)">
+            @if(page === -1) {
+            ...
+            } @else {
+            {{ page }}
+            }
+        </button>
+    </ng-container>
+
+    <button class="btn btn-md sm:btn-lg" [disabled]="pagination.pageNumber === pagination.totalPages"
+        (click)="changePage(pagination.pageNumber + 1)">
+        بعدی
+    </button>
+</div>
+
+
+<app-modal #invoiceBooks id="invoiceBooks">
+    <app-invoice-items [books]="selectedBooks"></app-invoice-items>
+</app-modal>

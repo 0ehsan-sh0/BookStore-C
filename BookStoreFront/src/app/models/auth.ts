@@ -25,6 +25,7 @@ export interface RegisterResponse {
 
 export interface SendCodeRequest {
   mobile: string;
+  isRegister: boolean;
 }
 
 export interface SendCodeResponse {

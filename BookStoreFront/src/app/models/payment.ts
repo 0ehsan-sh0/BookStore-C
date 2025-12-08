@@ -1,3 +1,4 @@
+import { PaginationInfo } from "./apiResponse";
 import { PaymentStatus } from "./enum";
 import { Invoice } from "./invoice";
 
@@ -16,4 +17,11 @@ export interface Payment {
   updatedAt?: Date;
 
   invoice?: Invoice | null;
+}
+
+export interface PaymentPaginationInfo extends PaginationInfo {}
+
+export interface PaymentListResponse {
+  payments: Payment[];
+  pagination: PaymentPaginationInfo;
 }

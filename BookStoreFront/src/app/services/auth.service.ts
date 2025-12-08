@@ -91,8 +91,8 @@ export class AuthService {
       });
   }
 
-  sendCode(mobile: string) {
-    const request: SendCodeRequest = { mobile };
+  sendCode(mobile: string, isRegister: boolean) {
+    const request: SendCodeRequest = { mobile, isRegister };
 
     this.http
       .post<ApiResponse<any>>(`${this.apiUrl}/send-code`, request)

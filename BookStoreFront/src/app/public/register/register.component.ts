@@ -39,7 +39,7 @@ export class RegisterComponent {
     this.isSendingCode = true;
     this.errorMessage = null;
 
-    this.authService.sendCode(this.mobile);
+    this.authService.sendCode(this.mobile, true);
 
     setTimeout(() => {
       this.isSendingCode = false;

@@ -33,7 +33,7 @@ export class ErrorHandlerService {
         userMessage = 'شما مجوز انجام این عملیات را ندارید.';
         break;
       case 404:
-        userMessage = 'مورد مورد نظر یافت نشد.';
+        userMessage = 'مورد یافت نشد.';
         break;
       case 408:
         userMessage = 'زمان درخواست به پایان رسید. لطفاً مجدداً تلاش کنید.';

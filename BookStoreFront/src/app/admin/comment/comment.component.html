@@ -34,7 +34,7 @@
                 </td>
                 <td class="text-lg">
                     @switch (comment.foreignTable) {
-                    @case ('books') {
+                    @case ('Books') {
                     <a class="link" [routerLink]="['/books',comment.foreignId]">{{comment.foreignId}} - کتاب</a>
                     }
                     }

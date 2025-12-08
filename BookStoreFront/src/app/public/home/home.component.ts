@@ -5,6 +5,7 @@ import { BookAllData } from '../../models/book';
 import { Router } from '@angular/router';
 import { UserCartService } from '../../services/user/user-cart.service';
 import { AlertService } from '../../ui-service/alert.service';
+import { timer } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -32,6 +33,7 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.bookService.getNewBooks();
     this.bookService.getNewBooks(1, 20, true);
+
   }
 
   goToBookDetails(bookId: number) {

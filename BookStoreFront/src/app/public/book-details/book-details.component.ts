@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, viewChild } from '@angular/core';
 import { BookAllData } from '../../models/book';
 import { ActivatedRoute } from '@angular/router';
 import { BookPublicService } from '../../services/Public/book-public.service';
@@ -7,6 +7,8 @@ import { AlertService } from '../../ui-service/alert.service';
 import { UserCartService } from '../../services/user/user-cart.service';
 import { CommentPublicService } from '../../services/Public/comment-public.service';
 import { Comment, COPaginationInfo } from '../../models/comment';
+import { ModalComponent } from '../../ui-service/modal/modal.component';
+import { timer } from 'rxjs';
 
 @Component({
   selector: 'app-book-details',
@@ -54,4 +56,6 @@ export class BookDetailsComponent {
     this.cartService.addToCart(book);
     this.alertService.show('کتاب با موفقیت به سبد خرید اضافه شد');
   }
+
+  
 }

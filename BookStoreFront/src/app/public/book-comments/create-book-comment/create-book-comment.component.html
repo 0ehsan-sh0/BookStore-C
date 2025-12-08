@@ -1,0 +1,14 @@
+<h3 class="text-lg font-bold mb-3">ارسال نظر</h3>
+<div class="mb-2">
+    @for (error of this.errors; track $index) {
+    <p class="text-error">{{error}}</p>
+    }
+</div>
+<form action="" #form="ngForm" (ngSubmit)="onSubmit(form)">
+    <div class="space-y-2 mb-3">
+        <label class="label">توضیحات :</label>
+        <input type="text" class="input sm:input-lg w-full" placeholder="کتاب با کیفیت و پر محتوایی ..." name="comment" ngModel
+            #comment="ngModel" [class.input-error]="comment.invalid && comment.touched" />
+    </div>
+    <button type="submit" [disabled]="form.invalid" class="btn btn-primary btn-lg w-full">ارسال</button>
+</form>

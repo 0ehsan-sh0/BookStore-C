@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, viewChild } from '@angular/core';
 import { Comment, COPaginationInfo } from '../../models/comment';
 import { CommentPublicService } from '../../services/Public/comment-public.service';
 import { ActivatedRoute } from '@angular/router';
+import { ModalComponent } from '../../ui-service/modal/modal.component';
 
 @Component({
   selector: 'app-book-comments',
@@ -18,6 +19,7 @@ export class BookCommentsComponent {
     totalPages: 1,
   };
   commentsLoading = true;
+  createBookComment = viewChild<ModalComponent>('createComment');
 
   constructor(
     private commentService: CommentPublicService,
@@ -46,6 +48,10 @@ export class BookCommentsComponent {
     }
   }
 
+  create() {
+    this.createBookComment()!.open();
+  }
+
   changePage(page: number) {
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam) {
@@ -72,5 +78,13 @@ export class BookCommentsComponent {
     console.log(pages);
 
     return [...new Set(pages)];
+  }
+
+  closeDialog(tab: string) {
+    switch (tab) {
+      case 'createBookCommentModal':
+        this.createBookComment()!.close();
+        break;
+    }
   }
 }

@@ -12,6 +12,10 @@ export interface Comment {
   user?: User;
 }
 
+export interface CreateCommentRequest {
+  comment: string;
+}
+
 export interface CommentListResponse {
   comments: Comment[];
   pagination: COPaginationInfo;

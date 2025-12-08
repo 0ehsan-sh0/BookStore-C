@@ -6,7 +6,7 @@
     <ul class="menu bg-base-200 text-base-content min-h-80 min-w-85 sm:w-150 p-4 space-y-3">
 
       <!-- Dynamic Categories -->
-      @for (category of categories; track category.id) {
+      @for (category of categories; track category.url) {
         <li>
           <!-- If category has no sub-categories -->
           @if (!category.subCategories || category.subCategories.length === 0) {
@@ -18,7 +18,7 @@
             <details>
               <summary><a>{{ category.name }}</a></summary>
               <ul>
-                @for (subCategory of category.subCategories; track subCategory.id) {
+                @for (subCategory of category.subCategories; track subCategory.url) {
                   <li><a>{{ subCategory.name }}</a></li>
                 }
               </ul>

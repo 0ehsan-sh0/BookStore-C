@@ -28,11 +28,18 @@
     </div>
 
     <!-- Left -->
-    <div class="flex-none">
+    <div class="flex-none flex">
         @if (isLoggedIn) {
+        @if (user?.role == UserRole.User) {
         <label [routerLink]="['/user']" class="btn btn-square h-8 w-8 ml-2 btn-info drawer-button">
             <i-lucide name="user" size="20"></i-lucide>
         </label>
+        }
+        @else if (user?.role == UserRole.Admin) {
+        <label [routerLink]="['/admin']" class="btn btn-square h-8 w-8 ml-2 btn-warning drawer-button">
+            <i-lucide name="shield-check" size="20"></i-lucide>
+        </label>
+        }
         }
 
         <div class="indicator">

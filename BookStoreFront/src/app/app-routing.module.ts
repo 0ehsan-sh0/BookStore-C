@@ -27,6 +27,7 @@ import { CheckoutComponent } from './user/checkout/checkout.component';
 import { UserInvoiceComponent } from './user/user-invoice/user-invoice.component';
 import { InvoiceComponent } from './admin/invoice/invoice.component';
 import { PaymentComponent } from './admin/payment/payment.component';
+import { UserComponent } from './admin/user/user.component';
 
 const routes: Routes = [
   {
@@ -42,6 +43,7 @@ const routes: Routes = [
       { path: 'comment', component: CommentComponent },
       { path: 'invoice', component: InvoiceComponent },
       { path: 'payment', component: PaymentComponent },
+      { path: 'user', component: UserComponent },
     ],
   },
   {

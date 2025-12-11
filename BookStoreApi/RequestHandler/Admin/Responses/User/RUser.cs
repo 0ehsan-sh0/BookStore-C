@@ -1,4 +1,5 @@
 using BookStoreApi.Enums;
+using BookStoreApi.RequestHandler.Admin.Responses.Address;
 
 namespace BookStoreApi.RequestHandler.Admin.Responses.User
 {
@@ -12,5 +13,7 @@ namespace BookStoreApi.RequestHandler.Admin.Responses.User
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public DateTime? LoggedInAt { get; set; }
+        public int? BuyCount { get; set; }
+        public List<RAddress>? Addresses { get; set; }
     }
 }

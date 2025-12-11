@@ -11,16 +11,16 @@
 <div class="overflow-x-auto">
     <table class="table table-pin-cols w-full">
         <thead>
-            <tr>
+            <tr class="text-center">
                 <th>شناسه</th>
                 <th>کاربر</th>
                 <td>موبایل</td>
                 <td>آدرس</td>
                 <td>قیمت نهایی</td>
+                <td>کتاب‌ها</td>
                 <td>وضعیت فاکتور</td>
                 <td>وضعیت پرداخت</td>
                 <td>تاریخ</td>
-                <td>کتاب‌ها</td>
                 <td>پرداخت‌ها</td>
             </tr>
         </thead>
@@ -57,6 +57,17 @@
                     </div>
                 </td>
 
+                 <!-- Books -->
+                <td>
+                    <ul class="text-sm list-disc pr-3">
+                        @if(invoice.books) {
+                        <button class="btn w-30 gap-3" (click)="showInvoiceBooks(invoice)">
+                            <i-lucide name="book" size="18"></i-lucide> کتاب‌ها
+                        </button>
+                        }
+                    </ul>
+                </td>
+
                 <!-- Invoice Status -->
                 <td>
                     <span class="badge badge-primary text-xs h-8 max-w-35">
@@ -84,17 +95,6 @@
                             تایید: {{ invoice.validatedAt ? (invoice.validatedAt | jalaliDate:true) : '-' }}
                         </small>
                     </div>
-                </td>
-
-                <!-- Books -->
-                <td>
-                    <ul class="text-sm list-disc pr-3">
-                        @if(invoice.books) {
-                        <button class="btn w-30 gap-3" (click)="showInvoiceBooks(invoice)">
-                            <i-lucide name="book" size="18"></i-lucide> کتاب‌ها
-                        </button>
-                        }
-                    </ul>
                 </td>
 
                 <!-- Payments -->

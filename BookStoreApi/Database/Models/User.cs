@@ -16,6 +16,7 @@ namespace BookStoreApi.Database.Models
         public DateTime? UpdatedAt { get; set; }
         public DateTime? LoggedInAt { get; set; }
         public DateTime? DeletedAt { get; set; }
+        public int? BuyCount { get; set; }
         public List<AddressInfo>? Addresses { get; set; }
         public List<Invoice>? Invoices { get; set; }
         public List<BookAllData>? WishList { get; set; }

@@ -4,6 +4,8 @@ import { ThemeControllerService } from '../../ui-service/theme-controller.servic
 import { AuthService } from '../../services/auth.service';
 import { UserCartService } from '../../services/user/user-cart.service';
 import { Subscription } from 'rxjs';
+import { User } from '../../models/user';
+import { UserRole } from '../../models/user';
 
 @Component({
   selector: 'app-public-header',
@@ -16,6 +18,8 @@ export class PublicHeaderComponent {
   isLoggedIn = false;
   cartItemCount = 0;
   private cartSubscription: Subscription | undefined; // To manage subscription
+  user : User | null = null;
+  UserRole = UserRole; // Expose UserRole enum to the template
 
   constructor(
     private themeController: ThemeControllerService,
@@ -37,6 +41,11 @@ export class PublicHeaderComponent {
     // Check authentication status
     this.authService.isLoggedIn$.subscribe((isLoggedIn) => {
       this.isLoggedIn = isLoggedIn;
+    });
+
+    // Get user info
+    this.authService.user.subscribe((user) => {
+      this.user = user;
     });
 
     // Subscribe to the cart item count observable

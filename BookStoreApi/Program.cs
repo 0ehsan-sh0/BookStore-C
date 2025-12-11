@@ -89,6 +89,7 @@ builder.Services.AddScoped<IBLLTag, BLLTag>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBLLAuth, BLLAuth>();
 builder.Services.AddScoped<IBLLUserPanel, BLLUserPanel>();
+builder.Services.AddScoped<IBLLUser, BLLUser>();
 
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddScoped<IBLLUserPayment, BLLUserPayment>();

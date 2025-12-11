@@ -1,4 +1,5 @@
 import { Address } from "./address";
+import { PaginationInfo } from "./apiResponse";
 import { BookAllData } from "./book";
 import { Invoice } from "./invoice";
 
@@ -11,10 +12,18 @@ export interface User {
   createdAt?: string | null;
   updatedAt?: string | null;
   loggedInAt?: string | null;
+  buyCount?: number;
   addresses?: Address[];
   invoices?: Invoice[];
   wishList?: BookAllData[];
 }
+
+export interface UserListResponse {
+  users: User[];
+  pagination: UPaginationInfo;
+}
+
+export interface UPaginationInfo extends PaginationInfo {}
 
 export enum UserRole {
   Admin = 1,
@@ -27,4 +36,18 @@ export interface CartSummary {
   tax: number;
   discount: number;
   finalPrice: number;
+}
+
+export interface UpdateUserRequest {
+  name: string;
+  lastName: string;
+  role: UserRole;
+}
+
+export interface CreateUserRequest {
+  name: string;
+  lastName: string;
+  mobile: string;
+  password: string;
+  role: UserRole;
 }

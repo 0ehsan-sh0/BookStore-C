@@ -1,6 +1,8 @@
 ﻿using BookStoreApi.Database.Interfaces;
 using BookStoreApi.Database.Models;
 using BookStoreApi.Enums;
+using BookStoreApi.RequestHandler.Admin.QueryObjects.User;
+using BookStoreApi.RequestHandler.Admin.Responses.User;
 using Dapper;
 using System.Data;
 using System.Text.Json;
@@ -9,6 +11,22 @@ namespace BookStoreApi.Database.Repositories
 {
     public class UserRepository(DapperUtility dapperUtility) : IUserRepository
     {
+        public async Task<(List<User> users, UPaginationInfo info)> GetAllAsync(QUserGetAll query)
+        {
+            string sql = "User_Get_All";
+            using var connection = dapperUtility.GetConnection();
+
+            using var multi = await connection.QueryMultipleAsync(
+                sql,
+                new { query.PageNumber, query.PageSize, query.Search, query.Role },
+                commandType: CommandType.StoredProcedure);
+
+            var users = (await multi.ReadAsync<User>()).ToList();
+            var pagination = await multi.ReadFirstOrDefaultAsync<UPaginationInfo>();
+
+            return (users, pagination!);
+        }
+
         public async Task<int> CreateAsync(User user)
         {
             using var connection = dapperUtility.GetConnection();
@@ -26,6 +44,27 @@ namespace BookStoreApi.Database.Repositories
                 LoggedInAt = DateTime.Now,
             };
 
+            int insertedId = await connection.ExecuteScalarAsync<int>(sql, parameters);
+            return insertedId;
+        }
+
+        public async Task<int> AdminCreateAsync(User user)
+        {
+            using var connection = dapperUtility.GetConnection();
+
+            var sql = @"
+            INSERT INTO Users (Mobile,Name,LastName, Password, Role)
+            VALUES (@Mobile,@Name,@LastName, @Password, @Role);
+            SELECT CAST(SCOPE_IDENTITY() as int);";
+
+            var parameters = new
+            {
+                user.Mobile,
+                user.Password,
+                user.Name,
+                user.LastName,
+                user.Role,
+            };
             int insertedId = await connection.ExecuteScalarAsync<int>(sql, parameters);
             return insertedId;
         }
@@ -74,9 +113,12 @@ namespace BookStoreApi.Database.Repositories
             var userJson = await multi.ReadFirstOrDefaultAsync<string>();
             User user = new();
             if (userJson is not null)
+            {
                 user = JsonSerializer.Deserialize<User>(userJson)!;
+                return user;
+            }
 
-            return user;
+            return null;
         }
 
         public async Task<User?> UpdateAsync(User userWithId)
@@ -132,5 +174,7 @@ namespace BookStoreApi.Database.Repositories
             bool result = await connection.ExecuteAsync(sql, parameters) >= 0;
             return result;
         }
+
+
     }
 }

@@ -4,6 +4,7 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { UserCartService } from '../../services/user/user-cart.service';
+import { User } from '../../models/user';
 
 @Component({
   selector: 'app-user-header',

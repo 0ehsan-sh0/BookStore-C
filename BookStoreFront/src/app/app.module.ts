@@ -130,6 +130,10 @@ import { CreateBookCommentComponent } from './public/book-comments/create-book-c
 import { InvoiceComponent } from './admin/invoice/invoice.component';
 import { PaymentComponent } from './admin/payment/payment.component';
 import { InvoiceItemsComponent } from './admin/invoice/invoice-items/invoice-items.component';
+import { UserComponent } from './admin/user/user.component';
+import { UserRolePipe } from './pipes/user-role.pipe';
+import { CreateUserComponent } from './admin/user/create-user/create-user.component';
+import { UpdateUserComponent } from './admin/user/update-user/update-user.component';
 
 @NgModule({
   declarations: [
@@ -193,6 +197,10 @@ import { InvoiceItemsComponent } from './admin/invoice/invoice-items/invoice-ite
     InvoiceComponent,
     PaymentComponent,
     InvoiceItemsComponent,
+    UserComponent,
+    UserRolePipe,
+    CreateUserComponent,
+    UpdateUserComponent,
     ],
   imports: [
     BrowserModule,
@@ -249,7 +257,8 @@ import { InvoiceItemsComponent } from './admin/invoice/invoice-items/invoice-ite
       Info,
       MessageCirclePlus,
       ScrollText,
-      DollarSign
+      DollarSign,
+      
     }),
     FormsModule,
   ],

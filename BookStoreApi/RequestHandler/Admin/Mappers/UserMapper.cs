@@ -1,4 +1,4 @@
-using BookStoreApi.RequestHandler.Admin.Responses.Address;
+using BookStoreApi.RequestHandler.Admin.Requests.User;
 using BookStoreApi.RequestHandler.Admin.Responses.User;
 
 namespace BookStoreApi.RequestHandler.Admin.Mappers
@@ -16,36 +16,31 @@ namespace BookStoreApi.RequestHandler.Admin.Mappers
                 Role = user.Role,
                 CreatedAt = user.CreatedAt,
                 UpdatedAt = user.UpdatedAt,
-                LoggedInAt = user.LoggedInAt
+                LoggedInAt = user.LoggedInAt,
+                BuyCount = user.BuyCount,
             };
         }
 
-        public static RUserDetail ToRUserDetail(this Database.Models.User user)
+        public static Database.Models.User ToUser(this CreateUserRequest request)
         {
-            return new RUserDetail
+            return new Database.Models.User
             {
-                Id = user.Id,
-                Name = user.Name,
-                LastName = user.LastName,
-                Mobile = user.Mobile,
-                Role = user.Role,
-                CreatedAt = user.CreatedAt,
-                UpdatedAt = user.UpdatedAt,
-                LoggedInAt = user.LoggedInAt,
-                Addresses = user.Addresses?.Select(a => new RAddress
-                {
-                    Id = a.Id,
-                    Name = a.Name,
-                    LastName = a.LastName,
-                    Phone = a.Phone,
-                    PostCode = a.PostCode,
-                    State = a.State,
-                    City = a.City,
-                    Address = a.Address,
-                    UserId = a.UserId,
-                    CreatedAt = a.CreatedAt,
-                    UpdatedAt = a.UpdatedAt
-                }).ToList()
+                Name = request.Name,
+                LastName = request.LastName,
+                Mobile = request.Mobile,
+                Password = request.Password,
+                Role = request.Role,
+            };
+        }
+
+        public static Database.Models.User ToUser(this UpdateAdminUserRequest request, int id)
+        {
+            return new Database.Models.User
+            {
+                Id = id,
+                Name = request.Name,
+                LastName = request.LastName,
+                Role = request.Role,
             };
         }
     }

@@ -14,8 +14,11 @@
             <!-- Author -->
             @if (book?.author) {
             <div class="mb-2">
+                
                 <span class="font-semibold">نویسنده:</span>
-                {{ book?.author?.name }}
+                <a [routerLink]="['/authors', book?.author?.id]" class="hover:underline">
+                       {{ book?.author?.name }}
+                </a>
             </div>
             }
 

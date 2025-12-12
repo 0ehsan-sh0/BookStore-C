@@ -52,7 +52,8 @@
                 <td class="text-lg">
                     <div class="avatar" (click)="showImage(book.id)">
                         <div class="ring-primary ring-offset-base-100 w-12 rounded-full ring-2 ring-offset-2">
-                            <img class="cursor-pointer" [src]="imageService.getUrl(image.relativePath, image.storedFileName)" />
+                            <img class="cursor-pointer"
+                                [src]="imageService.getUrl(image.relativePath, image.storedFileName)" />
                         </div>
                     </div>
                 </td>
@@ -83,7 +84,8 @@
                     <input type="checkbox" [checked]="book.isRecommended" class="checkbox checkbox-primary h-10 w-10"
                         (click)="changeRecommended(book.id)" />
                 </td>
-                <td class="text-lg truncate max-w-100"><a [routerLink]="['/admin/author']" class="link">{{book.author?.id}} -
+                <td class="text-lg truncate max-w-100"><a [routerLink]="['/authors',book.author?.id]"
+                        class="link">{{book.author?.id}} -
                         {{book.author?.name}}</a>
                 </td>
                 <td class="text-lg">

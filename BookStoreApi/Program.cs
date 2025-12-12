@@ -68,6 +68,7 @@ builder.Services.AddScoped<IBLLCategoryPublic, BLLCategoryPublic>();
 
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 builder.Services.AddScoped<IBLLAuthor, BLLAuthor>();
+builder.Services.AddScoped<IBLLAuthorPublic, BLLAuthorPublic>();
 
 builder.Services.AddScoped<ITranslatorRepository, TranslatorRepository>();
 builder.Services.AddScoped<IBLLTranslator, BLLTranslator>();

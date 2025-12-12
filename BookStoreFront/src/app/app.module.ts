@@ -135,6 +135,7 @@ import { UserRolePipe } from './pipes/user-role.pipe';
 import { CreateUserComponent } from './admin/user/create-user/create-user.component';
 import { UpdateUserComponent } from './admin/user/update-user/update-user.component';
 import { UserCommentComponent } from './user/user-comment/user-comment.component';
+import { AuthorDetailsComponent } from './public/author-details/author-details.component';
 
 @NgModule({
   declarations: [
@@ -203,6 +204,7 @@ import { UserCommentComponent } from './user/user-comment/user-comment.component
     CreateUserComponent,
     UpdateUserComponent,
     UserCommentComponent,
+    AuthorDetailsComponent,
     ],
   imports: [
     BrowserModule,

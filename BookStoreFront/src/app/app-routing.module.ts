@@ -30,6 +30,7 @@ import { PaymentComponent } from './admin/payment/payment.component';
 import { UserComponent } from './admin/user/user.component';
 import { UserCommentComponent } from './user/user-comment/user-comment.component';
 import { userPanelGuard } from './guards/user/user-panel.guard';
+import { AuthorDetailsComponent } from './public/author-details/author-details.component';
 
 const routes: Routes = [
   {
@@ -55,6 +56,7 @@ const routes: Routes = [
       { path: '', component: HomeComponent },
       { path: 'books', component: BookPublicComponent },
       { path: 'books/:id', component: BookDetailsComponent },
+      { path: 'authors/:id', component: AuthorDetailsComponent },
       { path: 'about-us', component: AboutUsComponent },
       { path: 'contact-us', component: ContactUsComponent },
       { path: 'login', component: LoginComponent },

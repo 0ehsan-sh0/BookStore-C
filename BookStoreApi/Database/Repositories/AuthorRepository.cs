@@ -2,8 +2,11 @@
 using BookStoreApi.Database.Models;
 using BookStoreApi.RequestHandler.Admin.QueryObjects.Author;
 using BookStoreApi.RequestHandler.Admin.Responses.Author;
+using BookStoreApi.RequestHandler.Public.QueryObjects.Book;
+using BookStoreApi.RequestHandler.Public.Responses.Book;
 using Dapper;
 using System.Data;
+using System.Text.Json;
 
 namespace BookStoreApi.Database.Repositories
 {
@@ -59,6 +62,32 @@ namespace BookStoreApi.Database.Repositories
             using var connection = dapperUtility.GetConnection();
             var result = await connection.QueryFirstOrDefaultAsync<Author>(sql, new { id }, commandType: CommandType.StoredProcedure);
             return result;
+        }
+
+        public async Task<(Author? author, BPPaginationInfo info)> GetByIdAsync(int id, QAuthorBooks query)
+        {
+            using var connection = dapperUtility.GetConnection();
+            await connection.OpenAsync();
+
+            using var multi = await connection.QueryMultipleAsync(
+                "Author_With_Books_One",
+                new { query.PageNumber, query.PageSize, Id = id },
+                commandType: CommandType.StoredProcedure
+            );
+
+            // First result: JSON string
+            var entityJson = await multi.ReadFirstOrDefaultAsync<string>();
+            Author entity = new();
+            if (entityJson is not null)
+                entity = JsonSerializer.Deserialize<Author>(entityJson)!;
+            else
+                return (null, new BPPaginationInfo());
+
+            // Second result: pagination
+            var paginationJson = await multi.ReadFirstOrDefaultAsync<string>();
+            var pagination = JsonSerializer.Deserialize<BPPaginationInfo>(paginationJson!);
+
+            return (entity, pagination!);
         }
 
         public async Task<Author?> UpdateAsync(Author authorWithId)

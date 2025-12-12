@@ -1,3 +1,5 @@
+import { BookListResponse } from './book';
+
 export interface Author {
   id: number;
   name: string;
@@ -28,4 +30,9 @@ export interface CreateAuthorRequest {
 export interface UpdateAuthorRequest {
   name: string;
   description: string;
+}
+
+export interface AuthorDetails {
+  author: Author;
+  books: BookListResponse;
 }

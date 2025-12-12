@@ -3,6 +3,8 @@ using BookStoreApi.Database.Models;
 using BookStoreApi.RequestHandler.Admin.QueryObjects.Comment;
 using BookStoreApi.RequestHandler.Admin.Responses.Comment;
 using BookStoreApi.RequestHandler.Public.Responses.Comment;
+using BookStoreApi.RequestHandler.User.QueryObjects.Comment;
+using BookStoreApi.RequestHandler.User.Responses.Comment;
 using Dapper;
 using System.Data;
 using System.Text.Json;
@@ -87,6 +89,22 @@ namespace BookStoreApi.Database.Repositories
             var result = await connection.QueryFirstOrDefaultAsync<CommentInfo>(sql, new { id }, commandType: CommandType.StoredProcedure);
             return result;
 
+        }
+
+        public async Task<(List<CommentInfo> comments, UserCommentPaginationInfo info)> GetUserCommentsAsync(int id, QUserComments query)
+        {
+            string sql = "Get_User_Comments";
+            using var connection = dapperUtility.GetConnection();
+
+            using var multi = await connection.QueryMultipleAsync(
+                sql,
+                new { query.PageNumber, query.PageSize, Id = id },
+                commandType: CommandType.StoredProcedure);
+
+            var comments = (await multi.ReadAsync<CommentInfo>()).ToList();
+            var pagination = await multi.ReadFirstOrDefaultAsync<UserCommentPaginationInfo>();
+
+            return (comments, pagination!);
         }
 
         public async Task<bool> SwitchIsConfirmedAsync(int id)

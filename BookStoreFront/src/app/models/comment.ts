@@ -1,3 +1,4 @@
+import { PaginationInfo } from './apiResponse';
 import { User } from './user';
 
 export interface Comment {
@@ -21,9 +22,4 @@ export interface CommentListResponse {
   pagination: COPaginationInfo;
 }
 
-export interface COPaginationInfo {
-  pageNumber: number;
-  pageSize: number;
-  totalCount: number;
-  totalPages: number;
-}
+export interface COPaginationInfo extends PaginationInfo {}

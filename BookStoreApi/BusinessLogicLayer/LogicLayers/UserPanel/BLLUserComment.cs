@@ -1,7 +1,9 @@
 ﻿using BookStoreApi.BusinessLogicLayer.Interfaces.UserPanel;
 using BookStoreApi.Database.Interfaces;
 using BookStoreApi.Database.Models;
+using BookStoreApi.RequestHandler.User.QueryObjects.Comment;
 using BookStoreApi.RequestHandler.User.Requests.Comment;
+using BookStoreApi.RequestHandler.User.Responses.Comment;
 
 namespace BookStoreApi.BusinessLogicLayer.LogicLayers.UserPanel
 {
@@ -33,6 +35,16 @@ namespace BookStoreApi.BusinessLogicLayer.LogicLayers.UserPanel
             if (comment is null) return ("خطا در ثبت نظر", null, 500);
 
             return ("نظر با موفقیت ثبت شد و پس از تایید نمایش داده خواهد شد", comment, 201);
+        }
+
+        public async Task<(string message, List<CommentInfo>? comments, UserCommentPaginationInfo? pagination, int status)> GetUserCommentsAsync(string mobile, QUserComments query)
+        {
+            var user = await userRepository.GetByMobileAsync(mobile);
+            if (user is null) return ("کاربر یافت نشد", null, null, 404);
+
+            var (comments, info) = await repo.GetUserCommentsAsync(user.Id, query);
+
+            return ("لیست نظرات کاربر", comments, info, 200);
         }
     }
 }

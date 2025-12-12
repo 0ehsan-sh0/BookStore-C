@@ -16,9 +16,17 @@
 
             <!-- Dynamic book cards -->
             @for (book of newBooks; track book.id) {
-            <div class="card bg-base-200 w-46 h-90 shadow-sm flex-shrink-0 cursor-pointer hover:shadow-primary hover:shadow-md transition"
+            <div class="card bg-base-200 w-46 h-80 shadow-sm flex-shrink-0 cursor-pointer hover:shadow-primary hover:shadow-md transition"
                 (click)="goToBookDetails(book.id)">
+
                 <figure>
+                    @if (isLoggedIn) {
+                    <button class="absolute top-2 right-2 z-10 btn btn-circle btn-sm bg-base-100 border-none shadow-sm"
+                        (click)="toggleWishlist(book.id, $event)">
+                        <i-lucide name="heart" class="text-red-500" size="20">
+                        </i-lucide>
+                    </button>
+                    }
                     @if (book.images && book.images.length > 0) {
                     @for (image of book.images; track image.id) {
                     @if (image.isPrimary) {
@@ -38,24 +46,10 @@
 
                     <div class="card-actions flex mb-5">
                         <div class="flex flex-col text-right flex-1">
-                            <span class="text-sm text-gray-500 line-through" *ngIf="book.price > 100000">
-                                {{ (book.price * 1.2) | number:'1.0-0' }} تومان
-                            </span>
-
                             <div class="indicator">
-                                <span *ngIf="book.price > 100000"
-                                    class="indicator-item indicator-end badge badge-sm md:badge-md badge-error text-white">
-                                    20%
-                                </span>
                                 <span class="text-lg font-bold">{{ book.price | number:'1.0-0' }} تومان</span>
                             </div>
                         </div>
-
-                        <!-- prevent card click here -->
-                        <button class="btn btn-primary btn-sm flex-none text-primary-content"
-                            (click)="addToCart(book); $event.stopPropagation()">
-                            خرید
-                        </button>
                     </div>
                 </div>
             </div>
@@ -78,9 +72,17 @@
 
             <!-- Dynamic book cards -->
             @for (book of recommendedBooks; track book.id) {
-            <div class="card bg-base-200 w-46 h-90 shadow-sm flex-shrink-0 cursor-pointer hover:shadow-primary hover:shadow-md transition"
+            <div class="card bg-base-200 w-46 h-80 shadow-sm flex-shrink-0 cursor-pointer hover:shadow-primary hover:shadow-md transition"
                 (click)="goToBookDetails(book.id)">
+
                 <figure>
+                    @if (isLoggedIn) {
+                    <button class="absolute top-2 right-2 z-10 btn btn-circle btn-sm bg-base-100 border-none shadow-sm"
+                        (click)="toggleWishlist(book.id, $event)">
+                        <i-lucide name="heart" class="text-red-500" size="20">
+                        </i-lucide>
+                    </button>
+                    }
                     @if (book.images && book.images.length > 0) {
                     <!-- Use primary image if exists -->
                     @for (image of book.images; track image.id) {
@@ -102,24 +104,10 @@
 
                     <div class="card-actions flex mb-5">
                         <div class="flex flex-col text-right flex-1">
-                            <!-- Show a fake discount example -->
-                            <span class="text-sm text-gray-500 line-through" *ngIf="book.price > 100000">
-                                {{ (book.price * 1.2) | number:'1.0-0' }} تومان
-                            </span>
-
                             <div class="indicator">
-                                <span *ngIf="book.price > 100000"
-                                    class="indicator-item indicator-end badge badge-sm md:badge-md badge-error text-white">
-                                    20%
-                                </span>
                                 <span class="text-lg font-bold">{{ book.price | number:'1.0-0' }} تومان</span>
                             </div>
                         </div>
-
-                        <button class="btn btn-primary btn-sm flex-none text-primary-content"
-                            (click)="addToCart(book); $event.stopPropagation()">
-                            خرید
-                        </button>
                     </div>
                 </div>
             </div>

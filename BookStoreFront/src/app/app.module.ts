@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -134,6 +134,7 @@ import { UserComponent } from './admin/user/user.component';
 import { UserRolePipe } from './pipes/user-role.pipe';
 import { CreateUserComponent } from './admin/user/create-user/create-user.component';
 import { UpdateUserComponent } from './admin/user/update-user/update-user.component';
+import { UserCommentComponent } from './user/user-comment/user-comment.component';
 
 @NgModule({
   declarations: [
@@ -201,6 +202,7 @@ import { UpdateUserComponent } from './admin/user/update-user/update-user.compon
     UserRolePipe,
     CreateUserComponent,
     UpdateUserComponent,
+    UserCommentComponent,
     ],
   imports: [
     BrowserModule,
@@ -258,7 +260,6 @@ import { UpdateUserComponent } from './admin/user/update-user/update-user.compon
       MessageCirclePlus,
       ScrollText,
       DollarSign,
-      
     }),
     FormsModule,
   ],

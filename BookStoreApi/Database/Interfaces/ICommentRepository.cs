@@ -2,12 +2,15 @@
 using BookStoreApi.RequestHandler.Admin.QueryObjects.Comment;
 using BookStoreApi.RequestHandler.Admin.Responses.Comment;
 using BookStoreApi.RequestHandler.Public.Responses.Comment;
+using BookStoreApi.RequestHandler.User.QueryObjects.Comment;
+using BookStoreApi.RequestHandler.User.Responses.Comment;
 
 namespace BookStoreApi.Database.Interfaces
 {
     public interface ICommentRepository
     {
         Task<(List<CommentInfo> comments, COPaginationInfo info)> GetAllAsync(QCommentGetAll query);
+        Task<(List<CommentInfo> comments, UserCommentPaginationInfo info)> GetUserCommentsAsync(int id, QUserComments query);
         Task<CommentInfo?> GetByIdAsync(int id);
         Task<int> CreateAsync(CommentInfo comment);
         Task<bool> DeleteAsync(int id);

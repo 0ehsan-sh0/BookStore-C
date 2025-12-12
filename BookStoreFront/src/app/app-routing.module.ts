@@ -28,6 +28,8 @@ import { UserInvoiceComponent } from './user/user-invoice/user-invoice.component
 import { InvoiceComponent } from './admin/invoice/invoice.component';
 import { PaymentComponent } from './admin/payment/payment.component';
 import { UserComponent } from './admin/user/user.component';
+import { UserCommentComponent } from './user/user-comment/user-comment.component';
+import { userPanelGuard } from './guards/user/user-panel.guard';
 
 const routes: Routes = [
   {
@@ -71,12 +73,14 @@ const routes: Routes = [
   {
     path: 'user',
     component: UserPublicComponent,
+    canActivate: [userPanelGuard],
     children: [
       { path: '', component: UserProfileComponent },
       { path: 'orders', component: UserOrdersComponent },
       { path: 'wishlist', component: UserWishlistComponent },
       { path: 'addresses', component: UserAddressesComponent },
       { path: 'settings', component: UserSettingComponent },
+      { path: 'comments', component: UserCommentComponent },
     ],
   },
 

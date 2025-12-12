@@ -1,7 +1,10 @@
 ﻿using BookStoreApi.Database.Interfaces;
 using BookStoreApi.Database.Models;
+using BookStoreApi.RequestHandler.User.QueryObjects.Book;
+using BookStoreApi.RequestHandler.User.Responses.Book;
 using Dapper;
 using System.Data;
+using System.Text.Json;
 
 namespace BookStoreApi.Database.Repositories
 {
@@ -42,6 +45,29 @@ namespace BookStoreApi.Database.Repositories
             });
 
             return rows > 0;
+        }
+
+        public async Task<(List<BookAllData>? books, BookPaginationInfo info)> GetUserWishListAsync(int id, QUserWishList query)
+        {
+            using var connection = dapperUtility.GetConnection();
+            await connection.OpenAsync();
+
+            using var multi = await connection.QueryMultipleAsync(
+                "Get_User_WishList",
+                new { query.PageNumber, query.PageSize, Id = id },
+                commandType: CommandType.StoredProcedure
+            );
+
+            // First result: JSON string
+            var booksJson = await multi.ReadFirstOrDefaultAsync<string>();
+            List<BookAllData> books = [];
+            if (booksJson is not null)
+                books = JsonSerializer.Deserialize<List<BookAllData>>(booksJson)!;
+
+            var paginationJson = await multi.ReadFirstOrDefaultAsync<string>();
+            var pagination = JsonSerializer.Deserialize<BookPaginationInfo>(paginationJson!);
+
+            return (books, pagination!);
         }
 
         public async Task<WishList?> GetWishListAsync(WishList wishList)

@@ -1,6 +1,8 @@
 ﻿using BookStoreApi.BusinessLogicLayer.Interfaces.UserPanel;
 using BookStoreApi.Database.Interfaces;
 using BookStoreApi.Database.Models;
+using BookStoreApi.RequestHandler.User.QueryObjects.Book;
+using BookStoreApi.RequestHandler.User.Responses.Book;
 
 namespace BookStoreApi.BusinessLogicLayer.LogicLayers.UserPanel
 {
@@ -29,6 +31,16 @@ namespace BookStoreApi.BusinessLogicLayer.LogicLayers.UserPanel
             });
 
             return ("وضعیت با موفقیت تغییر کرد", wishlistStatus, 201);
+        }
+
+        public async Task<(string message, List<BookAllData>? books, BookPaginationInfo? info, int status)> GetUserWithList(string mobile, QUserWishList query)
+        {
+            var user = await userRepository.GetByMobileAsync(mobile);
+            if (user == null) return ("کاربر یافت نشد.", null, null, 404);
+
+            var (books, info) = await wishListRepository.GetUserWishListAsync(user.Id, query);
+
+            return ("لیست علاقه مندی های کاربر", books, info, 200);
         }
     }
 }

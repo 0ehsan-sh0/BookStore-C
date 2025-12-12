@@ -1,35 +1,75 @@
 <div data-section-panel="wishlist" class="section-panel">
   <div class="flex items-center justify-between mb-4">
     <h2 class="text-2xl font-bold">علاقه‌مندی‌ها</h2>
-    <div class="text-sm text-gray-500">کتاب‌های ذخیره شده توسط شما</div>
+    <div class="text-sm text-gray-500">کتاب‌های ذخیره‌شده توسط شما</div>
   </div>
 
+  <!-- Empty state -->
+  @if (wishlist.length === 0) {
+  <div class="text-center text-gray-400 py-10">
+    هیچ کتابی در علاقه‌مندی‌ها وجود ندارد.
+  </div>
+  }
+
+  <!-- Wishlist Grid -->
+  @if (wishlist.length > 0) {
   <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-5 gap-4">
 
     @for (book of wishlist; track book.id) {
-      <div (click)="goToBookDetails(book.id)" class="card bg-base-200 max-w-50 h-90 shadow-sm cursor-pointer hover:shadow-primary hover:shadow-md transition">
+    <div (click)="goToBookDetails(book.id)"
+      class="card bg-base-200 max-w-50 h-80 shadow-sm cursor-pointer hover:shadow-primary hover:shadow-md transition">
+      <figure>
+        <button class="absolute top-2 right-2 z-10 btn btn-circle btn-sm bg-base-100 border-none shadow-sm"
+          (click)="toggleWishlist(book.id, $event)">
+          <i-lucide name="trash" class="text-red-500" size="20">
+          </i-lucide>
+        </button>
 
-        <figure>
-          <img
-            class="h-50 object-cover"
-            [src]="getImage(book)"
-            alt="{{ book.name }}"
-          />
-        </figure>
+        <img class="h-50 object-cover" [src]="getImage(book)" alt="{{ book.name }}" />
+      </figure>
 
-        <div class="card-body py-0">
-          <h2 class="card-title truncate mt-2">{{ book.name }}</h2>
-          <p class="truncate text-gray-500">{{ book.author?.name }}</p>
+      <div class="card-body py-0">
+        <h2 class="card-title truncate mt-2">{{ book.name }}</h2>
+        <p class="truncate text-gray-500">
+          {{ book.author?.name }}
+        </p>
 
-          <div class="flex mb-5">
-            <div class="flex flex-col text-right flex-1">
-              <span class="text-lg font-bold">{{ book.price }} تومان</span>
-            </div>
+        <div class="flex mb-5">
+          <div class="flex flex-col text-right flex-1">
+            <span class="text-lg font-bold">
+              {{ book.price }} تومان
+            </span>
           </div>
         </div>
-
       </div>
+    </div>
     }
 
   </div>
+
+  <!-- Pagination -->
+  <div class="flex items-center justify-center my-5" *ngIf="pagination.totalPages > 1">
+    <button class="btn btn-md" [disabled]="pagination.pageNumber === 1" (click)="changePage(pagination.pageNumber - 1)">
+      قبلی
+    </button>
+
+    <ng-container *ngFor="let page of getPageArray()">
+      <button class="btn btn-md" [ngClass]="{
+            'btn-disabled': page === -1,
+            'btn-primary': page === pagination.pageNumber
+          }" (click)="page !== -1 && changePage(page)">
+        @if (page === -1) {
+        ...
+        } @else {
+        {{ page }}
+        }
+      </button>
+    </ng-container>
+
+    <button class="btn btn-md" [disabled]="pagination.pageNumber === pagination.totalPages"
+      (click)="changePage(pagination.pageNumber + 1)">
+      بعدی
+    </button>
+  </div>
+  }
 </div>

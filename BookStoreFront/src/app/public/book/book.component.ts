@@ -3,8 +3,8 @@ import { BookAllData, BPaginationInfo } from '../../models/book';
 import { BookPublicService } from '../../services/Public/book-public.service';
 import { ImageService } from '../../services/image.service';
 import { Router } from '@angular/router';
-import { AlertService } from '../../ui-service/alert.service';
-import { UserCartService } from '../../services/user/user-cart.service';
+import { AuthService } from '../../services/auth.service';
+import { UserWishListService } from '../../services/user/user-wish-list.service';
 
 @Component({
   selector: 'app-book',
@@ -21,6 +21,7 @@ export class BookComponent implements OnInit {
     totalCount: 0,
     totalPages: 1,
   };
+  isLoggedIn = false;
 
   searchTerm: string = '';
   sortOption: string = 'newest';
@@ -29,8 +30,8 @@ export class BookComponent implements OnInit {
     private bookService: BookPublicService,
     public imageService: ImageService,
     private router: Router,
-    private cartService: UserCartService,
-    private alertService: AlertService
+    private authService: AuthService,
+    private wishlistService: UserWishListService
   ) {}
 
   ngOnInit(): void {
@@ -39,6 +40,10 @@ export class BookComponent implements OnInit {
       this.pagination.pageNumber,
       this.pagination.pageSize
     );
+
+    this.authService.isLoggedIn$.subscribe((isLogged) => {
+      this.isLoggedIn = isLogged;
+    });
   }
 
   loadBooks(): void {
@@ -60,6 +65,12 @@ export class BookComponent implements OnInit {
     return primary
       ? this.imageService.getUrl(primary.relativePath, primary.storedFileName)
       : 'https://placehold.co/300x400?text=No+Image';
+  }
+
+  toggleWishlist(bookId: number, event: MouseEvent) {
+    event.stopPropagation(); // prevent opening book page
+
+    this.wishlistService.ToggleWishlist(bookId);
   }
 
   onSearch(): void {
@@ -99,11 +110,6 @@ export class BookComponent implements OnInit {
 
   goToBookDetails(bookId: number) {
     this.router.navigate(['/books', bookId]);
-  }
-
-  addToCart(book: BookAllData) {
-    this.cartService.addToCart({ ...book, quantity: 1 });
-    this.alertService.show('کتاب با موفقیت به سبد خرید اضافه شد');
   }
 
   changePage(page: number) {

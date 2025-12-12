@@ -4,7 +4,8 @@
         <div class="flex items-center gap-3 mb-4">
             <img src="https://placehold.co/64x64" alt="avatar" class="rounded-full w-16 h-16 object-cover" />
             <div class="text-right">
-                <h3 class="font-bold truncate max-w-45">{{ user.name ? user.name : 'نام کاربری وجود ندارد' }} {{ user.lastName ? user.lastName : '' }}</h3>
+                <h3 class="font-bold truncate max-w-45">{{ user.name ? user.name : 'نام کاربری وجود ندارد' }} {{
+                    user.lastName ? user.lastName : '' }}</h3>
                 <p class="text-sm text-gray-500">مشتری از {{ user.createdAt! | jalaliDate }}</p>
             </div>
         </div>
@@ -21,6 +22,10 @@
             <button [routerLink]="['/user/wishlist']" data-section="wishlist"
                 class="sidebar-btn btn btn-ghost justify-between w-full text-right">لیست
                 علاقه‌مندی‌ها
+                <span class="text-sm text-gray-500">۵</span>
+            </button>
+            <button [routerLink]="['/user/comments']" data-section="comment"
+                class="sidebar-btn btn btn-ghost justify-between w-full text-right">نظرات
                 <span class="text-sm text-gray-500">۵</span>
             </button>
             <button [routerLink]="['/user/addresses']" data-section="addresses"
@@ -50,7 +55,7 @@
             <li><a [routerLink]="['wishlist']" (click)="closeUserSidebar()">لیست علاقه‌مندی‌ها</a></li>
             <li><a [routerLink]="['addresses']" (click)="closeUserSidebar()">آدرس ها</a></li>
             <li><a [routerLink]="['settings']" (click)="closeUserSidebar()">تنظیمات حساب</a></li>
-            
+
         </ul>
     </div>
 </div>

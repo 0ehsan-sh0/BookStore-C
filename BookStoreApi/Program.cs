@@ -72,6 +72,7 @@ builder.Services.AddScoped<IBLLAuthorPublic, BLLAuthorPublic>();
 
 builder.Services.AddScoped<ITranslatorRepository, TranslatorRepository>();
 builder.Services.AddScoped<IBLLTranslator, BLLTranslator>();
+builder.Services.AddScoped<IBLLTranslatorPublic, BLLTranslatorPublic>();
 
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IBLLBook, BLLBook>();
@@ -86,6 +87,7 @@ builder.Services.AddScoped<IBLLUserComment, BLLUserComment>();
 
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<IBLLTag, BLLTag>();
+builder.Services.AddScoped<IBLLTagPublic, BLLTagPublic>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBLLAuth, BLLAuth>();

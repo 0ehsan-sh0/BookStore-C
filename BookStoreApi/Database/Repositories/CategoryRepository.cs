@@ -2,6 +2,8 @@
 using BookStoreApi.Database.Models;
 using BookStoreApi.RequestHandler.Admin.QueryObjects.Category;
 using BookStoreApi.RequestHandler.Admin.Responses.Category;
+using BookStoreApi.RequestHandler.Public.QueryObjects.Book;
+using BookStoreApi.RequestHandler.Public.Responses.Book;
 using Dapper;
 using System.Data;
 using System.Text.Json;
@@ -69,6 +71,32 @@ namespace BookStoreApi.Database.Repositories
             using var connection = dapperUtility.GetConnection();
             var result = await connection.QueryFirstOrDefaultAsync<Category>(sql, new { Url }, commandType: CommandType.StoredProcedure);
             return result;
+        }
+
+        public async Task<(Category? category, BPPaginationInfo info)> GetByUrlAsync(string url, QCategoryBooks query)
+        {
+            using var connection = dapperUtility.GetConnection();
+            await connection.OpenAsync();
+
+            using var multi = await connection.QueryMultipleAsync(
+                "Category_With_Books_One",
+                new { query.PageNumber, query.PageSize, Url = url },
+                commandType: CommandType.StoredProcedure
+            );
+
+            // First result: JSON string
+            var entityJson = await multi.ReadFirstOrDefaultAsync<string>();
+            Category entity = new();
+            if (entityJson is not null)
+                entity = JsonSerializer.Deserialize<Category>(entityJson)!;
+            else
+                return (null, new BPPaginationInfo());
+
+            // Second result: pagination
+            var paginationJson = await multi.ReadFirstOrDefaultAsync<string>();
+            var pagination = JsonSerializer.Deserialize<BPPaginationInfo>(paginationJson!);
+
+            return (entity, pagination!);
         }
 
         public async Task<List<Category>> GetCategoriesWithSubAsync()

@@ -9,5 +9,6 @@ namespace BookStoreApi.Database.Models
         public string Url { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+        public List<BookAllData>? Books { get; set; }
     }
 }

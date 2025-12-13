@@ -2,8 +2,11 @@
 using BookStoreApi.Database.Models;
 using BookStoreApi.RequestHandler.Admin.QueryObjects.Translator;
 using BookStoreApi.RequestHandler.Admin.Responses.Translator;
+using BookStoreApi.RequestHandler.Public.QueryObjects.Book;
+using BookStoreApi.RequestHandler.Public.Responses.Book;
 using Dapper;
 using System.Data;
+using System.Text.Json;
 
 namespace BookStoreApi.Database.Repositories
 {
@@ -59,6 +62,32 @@ namespace BookStoreApi.Database.Repositories
             using var connection = dapperUtility.GetConnection();
             var result = await connection.QueryFirstOrDefaultAsync<Translator>(sql, new { id }, commandType: CommandType.StoredProcedure);
             return result;
+        }
+
+        public async Task<(Translator? translator, BPPaginationInfo info)> GetByIdAsync(int id, QTranslatorBooks query)
+        {
+            using var connection = dapperUtility.GetConnection();
+            await connection.OpenAsync();
+
+            using var multi = await connection.QueryMultipleAsync(
+                "Translator_With_Books_One",
+                new { query.PageNumber, query.PageSize, Id = id },
+                commandType: CommandType.StoredProcedure
+            );
+
+            // First result: JSON string
+            var entityJson = await multi.ReadFirstOrDefaultAsync<string>();
+            Translator entity = new();
+            if (entityJson is not null)
+                entity = JsonSerializer.Deserialize<Translator>(entityJson)!;
+            else
+                return (null, new BPPaginationInfo());
+
+            // Second result: pagination
+            var paginationJson = await multi.ReadFirstOrDefaultAsync<string>();
+            var pagination = JsonSerializer.Deserialize<BPPaginationInfo>(paginationJson!);
+
+            return (entity, pagination!);
         }
 
         public async Task<Translator?> UpdateAsync(Translator translatorWithId)

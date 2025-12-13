@@ -4,9 +4,8 @@ using BookStoreApi.RequestHandler.Public.Responses.Book;
 
 namespace BookStoreApi.BusinessLogicLayer.Interfaces.Public
 {
-    public interface IBLLCategoryPublic
+    public interface IBLLTranslatorPublic
     {
-        Task<List<Category>> GetCategoriesWithSubAsync();
-        Task<(string message, Category? category, BPPaginationInfo? info, int status)> GetTagAsync(string url, QCategoryBooks query);
+        Task<(string message, Translator? translator, BPPaginationInfo? info, int status)> GetTranslatorAsync(int id, QTranslatorBooks query);
     }
 }

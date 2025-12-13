@@ -31,6 +31,9 @@ import { UserComponent } from './admin/user/user.component';
 import { UserCommentComponent } from './user/user-comment/user-comment.component';
 import { userPanelGuard } from './guards/user/user-panel.guard';
 import { AuthorDetailsComponent } from './public/author-details/author-details.component';
+import { TranslatorDetailsComponent } from './public/translator-details/translator-details.component';
+import { TagDetailsComponent } from './public/tag-details/tag-details.component';
+import { CategoryDetailsComponent } from './public/category-details/category-details.component';
 
 const routes: Routes = [
   {
@@ -56,7 +59,11 @@ const routes: Routes = [
       { path: '', component: HomeComponent },
       { path: 'books', component: BookPublicComponent },
       { path: 'books/:id', component: BookDetailsComponent },
+      { path: 'books/:id', component: BookDetailsComponent },
       { path: 'authors/:id', component: AuthorDetailsComponent },
+      { path: 'translators/:id', component: TranslatorDetailsComponent },
+      { path: 'tags/:id', component: TagDetailsComponent },
+      { path: 'categories/:id', component: CategoryDetailsComponent },
       { path: 'about-us', component: AboutUsComponent },
       { path: 'contact-us', component: ContactUsComponent },
       { path: 'login', component: LoginComponent },

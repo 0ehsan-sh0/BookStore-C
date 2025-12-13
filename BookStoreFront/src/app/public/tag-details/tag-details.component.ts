@@ -1,22 +1,22 @@
-import { Component } from '@angular/core';
-import { AuthorDetails } from '../../models/author';
+import { Component, OnInit } from '@angular/core';
+import { TagDetails } from '../../models/tag';
 import { BookAllData, BPaginationInfo } from '../../models/book';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthorPublicService } from '../../services/Public/author-public.service';
+import { TagPublicService } from '../../services/Public/tag-public.service';
 import { ImageService } from '../../services/image.service';
 import { AuthService } from '../../services/auth.service';
 import { UserWishListService } from '../../services/user/user-wish-list.service';
 
 @Component({
-  selector: 'app-author-details',
+  selector: 'app-tag-details',
   standalone: false,
-  templateUrl: './author-details.component.html',
-  styleUrl: './author-details.component.css',
+  templateUrl: './tag-details.component.html',
+  styleUrl: './tag-details.component.css',
 })
-export class AuthorDetailsComponent {
-  authorId!: number;
+export class TagDetailsComponent implements OnInit {
+  tagUrl!: string;
 
-  author: AuthorDetails = {} as AuthorDetails;
+  tag: TagDetails = {} as TagDetails;
   books: BookAllData[] = [];
   filteredBooks: BookAllData[] = [];
 
@@ -32,16 +32,17 @@ export class AuthorDetailsComponent {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private authorService: AuthorPublicService,
+    private tagService: TagPublicService,
     public imageService: ImageService,
     private authService: AuthService,
     private wishlistService: UserWishListService
   ) {}
 
   ngOnInit(): void {
+    // Tag uses URL slug as ID
     this.route.paramMap.subscribe((params) => {
-      this.authorId = Number(params.get('id'));
-      this.loadAuthor();
+      this.tagUrl = params.get('id') || '';
+      this.loadTag();
     });
 
     this.authService.isLoggedIn$.subscribe((isLogged) => {
@@ -49,27 +50,23 @@ export class AuthorDetailsComponent {
     });
   }
 
-  loadAuthor(): void {
-    this.authorService.getAuthorDetails(
-      this.authorId,
+  loadTag(): void {
+    this.tagService.getTagDetails(
+      this.tagUrl,
       this.pagination.pageNumber,
       this.pagination.pageSize
     );
 
-    this.authorService.authorDetails.subscribe((details) => {
-      if (!details?.author) return;
+    this.tagService.tagDetails.subscribe((details) => {
+      if (!details?.tag) return;
 
-      this.author = details;
+      this.tag = details;
       this.books = details.books.books ?? [];
       this.pagination = details.books.pagination ?? this.pagination;
 
       this.filteredBooks = [...this.books];
     });
   }
-
-  // -----------------------------
-  // UI Actions
-  // -----------------------------
 
   toggleWishlist(bookId: number, event: MouseEvent) {
     event.stopPropagation();
@@ -82,11 +79,7 @@ export class AuthorDetailsComponent {
 
   changePage(page: number) {
     if (page === this.pagination.pageNumber) return;
-    this.authorService.getAuthorDetails(
-      this.authorId,
-      page,
-      this.pagination.pageSize
-    );
+    this.tagService.getTagDetails(this.tagUrl, page, this.pagination.pageSize);
   }
 
   getPageArray(): number[] {

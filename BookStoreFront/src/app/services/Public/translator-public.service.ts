@@ -1,16 +1,16 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AlertService } from '../../ui-service/alert.service';
+import { AlertService } from '../../ui-service/alert.service'; // Assuming this exists based on other services
 import { ErrorHandlerService } from '../error-handler.service';
 import { BehaviorSubject } from 'rxjs';
-import { AuthorDetails } from '../../models/author';
+import { TranslatorDetails } from '../../models/translator';
 import { ApiResponse } from '../../models/apiResponse';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthorPublicService {
-  private readonly apiUrl = 'api/author';
+export class TranslatorPublicService {
+  private readonly apiUrl = 'api/translator';
 
   constructor(
     private http: HttpClient,
@@ -18,10 +18,10 @@ export class AuthorPublicService {
     private errorHandler: ErrorHandlerService
   ) {}
 
-  authorDetails = new BehaviorSubject<AuthorDetails | null>(null);
+  translatorDetails = new BehaviorSubject<TranslatorDetails | null>(null);
 
-  getAuthorDetails(
-    authorId: number,
+  getTranslatorDetails(
+    translatorId: number,
     pageNumber: number = 1,
     pageSize: number = 20
   ) {
@@ -30,10 +30,12 @@ export class AuthorPublicService {
       .set('PageSize', pageSize.toString());
 
     this.http
-      .get<ApiResponse<AuthorDetails>>(`${this.apiUrl}/${authorId}`, { params })
+      .get<ApiResponse<TranslatorDetails>>(`${this.apiUrl}/${translatorId}`, {
+        params,
+      })
       .subscribe({
         next: (response) => {
-          this.authorDetails.next(response.data ?? null);
+          this.translatorDetails.next(response.data ?? null);
         },
         error: (err) => {
           this.errorHandler.handleError(err);

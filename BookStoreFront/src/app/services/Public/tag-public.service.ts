@@ -1,16 +1,16 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AlertService } from '../../ui-service/alert.service';
+import { AlertService } from '../../ui-service/alert.service'; // Assuming this exists based on other services
 import { ErrorHandlerService } from '../error-handler.service';
 import { BehaviorSubject } from 'rxjs';
-import { AuthorDetails } from '../../models/author';
+import { TagDetails } from '../../models/tag';
 import { ApiResponse } from '../../models/apiResponse';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthorPublicService {
-  private readonly apiUrl = 'api/author';
+export class TagPublicService {
+  private readonly apiUrl = 'api/tag';
 
   constructor(
     private http: HttpClient,
@@ -18,22 +18,18 @@ export class AuthorPublicService {
     private errorHandler: ErrorHandlerService
   ) {}
 
-  authorDetails = new BehaviorSubject<AuthorDetails | null>(null);
+  tagDetails = new BehaviorSubject<TagDetails | null>(null);
 
-  getAuthorDetails(
-    authorId: number,
-    pageNumber: number = 1,
-    pageSize: number = 20
-  ) {
+  getTagDetails(tagUrl: string, pageNumber: number = 1, pageSize: number = 20) {
     const params = new HttpParams()
       .set('PageNumber', pageNumber.toString())
       .set('PageSize', pageSize.toString());
 
     this.http
-      .get<ApiResponse<AuthorDetails>>(`${this.apiUrl}/${authorId}`, { params })
+      .get<ApiResponse<TagDetails>>(`${this.apiUrl}/${tagUrl}`, { params })
       .subscribe({
         next: (response) => {
-          this.authorDetails.next(response.data ?? null);
+          this.tagDetails.next(response.data ?? null);
         },
         error: (err) => {
           this.errorHandler.handleError(err);

@@ -1,22 +1,22 @@
-import { Component } from '@angular/core';
-import { AuthorDetails } from '../../models/author';
+import { Component, OnInit } from '@angular/core';
+import { TranslatorDetails } from '../../models/translator';
 import { BookAllData, BPaginationInfo } from '../../models/book';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthorPublicService } from '../../services/Public/author-public.service';
+import { TranslatorPublicService } from '../../services/Public/translator-public.service';
 import { ImageService } from '../../services/image.service';
 import { AuthService } from '../../services/auth.service';
 import { UserWishListService } from '../../services/user/user-wish-list.service';
 
 @Component({
-  selector: 'app-author-details',
+  selector: 'app-translator-details',
   standalone: false,
-  templateUrl: './author-details.component.html',
-  styleUrl: './author-details.component.css',
+  templateUrl: './translator-details.component.html',
+  styleUrl: './translator-details.component.css',
 })
-export class AuthorDetailsComponent {
-  authorId!: number;
+export class TranslatorDetailsComponent implements OnInit {
+  translatorId!: number;
 
-  author: AuthorDetails = {} as AuthorDetails;
+  translator: TranslatorDetails = {} as TranslatorDetails;
   books: BookAllData[] = [];
   filteredBooks: BookAllData[] = [];
 
@@ -32,16 +32,17 @@ export class AuthorDetailsComponent {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private authorService: AuthorPublicService,
+    private translatorService: TranslatorPublicService,
     public imageService: ImageService,
     private authService: AuthService,
     private wishlistService: UserWishListService
   ) {}
 
   ngOnInit(): void {
+    // Translator still uses numeric ID
     this.route.paramMap.subscribe((params) => {
-      this.authorId = Number(params.get('id'));
-      this.loadAuthor();
+      this.translatorId = Number(params.get('id'));
+      this.loadTranslator();
     });
 
     this.authService.isLoggedIn$.subscribe((isLogged) => {
@@ -49,27 +50,23 @@ export class AuthorDetailsComponent {
     });
   }
 
-  loadAuthor(): void {
-    this.authorService.getAuthorDetails(
-      this.authorId,
+  loadTranslator(): void {
+    this.translatorService.getTranslatorDetails(
+      this.translatorId,
       this.pagination.pageNumber,
       this.pagination.pageSize
     );
 
-    this.authorService.authorDetails.subscribe((details) => {
-      if (!details?.author) return;
+    this.translatorService.translatorDetails.subscribe((details) => {
+      if (!details?.translator) return;
 
-      this.author = details;
+      this.translator = details;
       this.books = details.books.books ?? [];
       this.pagination = details.books.pagination ?? this.pagination;
 
       this.filteredBooks = [...this.books];
     });
   }
-
-  // -----------------------------
-  // UI Actions
-  // -----------------------------
 
   toggleWishlist(bookId: number, event: MouseEvent) {
     event.stopPropagation();
@@ -82,8 +79,8 @@ export class AuthorDetailsComponent {
 
   changePage(page: number) {
     if (page === this.pagination.pageNumber) return;
-    this.authorService.getAuthorDetails(
-      this.authorId,
+    this.translatorService.getTranslatorDetails(
+      this.translatorId,
       page,
       this.pagination.pageSize
     );

@@ -10,16 +10,16 @@
         <li>
           <!-- If category has no sub-categories -->
           @if (!category.subCategories || category.subCategories.length === 0) {
-            <a>{{ category.name }}</a>
+            <a [routerLink]="['/categories', category.url]" (click)="closeSidebar()">{{ category.name }}</a>
           }
 
           <!-- If category has sub-categories, create a dropdown -->
           @if (category.subCategories && category.subCategories.length > 0) {
             <details>
-              <summary><a>{{ category.name }}</a></summary>
+              <summary><a [routerLink]="['/categories', category.url]" (click)="closeSidebar()">{{ category.name }}</a></summary>
               <ul>
                 @for (subCategory of category.subCategories; track subCategory.url) {
-                  <li><a>{{ subCategory.name }}</a></li>
+                  <li><a [routerLink]="['/categories', subCategory.url]" (click)="closeSidebar()">{{ subCategory.name }}</a></li>
                 }
               </ul>
             </details>

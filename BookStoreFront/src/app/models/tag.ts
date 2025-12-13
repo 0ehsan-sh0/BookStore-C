@@ -1,9 +1,12 @@
+import { Book, BookListResponse } from "./book";
+
 export interface Tag {
   id: number;
   name: string;
   url: string;
   createdAt: Date;
   updatedAt: Date;
+  books: Book[];
 }
 
 export interface TagListResponse {
@@ -19,6 +22,11 @@ export interface CreateTagRequest {
 export interface UpdateTagRequest {
   name: string;
   url: string;
+}
+
+export interface TagDetails {
+  tag: Tag;
+  books: BookListResponse;
 }
 
 export interface TagPaginationInfo {

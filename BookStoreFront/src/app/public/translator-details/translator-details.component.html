@@ -1,0 +1,95 @@
+<div class="mx-2 md:mx-20 my-10">
+
+    <!-- Translator Header -->
+    @if (translator.translator) {
+    <div class="mb-8">
+        <h1 class="text-4xl font-bold">{{ translator.translator.name }}</h1>
+        <p class="text-gray-600 mt-3 leading-7">{{ translator.translator.description }}</p>
+    </div>
+
+    <!-- Title -->
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold">کتاب‌های ترجمه شده توسط {{ translator.translator.name }}</h2>
+    </div>
+    } @else {
+    <div class="mb-8">
+        <h1 class="text-4xl font-bold text-center">مترجم یافت نشد</h1>
+    </div>
+    }
+
+
+    <!-- Books -->
+    @if (filteredBooks.length > 0) {
+    <div class="flex flex-wrap gap-4 w-full">
+
+        @for (book of filteredBooks; track book.id) {
+
+        <div class="card bg-base-200 w-[calc(50%-0.5rem)] sm:w-[calc(33.3333%-1rem)] md:w-[calc(25%-1rem)]
+                     lg:w-[calc(20%-1rem)] xl:w-[calc(16.6667%-1rem)]
+                     cursor-pointer hover:shadow-primary hover:shadow-md transition"
+            (click)="goToBookDetails(book.id)">
+
+            <figure>
+                @if (isLoggedIn) {
+                <button class="absolute top-2 right-2 z-10 btn btn-circle btn-sm bg-base-100 border-none shadow-sm"
+                    (click)="toggleWishlist(book.id, $event)">
+                    <i-lucide name="heart" class="text-red-500" size="20"></i-lucide>
+                </button>
+                }
+
+                @if (book.images && book.images.length > 0) {
+                <img class="h-60 object-cover w-full"
+                    [src]="imageService.getUrl(book.images[0].relativePath, book.images[0].storedFileName)"
+                    alt="{{ book.name }}" />
+                } @else {
+                <img class="h-50 object-cover w-full" src="https://placehold.co/300x400?text=No+Image"
+                    alt="{{ book.name }}" />
+                }
+            </figure>
+
+            <div class="card-body py-0">
+                <h2 class="card-title truncate mt-1">{{ book.name }}</h2>
+                <p class="truncate text-gray-500">{{ book.author?.name }}</p>
+
+                <div class="card-actions flex mb-5">
+                    <div class="indicator flex-1 text-right">
+                        <span class="text-lg font-bold">{{ book.price | number:'1.0-0' }} تومان</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        }
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex items-center justify-center my-5" *ngIf="pagination.totalPages > 1">
+
+        <button class="btn btn-md" [disabled]="pagination.pageNumber === 1"
+            (click)="changePage(pagination.pageNumber - 1)">
+            قبلی
+        </button>
+
+        <ng-container *ngFor="let page of getPageArray()">
+            <button class="btn btn-md" [ngClass]="{
+                  'btn-disabled': page === -1,
+                  'btn-primary': page === pagination.pageNumber
+                }" (click)="page !== -1 && changePage(page)">
+
+                @if (page === -1) { ... } @else { {{ page }} }
+
+            </button>
+        </ng-container>
+
+        <button class="btn btn-md" [disabled]="pagination.pageNumber === pagination.totalPages"
+            (click)="changePage(pagination.pageNumber + 1)">
+            بعدی
+        </button>
+    </div>
+
+    } @else {
+    <div class="text-center text-gray-500 mt-20 text-lg">
+        هیچ کتابی برای این مترجم یافت نشد.
+    </div>
+    }
+</div>

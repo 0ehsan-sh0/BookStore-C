@@ -14,10 +14,10 @@
             <!-- Author -->
             @if (book?.author) {
             <div class="mb-2">
-                
+
                 <span class="font-semibold">نویسنده:</span>
                 <a [routerLink]="['/authors', book?.author?.id]" class="hover:underline">
-                       {{ book?.author?.name }}
+                    {{ book?.author?.name }}
                 </a>
             </div>
             }
@@ -27,7 +27,9 @@
             <div class="mb-2">
                 <span class="font-semibold">مترجمین:</span>
                 @for (t of book?.translators ??[]; track t.id; let last = $last) {
-                {{ t.name }}
+                <a [routerLink]="['/translators', t.id]" class="hover:underline">
+                    {{ t.name }}
+                </a>
                 @if (!last) {
                 <span>، </span>
                 }
@@ -41,7 +43,8 @@
                 <span class="font-semibold">دسته‌بندی‌ها:</span>
                 <div class="flex flex-wrap gap-2 mt-1">
                     @for (c of book?.categories ?? []; track c.url) {
-                    <div class="badge badge-outline">{{ c.name }}</div>
+                    <a [routerLink]="['/categories', c.url]"
+                        class="badge badge-outline cursor-pointer hover:shadow-sm shadow-primary">{{ c.name }}</a>
                     }
                 </div>
             </div>
@@ -53,7 +56,8 @@
                 <span class="font-semibold">برچسب‌ها:</span>
                 <div class="flex flex-wrap gap-2 mt-1">
                     @for (tag of book?.tags ?? []; track tag.id) {
-                    <div class="badge badge-neutral">{{ tag.name }}</div>
+                    <a [routerLink]="['/tags', tag.url]"
+                        class="badge badge-neutral cursor-pointer hover:shadow-sm shadow-primary">{{ tag.name }}</a>
                     }
                 </div>
             </div>

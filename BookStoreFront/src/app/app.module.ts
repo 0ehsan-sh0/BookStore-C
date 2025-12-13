@@ -136,6 +136,9 @@ import { CreateUserComponent } from './admin/user/create-user/create-user.compon
 import { UpdateUserComponent } from './admin/user/update-user/update-user.component';
 import { UserCommentComponent } from './user/user-comment/user-comment.component';
 import { AuthorDetailsComponent } from './public/author-details/author-details.component';
+import { CategoryDetailsComponent } from './public/category-details/category-details.component';
+import { TagDetailsComponent } from './public/tag-details/tag-details.component';
+import { TranslatorDetailsComponent } from './public/translator-details/translator-details.component';
 
 @NgModule({
   declarations: [
@@ -205,7 +208,10 @@ import { AuthorDetailsComponent } from './public/author-details/author-details.c
     UpdateUserComponent,
     UserCommentComponent,
     AuthorDetailsComponent,
-    ],
+    CategoryDetailsComponent,
+    TagDetailsComponent,
+    TranslatorDetailsComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,

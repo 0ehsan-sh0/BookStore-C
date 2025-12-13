@@ -1,3 +1,5 @@
+import { Book, BookListResponse } from "./book";
+
 export interface Category {
   id: number;
   name: string;
@@ -6,6 +8,7 @@ export interface Category {
   createdAt?: Date;
   updatedAt?: Date;
   subCategories?: Category[];
+  books?: Book[];
 }
 
 export interface CPaginationInfo {
@@ -25,6 +28,11 @@ export interface CreateCategoryRequest {
   name: string;
   url: string;
   mainCategoryId?: number | null;
+}
+
+export interface CategoryDetails {
+  category: Category;
+  books: BookListResponse;
 }
 
 // update-category-request.model.ts

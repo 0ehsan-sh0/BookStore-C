@@ -1,22 +1,22 @@
-import { Component } from '@angular/core';
-import { AuthorDetails } from '../../models/author';
+import { Component, OnInit } from '@angular/core';
+import { CategoryDetails } from '../../models/category';
 import { BookAllData, BPaginationInfo } from '../../models/book';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthorPublicService } from '../../services/Public/author-public.service';
+import { CategoryPublicService } from '../../services/Public/category-public.service';
 import { ImageService } from '../../services/image.service';
 import { AuthService } from '../../services/auth.service';
 import { UserWishListService } from '../../services/user/user-wish-list.service';
 
 @Component({
-  selector: 'app-author-details',
+  selector: 'app-category-details',
   standalone: false,
-  templateUrl: './author-details.component.html',
-  styleUrl: './author-details.component.css',
+  templateUrl: './category-details.component.html',
+  styleUrl: './category-details.component.css',
 })
-export class AuthorDetailsComponent {
-  authorId!: number;
+export class CategoryDetailsComponent implements OnInit {
+  categoryUrl!: string;
 
-  author: AuthorDetails = {} as AuthorDetails;
+  category: CategoryDetails = {} as CategoryDetails;
   books: BookAllData[] = [];
   filteredBooks: BookAllData[] = [];
 
@@ -32,16 +32,17 @@ export class AuthorDetailsComponent {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private authorService: AuthorPublicService,
+    private categoryService: CategoryPublicService,
     public imageService: ImageService,
     private authService: AuthService,
     private wishlistService: UserWishListService
   ) {}
 
   ngOnInit(): void {
+    // Category uses URL slug as ID
     this.route.paramMap.subscribe((params) => {
-      this.authorId = Number(params.get('id'));
-      this.loadAuthor();
+      this.categoryUrl = params.get('id') || '';
+      this.loadCategory();
     });
 
     this.authService.isLoggedIn$.subscribe((isLogged) => {
@@ -49,27 +50,23 @@ export class AuthorDetailsComponent {
     });
   }
 
-  loadAuthor(): void {
-    this.authorService.getAuthorDetails(
-      this.authorId,
+  loadCategory(): void {
+    this.categoryService.getCategoryDetails(
+      this.categoryUrl,
       this.pagination.pageNumber,
       this.pagination.pageSize
     );
 
-    this.authorService.authorDetails.subscribe((details) => {
-      if (!details?.author) return;
+    this.categoryService.categoryDetails.subscribe((details) => {
+      if (!details?.category) return;
 
-      this.author = details;
+      this.category = details;
       this.books = details.books.books ?? [];
       this.pagination = details.books.pagination ?? this.pagination;
 
       this.filteredBooks = [...this.books];
     });
   }
-
-  // -----------------------------
-  // UI Actions
-  // -----------------------------
 
   toggleWishlist(bookId: number, event: MouseEvent) {
     event.stopPropagation();
@@ -82,8 +79,8 @@ export class AuthorDetailsComponent {
 
   changePage(page: number) {
     if (page === this.pagination.pageNumber) return;
-    this.authorService.getAuthorDetails(
-      this.authorId,
+    this.categoryService.getCategoryDetails(
+      this.categoryUrl,
       page,
       this.pagination.pageSize
     );

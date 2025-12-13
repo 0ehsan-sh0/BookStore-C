@@ -22,4 +22,13 @@ export class PublicSidebarComponent implements OnInit {
       this.categories = data;
     });
   }
+
+  closeSidebar() : void {
+    const sidebar = document.getElementById(
+      'public-sidebar'
+    ) as HTMLInputElement | null;
+    if (sidebar) {
+      sidebar.checked = false;
+    }
+  }
 }

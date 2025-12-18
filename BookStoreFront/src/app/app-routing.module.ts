@@ -59,7 +59,6 @@ const routes: Routes = [
       { path: '', component: HomeComponent },
       { path: 'books', component: BookPublicComponent },
       { path: 'books/:id', component: BookDetailsComponent },
-      { path: 'books/:id', component: BookDetailsComponent },
       { path: 'authors/:id', component: AuthorDetailsComponent },
       { path: 'translators/:id', component: TranslatorDetailsComponent },
       { path: 'tags/:id', component: TagDetailsComponent },

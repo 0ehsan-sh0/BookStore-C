@@ -46,20 +46,38 @@ export class UserWishListService {
   }
 
   ToggleWishlist(bookId: number) {
-    this.http.post<ApiResponse<boolean>>(`${this.apiUrl}`, { bookId }).subscribe({
-      next: (res) => {
+    this.http
+      .post<ApiResponse<boolean>>(`${this.apiUrl}`, { bookId })
+      .subscribe({
+        next: (res) => {
           if (res.data) {
-            this.alertService.show('افزودن به علاقه‌مندی با موفقیت انجام شد', 'success');
+            this.alertService.show(
+              'افزودن به علاقه‌مندی با موفقیت انجام شد',
+              'success'
+            );
+            const current = this.pagination.value;
+            this.pagination.next({
+              ...current,
+              totalCount: (current.totalCount || 0) + 1,
+            });
           } else {
             this.wishlist.next(
               this.wishlist.value.filter((b) => b.id !== bookId)
             );
-            this.alertService.show('حذف از علاقه‌مندی با موفقیت انجام شد', 'error');
+            this.alertService.show(
+              'حذف از علاقه‌مندی با موفقیت انجام شد',
+              'error'
+            );
+            const current = this.pagination.value;
+            this.pagination.next({
+              ...current,
+              totalCount: (current.totalCount || 0) - 1,
+            });
           }
-      },
-      error: (err) => {
-        this.errorHandler.handleError(err);
-      },
-    });
+        },
+        error: (err) => {
+          this.errorHandler.handleError(err);
+        },
+      });
   }
 }

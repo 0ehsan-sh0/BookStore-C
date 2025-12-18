@@ -28,8 +28,8 @@
 
                                 <label class="label mb-1 ml-2"><span class="label-text">نام شخص</span></label>
 
-                                <input type="text" placeholder="نام" class="input input-bordered" [(ngModel)]="user.name"
-                                    name="name" required maxlength="200" #name="ngModel"
+                                <input type="text" placeholder="نام" class="input input-bordered"
+                                    [(ngModel)]="user.name" name="name" required maxlength="200" #name="ngModel"
                                     [class.input-error]="name.invalid && name.touched" />
                             </div>
                             <div class="form-control md:flex-1">
@@ -58,11 +58,11 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div class="card bg-base-200 p-4 shadow-sm text-right">
             <div class="text-sm text-gray-500">سفارش‌های فعال</div>
-            <div class="text-2xl font-bold mt-2">2</div>
+            <div class="text-2xl font-bold mt-2">{{ ordersCount }}</div>
         </div>
         <div class="card bg-base-200 p-4 shadow-sm text-right">
             <div class="text-sm text-gray-500">کتاب‌های ذخیره شده</div>
-            <div class="text-2xl font-bold mt-2">5</div>
+            <div class="text-2xl font-bold mt-2">{{ wishlistCount }}</div>
         </div>
         <div class="card bg-base-200 p-4 shadow-sm text-right">
             <div class="text-sm text-gray-500">کیف پول</div>

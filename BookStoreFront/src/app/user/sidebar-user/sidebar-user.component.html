@@ -13,20 +13,20 @@
         <nav class="flex flex-col gap-2">
             <button [routerLink]="['/user']" data-section="profile"
                 class="sidebar-btn btn btn-ghost justify-between w-full text-right">پروفایل
-                <span class="badge">1</span>
+                <!-- Removed badge as requested -->
             </button>
             <button [routerLink]="['/user/orders']" data-section="orders"
                 class="sidebar-btn btn btn-ghost justify-between w-full text-right">سفارش‌ها
-                <span class="text-sm text-gray-500">۳</span>
+                <span class="text-sm text-gray-500" *ngIf="ordersCount > 0">{{ ordersCount }}</span>
             </button>
             <button [routerLink]="['/user/wishlist']" data-section="wishlist"
                 class="sidebar-btn btn btn-ghost justify-between w-full text-right">لیست
                 علاقه‌مندی‌ها
-                <span class="text-sm text-gray-500">۵</span>
+                <span class="text-sm text-gray-500" *ngIf="wishlistCount > 0">{{ wishlistCount }}</span>
             </button>
             <button [routerLink]="['/user/comments']" data-section="comment"
                 class="sidebar-btn btn btn-ghost justify-between w-full text-right">نظرات
-                <span class="text-sm text-gray-500">۵</span>
+                <span class="text-sm text-gray-500" *ngIf="commentsCount > 0">{{ commentsCount }}</span>
             </button>
             <button [routerLink]="['/user/addresses']" data-section="addresses"
                 class="sidebar-btn btn btn-ghost justify-between w-full text-right">آدرس‌ها</button>

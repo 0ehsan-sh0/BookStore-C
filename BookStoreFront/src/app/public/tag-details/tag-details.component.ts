@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { TagDetails } from '../../models/tag';
-import { BookAllData, BPaginationInfo } from '../../models/book';
+import { Component, OnInit, inject, DestroyRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TagPublicService } from '../../services/Public/tag-public.service';
 import { ImageService } from '../../services/image.service';
 import { AuthService } from '../../services/auth.service';
 import { UserWishListService } from '../../services/user/user-wish-list.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-tag-details',
@@ -14,58 +13,35 @@ import { UserWishListService } from '../../services/user/user-wish-list.service'
   styleUrl: './tag-details.component.css',
 })
 export class TagDetailsComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  public tagService = inject(TagPublicService);
+  public imageService = inject(ImageService);
+  private authService = inject(AuthService);
+  private wishlistService = inject(UserWishListService);
+
   tagUrl!: string;
-
-  tag: TagDetails = {} as TagDetails;
-  books: BookAllData[] = [];
-  filteredBooks: BookAllData[] = [];
-
-  pagination: BPaginationInfo = {
-    pageNumber: 1,
-    pageSize: 20,
-    totalCount: 0,
-    totalPages: 1,
-  };
-
   isLoggedIn = false;
-
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private tagService: TagPublicService,
-    public imageService: ImageService,
-    private authService: AuthService,
-    private wishlistService: UserWishListService
-  ) {}
 
   ngOnInit(): void {
     // Tag uses URL slug as ID
-    this.route.paramMap.subscribe((params) => {
-      this.tagUrl = params.get('id') || '';
-      this.loadTag();
-    });
+    this.route.paramMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        this.tagUrl = params.get('id') || '';
+        this.loadTag();
+      });
 
-    this.authService.isLoggedIn$.subscribe((isLogged) => {
-      this.isLoggedIn = isLogged;
-    });
+    this.authService.isLoggedIn$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((isLogged) => {
+        this.isLoggedIn = isLogged;
+      });
   }
 
   loadTag(): void {
-    this.tagService.getTagDetails(
-      this.tagUrl,
-      this.pagination.pageNumber,
-      this.pagination.pageSize
-    );
-
-    this.tagService.tagDetails.subscribe((details) => {
-      if (!details?.tag) return;
-
-      this.tag = details;
-      this.books = details.books.books ?? [];
-      this.pagination = details.books.pagination ?? this.pagination;
-
-      this.filteredBooks = [...this.books];
-    });
+    this.tagService.getTagDetails(this.tagUrl);
   }
 
   toggleWishlist(bookId: number, event: MouseEvent) {
@@ -78,13 +54,17 @@ export class TagDetailsComponent implements OnInit {
   }
 
   changePage(page: number) {
-    if (page === this.pagination.pageNumber) return;
-    this.tagService.getTagDetails(this.tagUrl, page, this.pagination.pageSize);
+    const pagination = this.tagService.details()?.books.pagination;
+    if (!pagination || page === pagination.pageNumber) return;
+    this.tagService.getTagDetails(this.tagUrl, page);
   }
 
   getPageArray(): number[] {
-    const total = this.pagination.totalPages;
-    const current = this.pagination.pageNumber;
+    const pagination = this.tagService.details()?.books.pagination;
+    if (!pagination) return [];
+
+    const total = pagination.totalPages;
+    const current = pagination.pageNumber;
 
     const pages: number[] = [];
 

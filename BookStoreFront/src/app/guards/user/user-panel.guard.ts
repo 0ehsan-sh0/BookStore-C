@@ -8,9 +8,9 @@ export const userPanelGuard: CanActivateFn = (route, state) => {
   const auth = inject(AuthService);
   const router = inject(Router);
 
-  return auth.user.pipe(
+  return auth.user$.pipe(
     // 1. Wait until the user object is NOT null
-    filter(user => user !== null),
+    filter((user) => user !== null),
 
     // 2. Take the first non-null value and then complete the observable
     take(1),
@@ -22,7 +22,7 @@ export const userPanelGuard: CanActivateFn = (route, state) => {
       }
 
       // If not an admin, redirect
-      router.navigate(['/']); 
+      router.navigate(['/']);
       return false; // Access denied
     })
   );

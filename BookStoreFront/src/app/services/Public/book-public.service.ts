@@ -1,69 +1,79 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { AlertService } from '../../ui-service/alert.service';
-import { ErrorHandlerService } from '../error-handler.service';
-import { BehaviorSubject } from 'rxjs';
-import { BookAllData, BookListResponse, BPaginationInfo } from '../../models/book';
+import { HttpParams } from '@angular/common/http';
+import { Injectable, signal, computed } from '@angular/core';
+import {
+  BookAllData,
+  BookListResponse,
+  BPaginationInfo,
+} from '../../models/book';
+import { BasePublicService } from './base-public.service';
 import { ApiResponse } from '../../models/apiResponse';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root',
 })
-export class BookPublicService {
-  private readonly apiUrl = 'api/book';
+export class BookPublicService extends BasePublicService<
+  BookAllData,
+  BookAllData,
+  BookListResponse,
+  BPaginationInfo
+> {
+  protected override readonly apiUrl = 'api/book';
 
-  constructor(
-    private http: HttpClient,
-    private alertService: AlertService,
-    private errorHandler: ErrorHandlerService
-  ) {}
+  private recommendedBooksSig = signal<BookAllData[]>([]);
+  recommendedBooks = computed(() => this.recommendedBooksSig());
 
-  newBooks = new BehaviorSubject<BookAllData[]>([]);
-  newBooksPagination = new BehaviorSubject<BPaginationInfo | null>(null);
+  constructor() {
+    super({
+      pageNumber: 1,
+      pageSize: 20,
+      totalCount: 0,
+      totalPages: 1,
+    });
+    this.setupListingLogic();
+  }
 
-  recommendedBooks = new BehaviorSubject<BookAllData[]>([]);
-  book = new BehaviorSubject<BookAllData | null>(null);
+  protected override getItemsFromResponse(
+    response: BookListResponse
+  ): BookAllData[] | undefined {
+    return response.books;
+  }
+
+  protected override getPaginationFromResponse(
+    response: BookListResponse
+  ): BPaginationInfo | undefined {
+    return response.pagination;
+  }
 
   getNewBooks(
     pageNumber: number = 1,
     pageSize: number = 20,
     isRecommended: boolean = false
   ) {
-    let params = new HttpParams()
-    .set('PageNumber', pageNumber.toString())
-    .set('PageSize', pageSize.toString());
     if (isRecommended) {
-      params = params.set('IsRecommended', isRecommended.toString());
-    } else {
-      params = params.set('IsRecommended', 'false');
+      this.http
+        .get<ApiResponse<BookListResponse>>(`${this.apiUrl}`, {
+          params: new HttpParams()
+            .set('PageNumber', '1')
+            .set('PageSize', '10')
+            .set('IsRecommended', 'true'),
+        })
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (res) => {
+            if (res.data?.books) {
+              this.recommendedBooksSig.set(res.data.books);
+            }
+          },
+          error: (err) => this.errorHandler.handleError(err),
+        });
+      return;
     }
-    this.http
-      .get<ApiResponse<BookListResponse>>(`${this.apiUrl}`, { params })
-      .subscribe({
-        next: (response) => {
-          if (isRecommended) {
-            this.recommendedBooks.next(response.data?.books || []);
-          } else {
-            this.newBooks.next(response.data?.books || []);
-            this.newBooksPagination.next(response.data?.pagination as BPaginationInfo);
-          }
-        },
-        error: (err) => {
-          this.errorHandler.handleError(err);
-        },
-      });
+
+    this.getAll(pageNumber, pageSize);
   }
 
   getBookById(bookId: number) {
-    this.http
-      .get<ApiResponse<BookAllData>>(`${this.apiUrl}/${bookId}`)
-      .subscribe({
-        next: (response) => {
-          this.book.next(response.data || null);
-        },
-        error: (err) => {
-          this.errorHandler.handleError(err);
-        },
-      });
+    this.getDetails(bookId);
   }
 }

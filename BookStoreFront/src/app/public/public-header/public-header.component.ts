@@ -1,11 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject, DestroyRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { ThemeControllerService } from '../../ui-service/theme-controller.service';
 import { AuthService } from '../../services/auth.service';
 import { UserCartService } from '../../services/user/user-cart.service';
-import { Subscription } from 'rxjs';
-import { User } from '../../models/user';
-import { UserRole } from '../../models/user';
+import { User, UserRole } from '../../models/user';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-public-header',
@@ -13,20 +12,15 @@ import { UserRole } from '../../models/user';
   templateUrl: './public-header.component.html',
   styleUrl: './public-header.component.css',
 })
-export class PublicHeaderComponent {
-  public isLight = true;
-  isLoggedIn = false;
-  cartItemCount = 0;
-  private cartSubscription: Subscription | undefined; // To manage subscription
-  user : User | null = null;
-  UserRole = UserRole; // Expose UserRole enum to the template
+export class PublicHeaderComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
+  private themeController = inject(ThemeControllerService);
+  public authService = inject(AuthService);
+  private router = inject(Router);
+  public userCartService = inject(UserCartService);
 
-  constructor(
-    private themeController: ThemeControllerService,
-    private authService: AuthService,
-    private router: Router,
-    private userCartService: UserCartService
-  ) {}
+  public isLight = true;
+  UserRole = UserRole; // Expose UserRole enum to the template
 
   toggleTheme() {
     this.themeController.toggleTheme();
@@ -34,42 +28,16 @@ export class PublicHeaderComponent {
   }
 
   ngOnInit(): void {
-    this.themeController.theme.getValue() === 'cupcake'
-      ? (this.isLight = true)
-      : (this.isLight = false);
-
-    // Check authentication status
-    this.authService.isLoggedIn$.subscribe((isLoggedIn) => {
-      this.isLoggedIn = isLoggedIn;
-    });
-
-    // Get user info
-    this.authService.user.subscribe((user) => {
-      this.user = user;
-    });
-
-    // Subscribe to the cart item count observable
-    this.cartSubscription = this.userCartService.itemCount$.subscribe(
-      (count) => {
-        this.cartItemCount = count;
-      }
-    );
+    this.isLight = this.themeController.theme.getValue() === 'cupcake';
   }
 
   navigateToAuth() {
-    if (this.isLoggedIn) {
+    if (this.authService.isLoggedIn()) {
       // Implement logout - the new service handles everything internally
       this.authService.logout();
     } else {
       // Navigate to login
       this.router.navigate(['/login']);
-    }
-  }
-
-  ngOnDestroy(): void {
-    // Unsubscribe to prevent memory leaks when the component is destroyed
-    if (this.cartSubscription) {
-      this.cartSubscription.unsubscribe();
     }
   }
 }

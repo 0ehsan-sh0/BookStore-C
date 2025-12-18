@@ -29,13 +29,13 @@
 
     <!-- Left -->
     <div class="flex-none flex">
-        @if (isLoggedIn) {
-        @if (user?.role == UserRole.User) {
+        @if (authService.isLoggedIn()) {
+        @if (authService.user()?.role == UserRole.User) {
         <label [routerLink]="['/user']" class="btn btn-square h-8 w-8 ml-2 btn-info drawer-button">
             <i-lucide name="user" size="20"></i-lucide>
         </label>
         }
-        @else if (user?.role == UserRole.Admin) {
+        @else if (authService.user()?.role == UserRole.Admin) {
         <label [routerLink]="['/admin']" class="btn btn-square h-8 w-8 ml-2 btn-warning drawer-button">
             <i-lucide name="shield-check" size="20"></i-lucide>
         </label>
@@ -43,8 +43,8 @@
         }
 
         <div class="indicator">
-            @if (cartItemCount > 0) {
-            <span class="indicator-item badge badge-error badge-sm">{{ cartItemCount }}</span>
+            @if (userCartService.itemCount() > 0) {
+            <span class="indicator-item badge badge-error badge-sm">{{ userCartService.itemCount() }}</span>
             }
             <button [routerLink]="['/cart']" class="btn h-8 w-8 btn-secondary">
                 <i-lucide name="shopping-cart" size="20"></i-lucide>
@@ -52,10 +52,10 @@
         </div>
 
         <button class="btn btn-sm btn-primary mr-2 hidden md:inline-block" (click)="navigateToAuth()">
-            {{ isLoggedIn ? 'خروج' : 'ورود / ثبت نام' }}
+            {{ authService.isLoggedIn() ? 'خروج' : 'ورود / ثبت نام' }}
         </button>
         <button class="btn h-8 w-8 mr-2 btn-primary btn-xs md:hidden" (click)="navigateToAuth()">
-            <i-lucide [name]="isLoggedIn ? 'LogOut' : 'UserPlus'" size="20"></i-lucide>
+            <i-lucide [name]="authService.isLoggedIn() ? 'log-out' : 'user-plus'" size="20"></i-lucide>
         </button>
     </div>
 

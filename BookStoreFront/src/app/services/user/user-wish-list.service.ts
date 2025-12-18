@@ -1,29 +1,32 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, signal, inject, DestroyRef } from '@angular/core';
 import { AlertService } from '../../ui-service/alert.service';
 import { ErrorHandlerService } from '../error-handler.service';
-import { BehaviorSubject } from 'rxjs';
 import {
   BookAllData,
   BookListResponse,
   BPaginationInfo,
 } from '../../models/book';
 import { ApiResponse } from '../../models/apiResponse';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserWishListService {
   private readonly apiUrl = 'api/user/wishlist';
+  private http = inject(HttpClient);
+  private alertService = inject(AlertService);
+  private errorHandler = inject(ErrorHandlerService);
+  private destroyRef = inject(DestroyRef);
 
-  constructor(
-    private http: HttpClient,
-    private alertService: AlertService,
-    private errorHandler: ErrorHandlerService
-  ) {}
-
-  wishlist = new BehaviorSubject<BookAllData[]>([]);
-  pagination = new BehaviorSubject<BPaginationInfo>({} as BPaginationInfo);
+  public wishlist = signal<BookAllData[]>([]);
+  public pagination = signal<BPaginationInfo>({
+    pageNumber: 1,
+    pageSize: 20,
+    totalCount: 0,
+    totalPages: 1,
+  });
 
   getUserWishlist(pageNumber: number = 1, pageSize: number = 20) {
     const params = new HttpParams()
@@ -32,14 +35,21 @@ export class UserWishListService {
 
     this.http
       .get<ApiResponse<BookListResponse>>(`${this.apiUrl}`, { params })
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (res) => {
-          this.wishlist.next(res.data?.books ?? []);
-          this.pagination.next(res.data?.pagination ?? ({} as BPaginationInfo));
+          this.wishlist.set(res.data?.books ?? []);
+          this.pagination.set(
+            res.data?.pagination ?? {
+              pageNumber: 1,
+              pageSize: 20,
+              totalCount: 0,
+              totalPages: 1,
+            }
+          );
         },
         error: (err) => {
-          this.wishlist.next([]);
-          this.pagination.next({} as BPaginationInfo);
+          this.wishlist.set([]);
           this.errorHandler.handleError(err);
         },
       });
@@ -48,6 +58,7 @@ export class UserWishListService {
   ToggleWishlist(bookId: number) {
     this.http
       .post<ApiResponse<boolean>>(`${this.apiUrl}`, { bookId })
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (res) => {
           if (res.data) {
@@ -55,21 +66,19 @@ export class UserWishListService {
               'افزودن به علاقه‌مندی با موفقیت انجام شد',
               'success'
             );
-            const current = this.pagination.value;
-            this.pagination.next({
+            const current = this.pagination();
+            this.pagination.set({
               ...current,
               totalCount: (current.totalCount || 0) + 1,
             });
           } else {
-            this.wishlist.next(
-              this.wishlist.value.filter((b) => b.id !== bookId)
-            );
+            this.wishlist.update((list) => list.filter((b) => b.id !== bookId));
             this.alertService.show(
               'حذف از علاقه‌مندی با موفقیت انجام شد',
               'error'
             );
-            const current = this.pagination.value;
-            this.pagination.next({
+            const current = this.pagination();
+            this.pagination.set({
               ...current,
               totalCount: (current.totalCount || 0) - 1,
             });

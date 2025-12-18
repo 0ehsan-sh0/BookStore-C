@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { CategoryDetails } from '../../models/category';
-import { BookAllData, BPaginationInfo } from '../../models/book';
+import { Component, OnInit, inject, DestroyRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CategoryPublicService } from '../../services/Public/category-public.service';
 import { ImageService } from '../../services/image.service';
 import { AuthService } from '../../services/auth.service';
 import { UserWishListService } from '../../services/user/user-wish-list.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-category-details',
@@ -14,25 +13,14 @@ import { UserWishListService } from '../../services/user/user-wish-list.service'
   styleUrl: './category-details.component.css',
 })
 export class CategoryDetailsComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
   categoryUrl!: string;
-
-  category: CategoryDetails = {} as CategoryDetails;
-  books: BookAllData[] = [];
-  filteredBooks: BookAllData[] = [];
-
-  pagination: BPaginationInfo = {
-    pageNumber: 1,
-    pageSize: 20,
-    totalCount: 0,
-    totalPages: 1,
-  };
-
   isLoggedIn = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private categoryService: CategoryPublicService,
+    public categoryService: CategoryPublicService,
     public imageService: ImageService,
     private authService: AuthService,
     private wishlistService: UserWishListService
@@ -40,32 +28,22 @@ export class CategoryDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     // Category uses URL slug as ID
-    this.route.paramMap.subscribe((params) => {
-      this.categoryUrl = params.get('id') || '';
-      this.loadCategory();
-    });
+    this.route.paramMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        this.categoryUrl = params.get('id') || '';
+        this.loadCategory();
+      });
 
-    this.authService.isLoggedIn$.subscribe((isLogged) => {
-      this.isLoggedIn = isLogged;
-    });
+    this.authService.isLoggedIn$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((isLogged) => {
+        this.isLoggedIn = isLogged;
+      });
   }
 
   loadCategory(): void {
-    this.categoryService.getCategoryDetails(
-      this.categoryUrl,
-      this.pagination.pageNumber,
-      this.pagination.pageSize
-    );
-
-    this.categoryService.categoryDetails.subscribe((details) => {
-      if (!details?.category) return;
-
-      this.category = details;
-      this.books = details.books.books ?? [];
-      this.pagination = details.books.pagination ?? this.pagination;
-
-      this.filteredBooks = [...this.books];
-    });
+    this.categoryService.getCategoryDetails(this.categoryUrl);
   }
 
   toggleWishlist(bookId: number, event: MouseEvent) {
@@ -78,17 +56,17 @@ export class CategoryDetailsComponent implements OnInit {
   }
 
   changePage(page: number) {
-    if (page === this.pagination.pageNumber) return;
-    this.categoryService.getCategoryDetails(
-      this.categoryUrl,
-      page,
-      this.pagination.pageSize
-    );
+    const pagination = this.categoryService.details()?.books.pagination;
+    if (!pagination || page === pagination.pageNumber) return;
+    this.categoryService.getCategoryDetails(this.categoryUrl, page);
   }
 
   getPageArray(): number[] {
-    const total = this.pagination.totalPages;
-    const current = this.pagination.pageNumber;
+    const pagination = this.categoryService.details()?.books.pagination;
+    if (!pagination) return [];
+
+    const total = pagination.totalPages;
+    const current = pagination.pageNumber;
 
     const pages: number[] = [];
 

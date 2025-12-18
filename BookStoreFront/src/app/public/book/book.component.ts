@@ -1,10 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  DestroyRef,
+  signal,
+  computed,
+} from '@angular/core';
 import { BookAllData, BPaginationInfo } from '../../models/book';
 import { BookPublicService } from '../../services/Public/book-public.service';
 import { ImageService } from '../../services/image.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { UserWishListService } from '../../services/user/user-wish-list.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-book',
@@ -13,21 +21,42 @@ import { UserWishListService } from '../../services/user/user-wish-list.service'
   styleUrl: './book.component.css',
 })
 export class BookComponent implements OnInit {
-  books: BookAllData[] = [];
-  filteredBooks: BookAllData[] = [];
-  pagination: BPaginationInfo = {
-    pageNumber: 1,
-    pageSize: 20,
-    totalCount: 0,
-    totalPages: 1,
-  };
+  private destroyRef = inject(DestroyRef);
   isLoggedIn = false;
 
-  searchTerm: string = '';
-  sortOption: string = 'newest';
+  searchTerm = signal<string>('');
+  sortOption = signal<string>('newest');
+
+  // Computed signal for filtered and sorted books
+  filteredBooks = computed(() => {
+    const books = this.bookService.items();
+    const term = this.searchTerm().toLowerCase();
+    const sort = this.sortOption();
+
+    let result = books.filter(
+      (b) =>
+        b.name.toLowerCase().includes(term) ||
+        b.author?.name?.toLowerCase().includes(term)
+    );
+
+    switch (sort) {
+      case 'priceLow':
+        result.sort((a, b) => a.price - b.price);
+        break;
+      case 'priceHigh':
+        result.sort((a, b) => b.price - a.price);
+        break;
+      case 'newest':
+      default:
+        result.sort((a, b) => b.id - a.id);
+        break;
+    }
+
+    return result;
+  });
 
   constructor(
-    private bookService: BookPublicService,
+    public bookService: BookPublicService,
     public imageService: ImageService,
     private router: Router,
     private authService: AuthService,
@@ -35,29 +64,13 @@ export class BookComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadBooks();
-    this.bookService.getNewBooks(
-      this.pagination.pageNumber,
-      this.pagination.pageSize
-    );
+    this.bookService.getNewBooks();
 
-    this.authService.isLoggedIn$.subscribe((isLogged) => {
-      this.isLoggedIn = isLogged;
-    });
-  }
-
-  loadBooks(): void {
-    this.bookService.newBooks.subscribe((data) => {
-      this.books = data;
-      this.filteredBooks = [...this.books];
-      this.applySort();
-    });
-
-    this.bookService.newBooksPagination.subscribe((pagination) => {
-      if (pagination) {
-        this.pagination = pagination;
-      }
-    });
+    this.authService.isLoggedIn$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((isLogged) => {
+        this.isLoggedIn = isLogged;
+      });
   }
 
   getBookImage(book: BookAllData): string {
@@ -69,43 +82,20 @@ export class BookComponent implements OnInit {
 
   toggleWishlist(bookId: number, event: MouseEvent) {
     event.stopPropagation(); // prevent opening book page
-
     this.wishlistService.ToggleWishlist(bookId);
   }
 
-  onSearch(): void {
-    const term = this.searchTerm.toLowerCase();
-    this.filteredBooks = this.books.filter(
-      (b) =>
-        b.name.toLowerCase().includes(term) ||
-        b.author?.name?.toLowerCase().includes(term)
-    );
-    this.applySort();
+  onSearch(event: any): void {
+    this.searchTerm.set(event.target.value);
   }
 
-  onSortChange(): void {
-    this.applySort();
-  }
-
-  applySort(): void {
-    switch (this.sortOption) {
-      case 'priceLow':
-        this.filteredBooks.sort((a, b) => a.price - b.price);
-        break;
-      case 'priceHigh':
-        this.filteredBooks.sort((a, b) => b.price - a.price);
-        break;
-      case 'newest':
-      default:
-        this.filteredBooks.sort((a, b) => b.id - a.id);
-        break;
-    }
+  onSortChange(event: any): void {
+    this.sortOption.set(event.target.value);
   }
 
   clearFilters(): void {
-    this.searchTerm = '';
-    this.sortOption = 'newest';
-    this.filteredBooks = [...this.books];
+    this.searchTerm.set('');
+    this.sortOption.set('newest');
   }
 
   goToBookDetails(bookId: number) {
@@ -113,14 +103,18 @@ export class BookComponent implements OnInit {
   }
 
   changePage(page: number) {
-    if (page !== this.pagination.pageNumber) {
-      this.bookService.getNewBooks(page, this.pagination.pageSize);
+    const pagination = this.bookService.pagination();
+    if (pagination && page !== pagination.pageNumber) {
+      this.bookService.getNewBooks(page, pagination.pageSize);
     }
   }
 
   getPageArray(): number[] {
-    const total = this.pagination.totalPages;
-    const current = this.pagination.pageNumber;
+    const pagination = this.bookService.pagination();
+    if (!pagination) return [];
+
+    const total = pagination.totalPages;
+    const current = pagination.pageNumber;
 
     const pages: number[] = [];
 
@@ -131,7 +125,6 @@ export class BookComponent implements OnInit {
         pages.push(-1); // use -1 as ellipsis
       }
     }
-    console.log(pages);
 
     return [...new Set(pages)];
   }

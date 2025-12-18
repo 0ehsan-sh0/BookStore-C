@@ -1,9 +1,15 @@
-import { Injectable } from '@angular/core';
+import {
+  Injectable,
+  signal,
+  computed,
+  inject,
+  DestroyRef,
+} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AlertService } from '../ui-service/alert.service';
 import { ErrorHandlerService } from './error-handler.service';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { toObservable, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { tap } from 'rxjs/operators';
 import {
   LoginRequest,
@@ -12,7 +18,6 @@ import {
   RegisterResponse,
   SendCodeRequest,
   LogoutResponse,
-  MeResponse,
 } from '../models/auth';
 import { ApiResponse } from '../models/apiResponse';
 import { User } from '../models/user';
@@ -22,19 +27,24 @@ import { User } from '../models/user';
 })
 export class AuthService {
   private readonly apiUrl = 'api/auth';
+  private http = inject(HttpClient);
+  private alertService = inject(AlertService);
+  private errorHandler = inject(ErrorHandlerService);
+  private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
-  constructor(
-    private http: HttpClient,
-    private alertService: AlertService,
-    private errorHandler: ErrorHandlerService,
-    private router: Router
-  ) {}
+  private userSig = signal<User | null>(null);
+  user$ = toObservable(this.userSig);
+  user = this.userSig.asReadonly();
 
-  user = new BehaviorSubject<User | null>(null);
-  loginResponse = new BehaviorSubject<LoginResponse | null>(null);
-  isLoggedIn$ = new BehaviorSubject<boolean>(false);
+  private isLoggedInSig = signal<boolean>(false);
+  isLoggedIn$ = toObservable(this.isLoggedInSig);
+  isLoggedIn = this.isLoggedInSig.asReadonly();
+
   loginErrors: string[] = [];
   registerErrors: string[] = [];
+
+  constructor() {}
 
   login(mobile: string, password: string, code?: string) {
     this.checkAuthStatus().subscribe(() => {
@@ -50,11 +60,10 @@ export class AuthService {
       .post<ApiResponse<LoginResponse>>(`${this.apiUrl}/login`, request, {
         withCredentials: true,
       })
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (response) => {
-          // The access token will be stored in a cookie by the backend
-          this.loginResponse.next(response.data!);
-          this.isLoggedIn$.next(true);
+          this.isLoggedInSig.set(true);
           this.loginErrors = [];
           this.router.navigate(['/']);
           this.alertService.show('شما با موفقیت وارد شدید.', 'success');
@@ -76,11 +85,10 @@ export class AuthService {
       .post<ApiResponse<RegisterResponse>>(`${this.apiUrl}/register`, request, {
         withCredentials: true,
       })
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (response) => {
-          // The access token will be stored in a cookie by the backend
-          this.loginResponse.next(response.data as LoginResponse); // Cast to LoginResponse since they share similar structure
-          this.isLoggedIn$.next(true);
+          this.isLoggedInSig.set(true);
           this.registerErrors = [];
           this.router.navigate(['/']);
           this.alertService.show('ثبت نام با موفقیت انجام شد', 'success');
@@ -96,6 +104,7 @@ export class AuthService {
 
     this.http
       .post<ApiResponse<any>>(`${this.apiUrl}/send-code`, request)
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.alertService.show('کد تأیید ارسال شد', 'success');
@@ -109,16 +118,13 @@ export class AuthService {
   logout() {
     this.http
       .post<ApiResponse<LogoutResponse>>(`${this.apiUrl}/logout`, {}, {})
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
-          // Clear user data
-          this.loginResponse.next(null);
-          this.isLoggedIn$.next(false);
-          this.user.next(null);
-          // Remove the access token cookie
+          this.isLoggedInSig.set(false);
+          this.userSig.set(null);
           document.cookie =
             'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-          // Navigate to home page
           this.router.navigate(['/']);
           this.alertService.show('شما با موفقیت خارج شدید.', 'success');
         },
@@ -136,12 +142,12 @@ export class AuthService {
     return this.http.get<ApiResponse<User>>(`${this.apiUrl}/me`).pipe(
       tap({
         next: (response) => {
-          this.user.next(response.data!);
-          this.isLoggedIn$.next(true);
+          this.userSig.set(response.data ?? null);
+          this.isLoggedInSig.set(!!response.data);
         },
         error: (err) => {
-          this.user.next(null);
-          this.isLoggedIn$.next(false);
+          this.userSig.set(null);
+          this.isLoggedInSig.set(false);
         },
       })
     );

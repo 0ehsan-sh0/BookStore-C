@@ -1,11 +1,10 @@
-import { Component } from '@angular/core';
-import { AuthorDetails } from '../../models/author';
-import { BookAllData, BPaginationInfo } from '../../models/book';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthorPublicService } from '../../services/Public/author-public.service';
 import { ImageService } from '../../services/image.service';
 import { AuthService } from '../../services/auth.service';
 import { UserWishListService } from '../../services/user/user-wish-list.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-author-details',
@@ -13,58 +12,37 @@ import { UserWishListService } from '../../services/user/user-wish-list.service'
   templateUrl: './author-details.component.html',
   styleUrl: './author-details.component.css',
 })
-export class AuthorDetailsComponent {
+export class AuthorDetailsComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
   authorId!: number;
-
-  author: AuthorDetails = {} as AuthorDetails;
-  books: BookAllData[] = [];
-  filteredBooks: BookAllData[] = [];
-
-  pagination: BPaginationInfo = {
-    pageNumber: 1,
-    pageSize: 20,
-    totalCount: 0,
-    totalPages: 1,
-  };
-
   isLoggedIn = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private authorService: AuthorPublicService,
+    public authorService: AuthorPublicService,
     public imageService: ImageService,
     private authService: AuthService,
     private wishlistService: UserWishListService
   ) {}
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe((params) => {
-      this.authorId = Number(params.get('id'));
-      this.loadAuthor();
-    });
+    this.route.paramMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        this.authorId = Number(params.get('id'));
+        this.loadAuthor();
+      });
 
-    this.authService.isLoggedIn$.subscribe((isLogged) => {
-      this.isLoggedIn = isLogged;
-    });
+    this.authService.isLoggedIn$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((isLogged) => {
+        this.isLoggedIn = isLogged;
+      });
   }
 
   loadAuthor(): void {
-    this.authorService.getAuthorDetails(
-      this.authorId,
-      this.pagination.pageNumber,
-      this.pagination.pageSize
-    );
-
-    this.authorService.authorDetails.subscribe((details) => {
-      if (!details?.author) return;
-
-      this.author = details;
-      this.books = details.books.books ?? [];
-      this.pagination = details.books.pagination ?? this.pagination;
-
-      this.filteredBooks = [...this.books];
-    });
+    this.authorService.getAuthorDetails(this.authorId);
   }
 
   // -----------------------------
@@ -81,17 +59,17 @@ export class AuthorDetailsComponent {
   }
 
   changePage(page: number) {
-    if (page === this.pagination.pageNumber) return;
-    this.authorService.getAuthorDetails(
-      this.authorId,
-      page,
-      this.pagination.pageSize
-    );
+    const pagination = this.authorService.details()?.books.pagination;
+    if (!pagination || page === pagination.pageNumber) return;
+    this.authorService.getAuthorDetails(this.authorId, page);
   }
 
   getPageArray(): number[] {
-    const total = this.pagination.totalPages;
-    const current = this.pagination.pageNumber;
+    const pagination = this.authorService.details()?.books.pagination;
+    if (!pagination) return [];
+
+    const total = pagination.totalPages;
+    const current = pagination.pageNumber;
 
     const pages: number[] = [];
 

@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject, DestroyRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-login',
@@ -9,6 +10,10 @@ import { AuthService } from '../../services/auth.service';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
+  private destroyRef = inject(DestroyRef);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+
   mobile: string = '';
   password: string = '';
   code: string = '';
@@ -18,8 +23,6 @@ export class LoginComponent {
   showCodeLogin = false;
   isSendingCode = false;
   countDown = 0;
-
-  constructor(private authService: AuthService, private router: Router) {}
 
   toggleLoginMethod(useCode: boolean) {
     this.showCodeLogin = useCode;
@@ -72,11 +75,13 @@ export class LoginComponent {
 
     this.authService.login(this.mobile, password, code);
 
-    this.authService.isLoggedIn$.subscribe((isLoggedIn) => {
-      this.loading = false;
-      if (isLoggedIn) {
-        this.router.navigate(['/']);
-      }
-    });
+    this.authService.isLoggedIn$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((isLoggedIn) => {
+        this.loading = false;
+        if (isLoggedIn) {
+          this.router.navigate(['/']);
+        }
+      });
   }
 }

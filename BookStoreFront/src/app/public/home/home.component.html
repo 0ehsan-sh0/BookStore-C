@@ -15,7 +15,7 @@
         <div class="flex space-x-4 w-max my-1 mx-1">
 
             <!-- Dynamic book cards -->
-            @for (book of newBooks; track book.id) {
+            @for (book of bookService.items(); track book.id) {
             <div class="card bg-base-200 w-46 h-80 shadow-sm flex-shrink-0 cursor-pointer hover:shadow-primary hover:shadow-md transition"
                 (click)="goToBookDetails(book.id)">
 
@@ -71,7 +71,7 @@
         <div class="flex space-x-4 w-max my-1 mx-1">
 
             <!-- Dynamic book cards -->
-            @for (book of recommendedBooks; track book.id) {
+            @for (book of bookService.recommendedBooks(); track book.id) {
             <div class="card bg-base-200 w-46 h-80 shadow-sm flex-shrink-0 cursor-pointer hover:shadow-primary hover:shadow-md transition"
                 (click)="goToBookDetails(book.id)">
 

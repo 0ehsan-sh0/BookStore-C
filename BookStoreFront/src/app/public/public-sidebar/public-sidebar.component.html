@@ -6,25 +6,27 @@
     <ul class="menu bg-base-200 text-base-content min-h-80 min-w-85 sm:w-150 p-4 space-y-3">
 
       <!-- Dynamic Categories -->
-      @for (category of categories; track category.url) {
-        <li>
-          <!-- If category has no sub-categories -->
-          @if (!category.subCategories || category.subCategories.length === 0) {
-            <a [routerLink]="['/categories', category.url]" (click)="closeSidebar()">{{ category.name }}</a>
-          }
+      @for (category of categoryPublicService.items(); track category.url) {
+      <li>
+        <!-- If category has no sub-categories -->
+        @if (!category.subCategories || category.subCategories.length === 0) {
+        <a [routerLink]="['/categories', category.url]" (click)="closeSidebar()">{{ category.name }}</a>
+        }
 
-          <!-- If category has sub-categories, create a dropdown -->
-          @if (category.subCategories && category.subCategories.length > 0) {
-            <details>
-              <summary><a [routerLink]="['/categories', category.url]" (click)="closeSidebar()">{{ category.name }}</a></summary>
-              <ul>
-                @for (subCategory of category.subCategories; track subCategory.url) {
-                  <li><a [routerLink]="['/categories', subCategory.url]" (click)="closeSidebar()">{{ subCategory.name }}</a></li>
-                }
-              </ul>
-            </details>
-          }
-        </li>
+        <!-- If category has sub-categories, create a dropdown -->
+        @if (category.subCategories && category.subCategories.length > 0) {
+        <details>
+          <summary><a [routerLink]="['/categories', category.url]" (click)="closeSidebar()">{{ category.name }}</a>
+          </summary>
+          <ul>
+            @for (subCategory of category.subCategories; track subCategory.url) {
+            <li><a [routerLink]="['/categories', subCategory.url]" (click)="closeSidebar()">{{ subCategory.name }}</a>
+            </li>
+            }
+          </ul>
+        </details>
+        }
+      </li>
       }
     </ul>
   </div>

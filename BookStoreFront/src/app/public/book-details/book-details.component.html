@@ -1,32 +1,33 @@
 <div class="container mx-auto px-4 py-10 lg:px-0">
-    @if (!isLoading) {
+    @if (!isLoading && bookService.details()) {
     <div class="card lg:card-side bg-base-200 shadow-md">
         <!-- Book Image -->
         <figure class="lg:w-2/5 items-center justify-center overflow-hidden">
-            <img [src]="getPrimaryImage()" alt="{{ book?.name }}" class="object-contain w-full h-full" />
+            <img [src]="getPrimaryImage()" alt="{{ bookService.details()?.name }}"
+                class="object-contain w-full h-full" />
         </figure>
 
         <!-- Book Info -->
         <div class="card-body lg:w-3/5 text-right">
-            <h2 class="card-title text-2xl font-bold mb-2">{{ book?.name }}</h2>
-            <p class="text-gray-500 mb-4">{{ book?.englishName }}</p>
+            <h2 class="card-title text-2xl font-bold mb-2">{{ bookService.details()?.name }}</h2>
+            <p class="text-gray-500 mb-4">{{ bookService.details()?.englishName }}</p>
 
             <!-- Author -->
-            @if (book?.author) {
+            @if (bookService.details()?.author) {
             <div class="mb-2">
 
                 <span class="font-semibold">نویسنده:</span>
-                <a [routerLink]="['/authors', book?.author?.id]" class="hover:underline">
-                    {{ book?.author?.name }}
+                <a [routerLink]="['/authors', bookService.details()?.author?.id]" class="hover:underline">
+                    {{ bookService.details()?.author?.name }}
                 </a>
             </div>
             }
 
             <!-- Translators -->
-            @if (book?.translators && book?.translators?.length) {
+            @if (bookService.details()?.translators && bookService.details()?.translators?.length) {
             <div class="mb-2">
                 <span class="font-semibold">مترجمین:</span>
-                @for (t of book?.translators ??[]; track t.id; let last = $last) {
+                @for (t of bookService.details()?.translators ??[]; track t.id; let last = $last) {
                 <a [routerLink]="['/translators', t.id]" class="hover:underline">
                     {{ t.name }}
                 </a>
@@ -38,11 +39,11 @@
             }
 
             <!-- Categories -->
-            @if (book?.categories?.length) {
+            @if (bookService.details()?.categories?.length) {
             <div class="mb-2">
                 <span class="font-semibold">دسته‌بندی‌ها:</span>
                 <div class="flex flex-wrap gap-2 mt-1">
-                    @for (c of book?.categories ?? []; track c.url) {
+                    @for (c of bookService.details()?.categories ?? []; track c.url) {
                     <a [routerLink]="['/categories', c.url]"
                         class="badge badge-outline cursor-pointer hover:shadow-sm shadow-primary">{{ c.name }}</a>
                     }
@@ -51,11 +52,11 @@
             }
 
             <!-- Tags -->
-            @if (book?.tags?.length) {
+            @if (bookService.details()?.tags?.length) {
             <div class="mb-2">
                 <span class="font-semibold">برچسب‌ها:</span>
                 <div class="flex flex-wrap gap-2 mt-1">
-                    @for (tag of book?.tags ?? []; track tag.id) {
+                    @for (tag of bookService.details()?.tags ?? []; track tag.id) {
                     <a [routerLink]="['/tags', tag.url]"
                         class="badge badge-neutral cursor-pointer hover:shadow-sm shadow-primary">{{ tag.name }}</a>
                     }
@@ -67,12 +68,12 @@
 
             <!-- Details -->
             <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
-                <p><span class="font-semibold">ناشر:</span> {{ book?.publisher }}</p>
-                <p><span class="font-semibold">سال انتشار:</span> {{ book?.publishYear }}</p>
-                <p><span class="font-semibold">تعداد صفحات:</span> {{ book?.pages }}</p>
-                <p><span class="font-semibold">شابک:</span> {{ book?.isbn }}</p>
-                <p><span class="font-semibold">نوع جلد:</span> {{ book?.coverType }}</p>
-                <p><span class="font-semibold">قطع:</span> {{ book?.format }}</p>
+                <p><span class="font-semibold">ناشر:</span> {{ bookService.details()?.publisher }}</p>
+                <p><span class="font-semibold">سال انتشار:</span> {{ bookService.details()?.publishYear }}</p>
+                <p><span class="font-semibold">تعداد صفحات:</span> {{ bookService.details()?.pages }}</p>
+                <p><span class="font-semibold">شابک:</span> {{ bookService.details()?.isbn }}</p>
+                <p><span class="font-semibold">نوع جلد:</span> {{ bookService.details()?.coverType }}</p>
+                <p><span class="font-semibold">قطع:</span> {{ bookService.details()?.format }}</p>
             </div>
 
             <div class="divider"></div>
@@ -80,17 +81,18 @@
             <!-- Price -->
             <div class="flex justify-between items-center mt-2">
                 <div>
-                    @if (book?.price && (book?.price ?? 0) > 100000) {
+                    @if (bookService.details()?.price && (bookService.details()?.price ?? 0) > 100000) {
                     <span class="text-gray-400 line-through text-sm mr-2">
-                        {{ (book?.price ?? 0) * 1.2 | number:'1.0-0' }} تومان
+                        {{ (bookService.details()?.price ?? 0) * 1.2 | number:'1.0-0' }} تومان
                     </span>
                     }
                     <span class="text-2xl font-bold">
-                        {{ book?.price ?? 0 | number:'1.0-0' }} تومان
+                        {{ bookService.details()?.price ?? 0 | number:'1.0-0' }} تومان
                     </span>
                 </div>
 
-                <button class="btn btn-primary text-primary-content" (click)="addToCart(book)">خرید</button>
+                <button class="btn btn-primary text-primary-content"
+                    (click)="addToCart(bookService.details()!)">خرید</button>
             </div>
 
             <div class="divider"></div>
@@ -98,7 +100,7 @@
             <!-- Description -->
             <div class="mt-4">
                 <h3 class="font-semibold text-lg mb-2">توضیحات</h3>
-                <p class="leading-relaxed text-justify">{{ book?.description }}</p>
+                <p class="leading-relaxed text-justify">{{ bookService.details()?.description }}</p>
             </div>
         </div>
     </div>

@@ -1,10 +1,18 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+  inject,
+  DestroyRef,
+} from '@angular/core';
 import { BookPublicService } from '../../services/Public/book-public.service';
 import { ImageService } from '../../services/image.service';
 import { BookAllData } from '../../models/book';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { UserWishListService } from '../../services/user/user-wish-list.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-home',
@@ -13,8 +21,7 @@ import { UserWishListService } from '../../services/user/user-wish-list.service'
   styleUrl: './home.component.css',
 })
 export class HomeComponent implements OnInit {
-  newBooks: BookAllData[] = [];
-  recommendedBooks: BookAllData[] = [];
+  private destroyRef = inject(DestroyRef);
   isLoggedIn = false;
 
   constructor(
@@ -23,20 +30,17 @@ export class HomeComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     private wishlistService: UserWishListService
-  ) {
-    this.bookService.newBooks.subscribe((books) => {
-      this.newBooks = books;
-    });
-    this.bookService.recommendedBooks.subscribe((books) => {
-      this.recommendedBooks = books;
-    });
-  }
+  ) {}
+
   ngOnInit(): void {
-    this.bookService.getNewBooks();
-    this.bookService.getNewBooks(1, 20, true);
-    this.authService.isLoggedIn$.subscribe((isLogged) => {
-      this.isLoggedIn = isLogged;
-    });
+    this.bookService.getNewBooks(1, 12);
+    this.bookService.getNewBooks(1, 10, true);
+
+    this.authService.isLoggedIn$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((isLogged) => {
+        this.isLoggedIn = isLogged;
+      });
   }
 
   goToBookDetails(bookId: number) {
@@ -45,7 +49,6 @@ export class HomeComponent implements OnInit {
 
   toggleWishlist(bookId: number, event: MouseEvent) {
     event.stopPropagation(); // prevent opening book page
-
     this.wishlistService.ToggleWishlist(bookId);
   }
 }

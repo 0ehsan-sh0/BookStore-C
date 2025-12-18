@@ -13,14 +13,14 @@
 </div>
 
 <!-- Loading -->
-@if (commentsLoading) {
+@if (commentsLoading()) {
 <div class="flex justify-center my-10">
     <span class="loading loading-spinner loading-lg"></span>
 </div>
 }
 
 <!-- No comments -->
-@if (!commentsLoading && comments.length === 0) {
+@if (!commentsLoading() && commentService.items().length === 0) {
 <div class="text-center text-gray-500 py-10">
     <lucide-icon name="info" class="w-10 h-10 mx-auto mb-3"></lucide-icon>
     هنوز نظری برای این کتاب ثبت نشده است.
@@ -28,10 +28,10 @@
 }
 
 <!-- Comments list -->
-@if (!commentsLoading && comments.length > 0) {
+@if (!commentsLoading() && commentService.items().length > 0) {
 <div class="space-y-4">
 
-    @for (c of comments; track $index) {
+    @for (c of commentService.items(); track $index) {
 
     <div class="card bg-base-200 shadow-md p-4">
         <div class="flex items-start justify-between">
@@ -60,17 +60,17 @@
     </div>
 
     }
-    <div class="flex items-center justify-center my-5" *ngIf="pagination.totalPages > 1">
-        <button class="btn btn-md" [disabled]="pagination.pageNumber === 1"
-            (click)="changePage(pagination.pageNumber - 1)">
+    <div class="flex items-center justify-center my-5" *ngIf="commentService.pagination().totalPages > 1">
+        <button class="btn btn-md" [disabled]="commentService.pagination().pageNumber === 1"
+            (click)="changePage(commentService.pagination().pageNumber - 1)">
             قبلی
         </button>
 
         <ng-container *ngFor="let page of getPageArray()">
             <button class="btn btn-md" [ngClass]="{
     'btn-disabled': page === -1,
-    'btn-primary' : page === pagination.pageNumber,
-  }" (click)="changePage(page)">
+    'btn-primary' : page === commentService.pagination().pageNumber,
+  }" (click)="page !== -1 && changePage(page)">
                 @if (page === -1) {
                 ...
                 } @else {
@@ -79,8 +79,9 @@
             </button>
         </ng-container>
 
-        <button class="btn btn-md" [disabled]="pagination.pageNumber === pagination.totalPages"
-            (click)="changePage(pagination.pageNumber + 1)">
+        <button class="btn btn-md"
+            [disabled]="commentService.pagination().pageNumber === commentService.pagination().totalPages"
+            (click)="changePage(commentService.pagination().pageNumber + 1)">
             بعدی
         </button>
     </div>
@@ -89,5 +90,5 @@
 }
 
 <app-modal #createComment id="createComment">
-  <app-create-book-comment (created)="closeDialog('createBookCommentModal')"></app-create-book-comment>
+    <app-create-book-comment (created)="closeDialog('createBookCommentModal')"></app-create-book-comment>
 </app-modal>

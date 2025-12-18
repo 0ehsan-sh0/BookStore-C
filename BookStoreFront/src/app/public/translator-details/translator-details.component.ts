@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { TranslatorDetails } from '../../models/translator';
-import { BookAllData, BPaginationInfo } from '../../models/book';
+import { Component, OnInit, inject, DestroyRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatorPublicService } from '../../services/Public/translator-public.service';
 import { ImageService } from '../../services/image.service';
 import { AuthService } from '../../services/auth.service';
 import { UserWishListService } from '../../services/user/user-wish-list.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-translator-details',
@@ -14,58 +13,35 @@ import { UserWishListService } from '../../services/user/user-wish-list.service'
   styleUrl: './translator-details.component.css',
 })
 export class TranslatorDetailsComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  public translatorService = inject(TranslatorPublicService);
+  public imageService = inject(ImageService);
+  private authService = inject(AuthService);
+  private wishlistService = inject(UserWishListService);
+
   translatorId!: number;
-
-  translator: TranslatorDetails = {} as TranslatorDetails;
-  books: BookAllData[] = [];
-  filteredBooks: BookAllData[] = [];
-
-  pagination: BPaginationInfo = {
-    pageNumber: 1,
-    pageSize: 20,
-    totalCount: 0,
-    totalPages: 1,
-  };
-
   isLoggedIn = false;
-
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private translatorService: TranslatorPublicService,
-    public imageService: ImageService,
-    private authService: AuthService,
-    private wishlistService: UserWishListService
-  ) {}
 
   ngOnInit(): void {
     // Translator still uses numeric ID
-    this.route.paramMap.subscribe((params) => {
-      this.translatorId = Number(params.get('id'));
-      this.loadTranslator();
-    });
+    this.route.paramMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        this.translatorId = Number(params.get('id'));
+        this.loadTranslator();
+      });
 
-    this.authService.isLoggedIn$.subscribe((isLogged) => {
-      this.isLoggedIn = isLogged;
-    });
+    this.authService.isLoggedIn$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((isLogged) => {
+        this.isLoggedIn = isLogged;
+      });
   }
 
   loadTranslator(): void {
-    this.translatorService.getTranslatorDetails(
-      this.translatorId,
-      this.pagination.pageNumber,
-      this.pagination.pageSize
-    );
-
-    this.translatorService.translatorDetails.subscribe((details) => {
-      if (!details?.translator) return;
-
-      this.translator = details;
-      this.books = details.books.books ?? [];
-      this.pagination = details.books.pagination ?? this.pagination;
-
-      this.filteredBooks = [...this.books];
-    });
+    this.translatorService.getTranslatorDetails(this.translatorId);
   }
 
   toggleWishlist(bookId: number, event: MouseEvent) {
@@ -78,17 +54,17 @@ export class TranslatorDetailsComponent implements OnInit {
   }
 
   changePage(page: number) {
-    if (page === this.pagination.pageNumber) return;
-    this.translatorService.getTranslatorDetails(
-      this.translatorId,
-      page,
-      this.pagination.pageSize
-    );
+    const pagination = this.translatorService.details()?.books.pagination;
+    if (!pagination || page === pagination.pageNumber) return;
+    this.translatorService.getTranslatorDetails(this.translatorId, page);
   }
 
   getPageArray(): number[] {
-    const total = this.pagination.totalPages;
-    const current = this.pagination.pageNumber;
+    const pagination = this.translatorService.details()?.books.pagination;
+    if (!pagination) return [];
+
+    const total = pagination.totalPages;
+    const current = pagination.pageNumber;
 
     const pages: number[] = [];
 

@@ -1,37 +1,56 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApiResponse } from '../../models/apiResponse';
-import { Comment, CommentListResponse, COPaginationInfo } from '../../models/comment';
-import { ErrorHandlerService } from '../error-handler.service';
-import { BehaviorSubject } from 'rxjs';
+import {
+  Comment,
+  CommentListResponse,
+  COPaginationInfo,
+} from '../../models/comment';
+import { BasePublicService } from './base-public.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class CommentPublicService {
+export class CommentPublicService extends BasePublicService<
+  any,
+  Comment,
+  CommentListResponse,
+  COPaginationInfo
+> {
+  protected override readonly apiUrl = 'api/book';
 
-  comments = new BehaviorSubject<Comment[]>([]);
-  pagination = new BehaviorSubject<COPaginationInfo>({} as COPaginationInfo);
+  constructor() {
+    super({
+      pageNumber: 1,
+      pageSize: 20,
+      totalCount: 0,
+      totalPages: 1,
+    });
+  }
 
-  constructor(
-    private http: HttpClient,
-    private errorHandler: ErrorHandlerService
-  ) { }
+  getBookComments(id: number, pageNumber: number = 1, pageSize: number = 20) {
+    const params = new HttpParams()
+      .set('PageNumber', pageNumber.toString())
+      .set('PageSize', pageSize.toString());
 
-  getBookComments(id: number,pageNumber : number = 1, pageSize: number = 20) {
-      const params = new HttpParams()
-        .set('PageNumber', pageNumber.toString())
-        .set('PageSize', pageSize.toString());
-      this.http
-        .get<ApiResponse<CommentListResponse>>(`api/book/${id}/comments`, { params })
-        .subscribe({
-          next: (res) => {
-            this.comments.next(res.data?.comments!);
-            this.pagination.next(res.data?.pagination!);
-          },
-          error: (err) => {
-            this.errorHandler.handleError(err);
-          },
-        });
-    }
+    this.http
+      .get<ApiResponse<CommentListResponse>>(`${this.apiUrl}/${id}/comments`, {
+        params,
+      })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res) => {
+          if (res.data) {
+            this.itemsSig.set(res.data.comments ?? []);
+            if (res.data.pagination) {
+              this.paginationSig.set(res.data.pagination);
+            }
+          }
+        },
+        error: (err) => {
+          this.errorHandler.handleError(err);
+        },
+      });
+  }
 }

@@ -5,17 +5,17 @@
   </div>
 
   <!-- Empty state -->
-  @if (wishlist.length === 0) {
+  @if (wishlistService.wishlist().length === 0) {
   <div class="text-center text-gray-400 py-10">
     هیچ کتابی در علاقه‌مندی‌ها وجود ندارد.
   </div>
   }
 
   <!-- Wishlist Grid -->
-  @if (wishlist.length > 0) {
+  @if (wishlistService.wishlist().length > 0) {
   <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-5 gap-4">
 
-    @for (book of wishlist; track book.id) {
+    @for (book of wishlistService.wishlist(); track book.id) {
     <div (click)="goToBookDetails(book.id)"
       class="card bg-base-200 max-w-50 h-80 shadow-sm cursor-pointer hover:shadow-primary hover:shadow-md transition">
       <figure>
@@ -48,15 +48,16 @@
   </div>
 
   <!-- Pagination -->
-  <div class="flex items-center justify-center my-5" *ngIf="pagination.totalPages > 1">
-    <button class="btn btn-md" [disabled]="pagination.pageNumber === 1" (click)="changePage(pagination.pageNumber - 1)">
+  <div class="flex items-center justify-center my-5" *ngIf="wishlistService.pagination().totalPages > 1">
+    <button class="btn btn-md" [disabled]="wishlistService.pagination().pageNumber === 1"
+      (click)="changePage(wishlistService.pagination().pageNumber - 1)">
       قبلی
     </button>
 
     <ng-container *ngFor="let page of getPageArray()">
       <button class="btn btn-md" [ngClass]="{
             'btn-disabled': page === -1,
-            'btn-primary': page === pagination.pageNumber
+            'btn-primary': page === wishlistService.pagination().pageNumber
           }" (click)="page !== -1 && changePage(page)">
         @if (page === -1) {
         ...
@@ -66,8 +67,9 @@
       </button>
     </ng-container>
 
-    <button class="btn btn-md" [disabled]="pagination.pageNumber === pagination.totalPages"
-      (click)="changePage(pagination.pageNumber + 1)">
+    <button class="btn btn-md"
+      [disabled]="wishlistService.pagination().pageNumber === wishlistService.pagination().totalPages"
+      (click)="changePage(wishlistService.pagination().pageNumber + 1)">
       بعدی
     </button>
   </div>

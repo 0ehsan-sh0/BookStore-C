@@ -1,15 +1,15 @@
 <div class="mx-2 md:mx-20 my-10">
 
     <!-- Translator Header -->
-    @if (translator.translator) {
+    @if (translatorService.details()?.translator) {
     <div class="mb-8">
-        <h1 class="text-4xl font-bold">{{ translator.translator.name }}</h1>
-        <p class="text-gray-600 mt-3 leading-7">{{ translator.translator.description }}</p>
+        <h1 class="text-4xl font-bold">{{ translatorService.details()?.translator?.name }}</h1>
+        <p class="text-gray-600 mt-3 leading-7">{{ translatorService.details()?.translator?.description }}</p>
     </div>
 
     <!-- Title -->
     <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-bold">کتاب‌های ترجمه شده توسط {{ translator.translator.name }}</h2>
+        <h2 class="text-2xl font-bold">کتاب‌های ترجمه شده توسط {{ translatorService.details()?.translator?.name }}</h2>
     </div>
     } @else {
     <div class="mb-8">
@@ -19,10 +19,10 @@
 
 
     <!-- Books -->
-    @if (filteredBooks.length > 0) {
+    @if (translatorService.details()?.books?.books && translatorService.details()!.books.books!.length > 0) {
     <div class="flex flex-wrap gap-4 w-full">
 
-        @for (book of filteredBooks; track book.id) {
+        @for (book of translatorService.details()?.books?.books; track book.id) {
 
         <div class="card bg-base-200 w-[calc(50%-0.5rem)] sm:w-[calc(33.3333%-1rem)] md:w-[calc(25%-1rem)]
                      lg:w-[calc(20%-1rem)] xl:w-[calc(16.6667%-1rem)]
@@ -63,17 +63,18 @@
     </div>
 
     <!-- Pagination -->
-    <div class="flex items-center justify-center my-5" *ngIf="pagination.totalPages > 1">
+    <div class="flex items-center justify-center my-5"
+        *ngIf="translatorService.details()?.books?.pagination && translatorService.details()!.books.pagination!.totalPages > 1">
 
-        <button class="btn btn-md" [disabled]="pagination.pageNumber === 1"
-            (click)="changePage(pagination.pageNumber - 1)">
+        <button class="btn btn-md" [disabled]="translatorService.details()?.books?.pagination?.pageNumber === 1"
+            (click)="changePage(translatorService.details()!.books.pagination!.pageNumber - 1)">
             قبلی
         </button>
 
         <ng-container *ngFor="let page of getPageArray()">
             <button class="btn btn-md" [ngClass]="{
                   'btn-disabled': page === -1,
-                  'btn-primary': page === pagination.pageNumber
+                  'btn-primary': page === translatorService.details()?.books?.pagination?.pageNumber
                 }" (click)="page !== -1 && changePage(page)">
 
                 @if (page === -1) { ... } @else { {{ page }} }
@@ -81,8 +82,9 @@
             </button>
         </ng-container>
 
-        <button class="btn btn-md" [disabled]="pagination.pageNumber === pagination.totalPages"
-            (click)="changePage(pagination.pageNumber + 1)">
+        <button class="btn btn-md"
+            [disabled]="translatorService.details()?.books?.pagination?.pageNumber === translatorService.details()?.books?.pagination?.totalPages"
+            (click)="changePage(translatorService.details()!.books.pagination!.pageNumber + 1)">
             بعدی
         </button>
     </div>

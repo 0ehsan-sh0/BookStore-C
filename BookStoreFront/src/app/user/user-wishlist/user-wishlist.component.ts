@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject, DestroyRef } from '@angular/core';
 import { BookAllData, BPaginationInfo } from '../../models/book';
-import { AuthService } from '../../services/auth.service';
 import { ImageService } from '../../services/image.service';
 import { Router } from '@angular/router';
 import { UserWishListService } from '../../services/user/user-wish-list.service';
@@ -12,37 +11,14 @@ import { UserWishListService } from '../../services/user/user-wish-list.service'
   styleUrl: './user-wishlist.component.css',
 })
 export class UserWishlistComponent implements OnInit {
-  wishlist: BookAllData[] = [];
-
-  pagination: BPaginationInfo = {
-    pageNumber: 1,
-    pageSize: 10,
-    totalCount: 0,
-    totalPages: 1,
-  };
-
-  constructor(
-    private wishlistService: UserWishListService,
-    private imageService: ImageService,
-    private router: Router
-  ) {}
+  private destroyRef = inject(DestroyRef);
+  public wishlistService = inject(UserWishListService);
+  public imageService = inject(ImageService);
+  private router = inject(Router);
 
   ngOnInit(): void {
     // initial load
-    this.wishlistService.getUserWishlist(
-      this.pagination.pageNumber,
-      this.pagination.pageSize
-    );
-
-    // subscribe to data
-    this.wishlistService.wishlist.subscribe((books) => {
-      this.wishlist = books ?? [];
-    });
-
-    // subscribe to pagination
-    this.wishlistService.pagination.subscribe((p) => {
-      this.pagination = p ?? this.pagination;
-    });
+    this.wishlistService.getUserWishlist(1, 10);
   }
 
   toggleWishlist(bookId: number, event: MouseEvent) {
@@ -53,14 +29,16 @@ export class UserWishlistComponent implements OnInit {
 
   // Pagination
   changePage(page: number) {
-    if (page !== this.pagination.pageNumber) {
-      this.wishlistService.getUserWishlist(page, this.pagination.pageSize);
+    const pagination = this.wishlistService.pagination();
+    if (page !== pagination.pageNumber) {
+      this.wishlistService.getUserWishlist(page, pagination.pageSize);
     }
   }
 
   getPageArray(): number[] {
-    const total = this.pagination.totalPages;
-    const current = this.pagination.pageNumber;
+    const pagination = this.wishlistService.pagination();
+    const total = pagination.totalPages;
+    const current = pagination.pageNumber;
     const pages: number[] = [];
 
     for (let i = 1; i <= total; i++) {

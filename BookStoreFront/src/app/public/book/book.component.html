@@ -4,7 +4,7 @@
     <h1 class="text-3xl font-bold">تمام کتاب‌ها</h1>
 
     <!-- Sort Dropdown -->
-    <select class="select select-bordered w-40" [(ngModel)]="sortOption" (change)="onSortChange()">
+    <select class="select select-bordered w-40" [value]="sortOption()" (change)="onSortChange($event)">
       <option value="newest">جدیدترین</option>
       <option value="priceLow">ارزان‌ترین</option>
       <option value="priceHigh">گران‌ترین</option>
@@ -14,7 +14,7 @@
   <!-- Search and Filters -->
   <div class="flex flex-wrap gap-3 mb-8">
     <input type="text" placeholder="جستجو بر اساس نام کتاب یا نویسنده..." class="input input-bordered flex-1 min-w-60"
-      [(ngModel)]="searchTerm" (input)="onSearch()" />
+      [value]="searchTerm()" (input)="onSearch($event)" />
 
     <button class="btn btn-outline" (click)="clearFilters()">
       پاک کردن فیلترها
@@ -22,23 +22,23 @@
   </div>
 
   <!-- Book Grid -->
-  @if (filteredBooks.length > 0) {
+  @if (filteredBooks().length > 0) {
 
   <div class="flex flex-wrap gap-4 w-full">
 
     <!-- Dynamic book cards -->
-    @for (book of filteredBooks; track book.id) {
+    @for (book of filteredBooks(); track book.id) {
     <div
       class="card bg-base-200 w-[calc(50%-0.5rem)] sm:w-[calc(33.3333%-1rem)] md:w-[calc(25%-1rem)] lg:w-[calc(20%-1rem)] xl:w-[calc(16.6667%-1rem)] cursor-pointer hover:shadow-primary hover:shadow-md transition"
       (click)="goToBookDetails(book.id)">
       <figure>
-         @if (isLoggedIn) {
-                    <button class="absolute top-2 right-2 z-10 btn btn-circle btn-sm bg-base-100 border-none shadow-sm"
-                        (click)="toggleWishlist(book.id, $event)">
-                        <i-lucide name="heart" class="text-red-500" size="20">
-                        </i-lucide>
-                    </button>
-                    }
+        @if (isLoggedIn) {
+        <button class="absolute top-2 right-2 z-10 btn btn-circle btn-sm bg-base-100 border-none shadow-sm"
+          (click)="toggleWishlist(book.id, $event)">
+          <i-lucide name="heart" class="text-red-500" size="20">
+          </i-lucide>
+        </button>
+        }
         @if (book.images && book.images.length > 0) {
         <!-- Use primary image if exists -->
         @for (image of book.images; track image.id) {
@@ -69,16 +69,18 @@
     }
   </div>
 
-  <div class="flex items-center justify-center my-5" *ngIf="pagination.totalPages > 1">
-    <button class="btn btn-md" [disabled]="pagination.pageNumber === 1" (click)="changePage(pagination.pageNumber - 1)">
+  <div class="flex items-center justify-center my-5"
+    *ngIf="bookService.pagination() && bookService.pagination()!.totalPages > 1">
+    <button class="btn btn-md" [disabled]="bookService.pagination().pageNumber === 1"
+      (click)="changePage(bookService.pagination()!.pageNumber - 1)">
       قبلی
     </button>
 
     <ng-container *ngFor="let page of getPageArray()">
       <button class="btn btn-md" [ngClass]="{
     'btn-disabled': page === -1,
-    'btn-primary' : page === pagination.pageNumber,
-  }" (click)="changePage(page)">
+    'btn-primary' : page === bookService.pagination().pageNumber,
+  }" (click)="page !== -1 && changePage(page)">
         @if (page === -1) {
         ...
         } @else {
@@ -87,8 +89,8 @@
       </button>
     </ng-container>
 
-    <button class="btn btn-md" [disabled]="pagination.pageNumber === pagination.totalPages"
-      (click)="changePage(pagination.pageNumber + 1)">
+    <button class="btn btn-md" [disabled]="bookService.pagination().pageNumber === bookService.pagination().totalPages"
+      (click)="changePage(bookService.pagination()!.pageNumber + 1)">
       بعدی
     </button>
   </div>

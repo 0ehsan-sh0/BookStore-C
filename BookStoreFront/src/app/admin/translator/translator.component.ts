@@ -1,4 +1,4 @@
-import { Component, viewChild } from '@angular/core';
+import { Component, viewChild, inject } from '@angular/core';
 import { TPaginationInfo, Translator } from '../../models/translator';
 import { ModalComponent } from '../../ui-service/modal/modal.component';
 import { TranslatorService } from '../../services/admin/translator.service';
@@ -10,34 +10,23 @@ import { TranslatorService } from '../../services/admin/translator.service';
   styleUrl: './translator.component.css',
 })
 export class TranslatorComponent {
-  translators: Translator[] = [];
-  translator: Translator = {} as Translator;
+  translatorService = inject(TranslatorService);
+  translators = this.translatorService.translators;
+  translator = this.translatorService.translator;
   deleteId: number = 0;
-  pagination: TPaginationInfo = {
-    pageNumber: 1,
-    pageSize: 20,
-    totalCount: 0,
-    totalPages: 1,
-  };
+  pagination = this.translatorService.pagination;
   createTranslatorModal = viewChild<ModalComponent>('createTranslator');
   updateTranslatorModal = viewChild<ModalComponent>('updateTranslator');
   deleteTranslatorModal = viewChild<ModalComponent>('deleteTranslator');
   searchText: string = '';
 
-  constructor(public translatorService: TranslatorService) {
-    this.translatorService.translators.subscribe((translators) => {
-      this.translators = translators;
-    });
-    this.translatorService.pagination.subscribe((pagination) => {
-      this.pagination = pagination;
-    });
-  }
+  constructor() {}
 
   ngOnInit() {
     // Fetch authors
     this.translatorService.getTranslators(
-      this.pagination.pageNumber,
-      this.pagination.pageSize
+      this.pagination().pageNumber,
+      this.pagination().pageSize
     );
   }
 
@@ -54,7 +43,7 @@ export class TranslatorComponent {
     this.deleteId = id;
     this.deleteTranslatorModal()!.open();
   }
-  
+
   deleteConfirmed() {
     this.translatorService.delete(this.deleteId);
     this.closeDialog('deleteTranslatorModal');
@@ -65,14 +54,14 @@ export class TranslatorComponent {
   }
 
   changePage(page: number) {
-    if (page !== this.pagination.pageNumber) {
-      this.translatorService.getTranslators(page, this.pagination.pageSize);
+    if (page !== this.pagination().pageNumber) {
+      this.translatorService.getTranslators(page, this.pagination().pageSize);
     }
   }
 
   getPageArray(): number[] {
-    const total = this.pagination.totalPages;
-    const current = this.pagination.pageNumber;
+    const total = this.pagination().totalPages;
+    const current = this.pagination().pageNumber;
 
     const pages: number[] = [];
 
@@ -83,7 +72,6 @@ export class TranslatorComponent {
         pages.push(-1); // use -1 as ellipsis
       }
     }
-    (pages);
 
     return [...new Set(pages)];
   }

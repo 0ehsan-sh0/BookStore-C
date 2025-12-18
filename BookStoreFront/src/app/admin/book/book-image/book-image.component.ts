@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, effect } from '@angular/core';
 import { Image } from '../../../models/image';
 import { BookService } from '../../../services/admin/book.service';
 import { ImageService } from '../../../services/image.service';
@@ -18,10 +18,10 @@ export class BookImageComponent {
     public bookService: BookService,
     public imageService: ImageService
   ) {
-    this.bookService.book.subscribe((book) => {
+    effect(() => {
+      const book = this.bookService.book();
       this.images = book.images ?? [];
       this.book = book;
-      (book.images);
     });
   }
 }

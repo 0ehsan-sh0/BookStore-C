@@ -1,4 +1,4 @@
-import { Component, effect, output, viewChild } from '@angular/core';
+import { Component, effect, output, viewChild, inject } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { CategoryService } from '../../../services/admin/category.service';
 import { CreateAuthorRequest } from '../../../models/author';
@@ -16,9 +16,11 @@ export class CreateCategoryComponent {
   errors: string[] = [];
   form = viewChild<NgForm>('form');
 
-  constructor(private categoryService: CategoryService) {
-    this.categoryService.categories.subscribe((categories) => {
-      this.categories = categories;
+  private categoryService = inject(CategoryService);
+
+  constructor() {
+    effect(() => {
+      this.categories = this.categoryService.categories();
     });
     // reactively track errors
     effect(() => {
@@ -40,7 +42,9 @@ export class CreateCategoryComponent {
     let category: CreateCategoryRequest = {
       name: form.value.name,
       url: form.value.url,
-      mainCategoryId: form.value.mainCategoryId ? form.value.mainCategoryId : null,
+      mainCategoryId: form.value.mainCategoryId
+        ? form.value.mainCategoryId
+        : null,
     };
     this.categoryService.create(category);
   }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, effect } from '@angular/core';
 import { Tag } from '../../../models/tag';
 import { BookService } from '../../../services/admin/book.service';
 
@@ -12,8 +12,8 @@ export class BookTagComponent {
   tags: Tag[] = [];
 
   constructor(public bookService: BookService) {
-    this.bookService.book.subscribe((book) => {
-      this.tags = book.tags ?? [];
+    effect(() => {
+      this.tags = this.bookService.book().tags ?? [];
     });
   }
 }

@@ -10,11 +10,6 @@ import {
   InvoicePaginationInfo,
   UserInvoicesList,
 } from '../../models/invoice';
-import {
-  Address,
-  AddressListResponse,
-  AddressPaginationInfo,
-} from '../../models/address';
 
 @Injectable({
   providedIn: 'root',

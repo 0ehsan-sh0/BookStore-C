@@ -1,7 +1,10 @@
-import { Component, effect, output, viewChild } from '@angular/core';
+import { Component, effect, output, viewChild, inject } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { TranslatorService } from '../../../services/admin/translator.service';
-import { Translator, UpdateTranslatorRequest } from '../../../models/translator';
+import {
+  Translator,
+  UpdateTranslatorRequest,
+} from '../../../models/translator';
 
 @Component({
   selector: 'app-update-translator',
@@ -14,10 +17,11 @@ export class UpdateTranslatorComponent {
   errors: string[] = [];
   form = viewChild<NgForm>('form');
   translator: Translator = {} as Translator;
+  private translatorService = inject(TranslatorService);
 
-  constructor(private translatorService: TranslatorService) {
-    this.translatorService.translator.subscribe((translator) => {
-      this.translator = translator;
+  constructor() {
+    effect(() => {
+      this.translator = this.translatorService.translator();
     });
     // reactively track errors
     effect(() => {

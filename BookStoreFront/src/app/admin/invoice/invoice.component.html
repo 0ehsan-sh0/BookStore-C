@@ -26,7 +26,7 @@
         </thead>
 
         <tbody>
-            @for (invoice of invoices; track invoice.id) {
+            @for (invoice of invoices(); track invoice.id) {
             <tr>
                 <!-- Invoice ID -->
                 <th class="font-bold text-lg">{{ invoice.id }}</th>
@@ -57,7 +57,7 @@
                     </div>
                 </td>
 
-                 <!-- Books -->
+                <!-- Books -->
                 <td>
                     <ul class="text-sm list-disc pr-3">
                         @if(invoice.books) {
@@ -133,16 +133,16 @@
 </div>
 
 <!-- Pagination -->
-<div class="flex flex-wrap justify-center my-5" *ngIf="pagination.totalPages > 1">
-    <button class="btn btn-md sm:btn-lg" [disabled]="pagination.pageNumber === 1"
-        (click)="changePage(pagination.pageNumber - 1)">
+<div class="flex flex-wrap justify-center my-5" *ngIf="pagination().totalPages > 1">
+    <button class="btn btn-md sm:btn-lg" [disabled]="pagination().pageNumber === 1"
+        (click)="changePage(pagination().pageNumber - 1)">
         قبلی
     </button>
 
     <ng-container *ngFor="let page of getPageArray()">
         <button class="btn btn-md sm:btn-lg" [ngClass]="{
                 'btn-disabled': page === -1,
-                'btn-primary': page === pagination.pageNumber
+                'btn-primary': page === pagination().pageNumber
             }" (click)="changePage(page)">
             @if(page === -1) {
             ...
@@ -152,8 +152,8 @@
         </button>
     </ng-container>
 
-    <button class="btn btn-md sm:btn-lg" [disabled]="pagination.pageNumber === pagination.totalPages"
-        (click)="changePage(pagination.pageNumber + 1)">
+    <button class="btn btn-md sm:btn-lg" [disabled]="pagination().pageNumber === pagination().totalPages"
+        (click)="changePage(pagination().pageNumber + 1)">
         بعدی
     </button>
 </div>

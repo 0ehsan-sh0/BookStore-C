@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { PaymentService } from '../../services/admin/payment.service';
 import { Payment, PaymentPaginationInfo } from '../../models/payment';
 
@@ -9,24 +9,12 @@ import { Payment, PaymentPaginationInfo } from '../../models/payment';
   styleUrl: './payment.component.css',
 })
 export class PaymentComponent {
-  payments: Payment[] = [];
-  pagination: PaymentPaginationInfo = {
-    pageNumber: 1,
-    pageSize: 20,
-    totalCount: 0,
-    totalPages: 1,
-  };
+  paymentService = inject(PaymentService);
+  payments = this.paymentService.payments;
+  pagination = this.paymentService.pagination;
   searchText: string = '';
 
-  constructor(private paymentService: PaymentService) {
-    this.paymentService.payments.subscribe((data) => {
-      this.payments = data;
-    });
-
-    this.paymentService.pagination.subscribe((p) => {
-      this.pagination = p;
-    });
-  }
+  constructor() {}
 
   ngOnInit() {
     this.loadPayments();
@@ -35,7 +23,7 @@ export class PaymentComponent {
   loadPayments(page: number = 1) {
     this.paymentService.getPayments(
       page,
-      this.pagination.pageSize,
+      this.pagination().pageSize,
       this.searchText
     );
   }
@@ -45,14 +33,14 @@ export class PaymentComponent {
   }
 
   changePage(page: number) {
-    if (page !== this.pagination.pageNumber) {
+    if (page !== this.pagination().pageNumber) {
       this.loadPayments(page);
     }
   }
 
   getPageArray(): number[] {
-    const total = this.pagination.totalPages;
-    const current = this.pagination.pageNumber;
+    const total = this.pagination().totalPages;
+    const current = this.pagination().pageNumber;
 
     const pages: number[] = [];
 

@@ -23,7 +23,7 @@ namespace BookStoreApi.RequestHandler.Admin.Mappers
             return new Tag
             {
                 Name = tag.Name,
-                Url = tag.Url,
+                Url = tag.Url.ToLower(),
             };
         }
 
@@ -33,7 +33,7 @@ namespace BookStoreApi.RequestHandler.Admin.Mappers
             {
                 Id = id,
                 Name = tag.Name,
-                Url = tag.Url,
+                Url = tag.Url.ToLower(),
             };
         }
     }

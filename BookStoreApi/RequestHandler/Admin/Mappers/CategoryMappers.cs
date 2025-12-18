@@ -24,7 +24,7 @@ namespace BookStoreApi.RequestHandler.Admin.Mappers
             return new Category
             {
                 Name = category.Name,
-                Url = category.Url,
+                Url = category.Url.ToLower(),
                 MainCategoryId = category.MainCategoryId,
             };
         }
@@ -35,7 +35,7 @@ namespace BookStoreApi.RequestHandler.Admin.Mappers
             {
                 Id = id,
                 Name = category.Name,
-                Url = category.Url,
+                Url = category.Url.ToLower(),
                 MainCategoryId = category.MainCategoryId,
             };
         }

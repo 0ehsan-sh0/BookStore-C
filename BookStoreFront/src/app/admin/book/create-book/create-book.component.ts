@@ -59,17 +59,17 @@ export class CreateBookComponent {
       }
     });
 
-    this.authorService.authors.subscribe((authors) => {
-      this.authors = authors;
+    effect(() => {
+      this.authors = this.authorService.authors();
     });
-    this.translatorService.translators.subscribe((translators) => {
-      this.translators = translators;
+    effect(() => {
+      this.translators = this.translatorService.translators();
     });
-    this.categoryService.categories.subscribe((categories) => {
-      this.categories = categories;
+    effect(() => {
+      this.categories = this.categoryService.categories();
     });
-    this.tagService.tags.subscribe((tags) => {
-      this.tags = tags;
+    effect(() => {
+      this.tags = this.tagService.tags();
     });
     this.authorService.getAuthors();
     this.translatorService.getTranslators();

@@ -1,47 +1,50 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AlertService } from '../../ui-service/alert.service';
-import { ErrorHandlerService } from '../error-handler.service';
-import { BehaviorSubject } from 'rxjs';
-import { Invoice, InvoiceListResponse, InvoicePaginationInfo } from '../../models/invoice';
-import { ApiResponse } from '../../models/apiResponse';
+import {
+  Invoice,
+  InvoiceListResponse,
+  InvoicePaginationInfo,
+} from '../../models/invoice';
+import { BaseAdminService } from './base-admin.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class InvoiceService {
-private readonly apiUrl = 'api/admin/invoice';
+export class InvoiceService extends BaseAdminService<
+  Invoice,
+  InvoiceListResponse,
+  InvoicePaginationInfo
+> {
+  protected readonly apiUrl = 'api/admin/invoice';
+  protected readonly entityName = 'فاکتور';
 
-  constructor(
-    private http: HttpClient,
-    private alertService: AlertService,
-    private errorHandler: ErrorHandlerService
-  ) {}
-  
-  invoices = new BehaviorSubject<Invoice[]>([]);
-  pagination = new BehaviorSubject<InvoicePaginationInfo>({
-    pageNumber: 1,
-    pageSize: 20,
-    totalCount: 0,
-    totalPages: 1,
-  });
+  invoices = this.items;
 
-  getInvoices(pageNumber: number = 1, pageSize: number = 20, search: string = '') {
-    const params = new HttpParams()
-      .set('PageNumber', pageNumber.toString())
-      .set('PageSize', pageSize.toString())
-      .set('Search', search);
-      
-    this.http
-      .get<ApiResponse<InvoiceListResponse>>(`${this.apiUrl}`, { params })
-      .subscribe({
-        next: (response) => {
-          this.invoices.next(response.data?.invoices || []);
-          this.pagination.next(response.data?.pagination!);
-        },
-        error: (err) => {
-          this.errorHandler.handleError(err);
-        },
-      });
+  constructor() {
+    super({
+      pageNumber: 1,
+      pageSize: 20,
+      totalCount: 0,
+      totalPages: 1,
+    });
+  }
+
+  getInvoices(
+    pageNumber: number = 1,
+    pageSize: number = 20,
+    search: string = ''
+  ) {
+    this.getAll(pageNumber, pageSize, search);
+  }
+
+  protected getItemsFromResponse(
+    response: InvoiceListResponse
+  ): Invoice[] | undefined {
+    return response.invoices;
+  }
+
+  protected getPaginationFromResponse(
+    response: InvoiceListResponse
+  ): InvoicePaginationInfo | undefined {
+    return response.pagination;
   }
 }

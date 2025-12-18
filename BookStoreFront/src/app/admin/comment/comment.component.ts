@@ -1,4 +1,4 @@
-import { Component, viewChild } from '@angular/core';
+import { Component, viewChild, inject } from '@angular/core';
 import { Comment, COPaginationInfo } from '../../models/comment';
 import { ModalComponent } from '../../ui-service/modal/modal.component';
 import { CommentService } from '../../services/admin/comment.service';
@@ -10,30 +10,19 @@ import { CommentService } from '../../services/admin/comment.service';
   styleUrl: './comment.component.css',
 })
 export class CommentComponent {
-  comments: Comment[] = [];
-  comment: Comment = {} as Comment;
+  commentService = inject(CommentService);
+  comments = this.commentService.comments;
+  comment = this.commentService.comment;
   deleteId: number = 0;
-  pagination: COPaginationInfo = {
-    pageNumber: 1,
-    pageSize: 20,
-    totalCount: 0,
-    totalPages: 1,
-  };
+  pagination = this.commentService.pagination;
 
   deleteCommentModal = viewChild<ModalComponent>('deleteComment');
   searchText: string = '';
 
-  constructor(public commentService: CommentService) {
-    this.commentService.comments.subscribe((comments) => {
-      this.comments = comments;
-    });
-    this.commentService.pagination.subscribe((pagination) => {
-      this.pagination = pagination;
-    });
-
+  constructor() {
     this.commentService.getComments(
-      this.pagination.pageNumber,
-      this.pagination.pageSize
+      this.pagination().pageNumber,
+      this.pagination().pageSize
     );
   }
 
@@ -53,21 +42,21 @@ export class CommentComponent {
 
   onSearch() {
     this.commentService.getComments(
-      this.pagination.pageNumber,
-      this.pagination.pageSize,
+      this.pagination().pageNumber,
+      this.pagination().pageSize,
       this.searchText
     );
   }
 
   changePage(page: number) {
-    if (page !== this.pagination.pageNumber) {
-      this.commentService.getComments(page, this.pagination.pageSize);
+    if (page !== this.pagination().pageNumber) {
+      this.commentService.getComments(page, this.pagination().pageSize);
     }
   }
 
   getPageArray(): number[] {
-    const total = this.pagination.totalPages;
-    const current = this.pagination.pageNumber;
+    const total = this.pagination().totalPages;
+    const current = this.pagination().pageNumber;
 
     const pages: number[] = [];
 
@@ -78,7 +67,6 @@ export class CommentComponent {
         pages.push(-1); // use -1 as ellipsis
       }
     }
-    (pages);
 
     return [...new Set(pages)];
   }

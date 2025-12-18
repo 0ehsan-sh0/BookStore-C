@@ -1,8 +1,7 @@
 <h2 class="text-2xl font-bold mb-5">لیست پرداخت‌ها</h2>
 
 <div class="flex space-x-4 mb-5">
-  <input type="text" [(ngModel)]="searchText" class="input input-lg flex-8 pr-5"
-         placeholder="جستجو در پرداخت‌ها ..." />
+  <input type="text" [(ngModel)]="searchText" class="input input-lg flex-8 pr-5" placeholder="جستجو در پرداخت‌ها ..." />
   <button class="btn btn-lg btn-accent flex-1" (click)="onSearch()">جستجو</button>
 </div>
 
@@ -22,7 +21,7 @@
     </thead>
 
     <tbody>
-      @for (payment of payments; track payment.id) {
+      @for (payment of payments(); track payment.id) {
       <tr>
         <th class="font-bold text-lg">{{ payment.id }}</th>
         <td>
@@ -34,8 +33,7 @@
         <td>{{ payment.paymentGateway }}</td>
         <td class="font-bold">{{ payment.price | number }} تومان</td>
         <td>
-          <span class="badge text-xs h-8"
-                [ngClass]="{
+          <span class="badge text-xs h-8" [ngClass]="{
                   'badge-success': payment.status === 1,
                   'badge-error': payment.status === 2,
                   'badge-warning': payment.status === 3
@@ -62,22 +60,22 @@
 </div>
 
 <!-- Pagination -->
-<div class="flex flex-wrap justify-center my-5" *ngIf="pagination.totalPages > 1">
-  <button class="btn btn-md sm:btn-lg" [disabled]="pagination.pageNumber === 1"
-          (click)="changePage(pagination.pageNumber - 1)">قبلی</button>
+<div class="flex flex-wrap justify-center my-5" *ngIf="pagination().totalPages > 1">
+  <button class="btn btn-md sm:btn-lg" [disabled]="pagination().pageNumber === 1"
+    (click)="changePage(pagination().pageNumber - 1)">قبلی</button>
 
   <ng-container *ngFor="let page of getPageArray()">
     <button class="btn btn-md sm:btn-lg"
-            [ngClass]="{'btn-disabled': page === -1, 'btn-primary': page === pagination.pageNumber}"
-            (click)="changePage(page)">
+      [ngClass]="{'btn-disabled': page === -1, 'btn-primary': page === pagination().pageNumber}"
+      (click)="changePage(page)">
       @if(page === -1) {
-        ...
+      ...
       } @else {
-        {{ page }}
+      {{ page }}
       }
     </button>
   </ng-container>
 
-  <button class="btn btn-md sm:btn-lg" [disabled]="pagination.pageNumber === pagination.totalPages"
-          (click)="changePage(pagination.pageNumber + 1)">بعدی</button>
+  <button class="btn btn-md sm:btn-lg" [disabled]="pagination().pageNumber === pagination().totalPages"
+    (click)="changePage(pagination().pageNumber + 1)">بعدی</button>
 </div>

@@ -1,11 +1,4 @@
-import {
-  HttpClient,
-  HttpErrorResponse,
-  HttpParams,
-} from '@angular/common/http';
-import { Injectable, signal } from '@angular/core';
-import { AlertService } from '../../ui-service/alert.service';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable } from '@angular/core';
 import {
   APaginationInfo,
   Author,
@@ -13,111 +6,48 @@ import {
   CreateAuthorRequest,
   UpdateAuthorRequest,
 } from '../../models/author';
-import { ApiResponse } from '../../models/apiResponse';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { ErrorHandlerService } from '../error-handler.service';
+import { BaseAdminService } from './base-admin.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthorService {
-  private readonly apiUrl = 'api/admin/author';
+export class AuthorService extends BaseAdminService<
+  Author,
+  AuthorListResponse,
+  APaginationInfo
+> {
+  protected readonly apiUrl = 'api/admin/author';
+  protected readonly entityName = 'نویسنده';
 
-  constructor(
-    private http: HttpClient,
-    private alertService: AlertService,
-    private errorHandler: ErrorHandlerService
-  ) {}
- 
-  authors = new BehaviorSubject<Author[]>([]);
-  author = new BehaviorSubject<Author>({} as Author);
-  pagination = new BehaviorSubject<APaginationInfo>({
-    pageNumber: 1,
-    pageSize: 20,
-    totalCount: 0,
-    totalPages: 1,
-  });
-  createErrors = signal<string[]>([]);
-  updateErrors = signal<string[]>([]);
-  created = signal<boolean>(false);
-  updated = signal<boolean>(false);
+  authors = this.items;
+  author = this.item;
 
-  getAuthors(pageNumber: number = 1, pageSize: number = 20, search: string = '') {
-    const params = new HttpParams()
-      .set('PageNumber', pageNumber.toString())
-      .set('PageSize', pageSize.toString())
-      .set('Search', search);
-      
-    this.http
-      .get<ApiResponse<AuthorListResponse>>(`${this.apiUrl}`, { params })
-      .subscribe({
-        next: (response) => {
-          this.authors.next([...(response.data?.authors ?? [])]);
-          this.pagination.next(response.data?.pagination!);
-        },
-        error: (err) => {
-          this.errorHandler.handleError(err);
-        },
-      });
-  }
-
-  create(author: CreateAuthorRequest) {
-    this.http.post<ApiResponse<Author>>(`${this.apiUrl}`, author).subscribe({
-      next: (res) => {
-        this.authors.next([res.data!, ...this.authors.value]);
-        this.createErrors.set([]); // clear errors
-        this.created.set(true); // emit created author
-        this.alertService.show('نویسنده با موفقیت ایجاد شد', 'success');
-      },
-      error: (err) => {
-        this.created.set(false);
-        this.createErrors.set(this.errorHandler.handleError(err));
-      },
+  constructor() {
+    super({
+      pageNumber: 1,
+      pageSize: 20,
+      totalCount: 0,
+      totalPages: 1,
     });
   }
 
-  update(author: UpdateAuthorRequest, id: number) {
-    this.http
-      .put<ApiResponse<Author>>(`${this.apiUrl}/${id}`, author)
-      .subscribe({
-        next: (res) => {
-          this.authors.next(
-            this.authors.value.map((a) =>
-              a.id === res.data!.id ? res.data! : a
-            )
-          );
-          this.updateErrors.set([]); // clear errors
-          this.updated.set(true); // emit updated author
-          this.alertService.show('نویسنده با موفقیت به‌روزرسانی شد', 'success');
-        },
-        error: (err) => {
-          this.updated.set(false);
-          this.updateErrors.set(this.errorHandler.handleError(err));
-        },
-      });
+  getAuthors(
+    pageNumber: number = 1,
+    pageSize: number = 20,
+    search: string = ''
+  ) {
+    this.getAll(pageNumber, pageSize, search);
   }
 
-  delete(id: number) {
-    this.http.delete<null>(`${this.apiUrl}/${id}`).subscribe({
-      next: () => {
-        this.authors.next(this.authors.value.filter((a) => a.id !== id));
-        this.alertService.show('نویسنده با موفقیت حذف شد', 'success');
-      },
-      error: (err) => {
-        this.errorHandler.handleError(err);
-      },
-    });
+  protected getItemsFromResponse(
+    response: AuthorListResponse
+  ): Author[] | undefined {
+    return response.authors;
   }
 
-  getById(id: number) {
-    this.http.get<ApiResponse<Author>>(`${this.apiUrl}/${id}`).subscribe({
-      next: (res) => {
-        this.author.next(res.data!);
-      },
-      error: (err) => {
-        this.errorHandler.handleError(err);
-      },
-    });
+  protected getPaginationFromResponse(
+    response: AuthorListResponse
+  ): APaginationInfo | undefined {
+    return response.pagination;
   }
-
 }

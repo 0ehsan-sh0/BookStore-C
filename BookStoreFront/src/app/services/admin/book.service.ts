@@ -1,131 +1,67 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable, signal } from '@angular/core';
-import { AlertService } from '../../ui-service/alert.service';
-import { ErrorHandlerService } from '../error-handler.service';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable } from '@angular/core';
 import {
   BookAllData,
   BookListResponse,
   BPaginationInfo,
-  CreateBookRequest,
-  UpdateBookRequest,
 } from '../../models/book';
+import { BaseAdminService } from './base-admin.service';
 import { ApiResponse } from '../../models/apiResponse';
-import { CommentListResponse } from '../../models/comment';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root',
 })
-export class BookService {
-  private readonly apiUrl = 'api/admin/book';
+export class BookService extends BaseAdminService<
+  BookAllData,
+  BookListResponse,
+  BPaginationInfo
+> {
+  protected readonly apiUrl = 'api/admin/book';
+  protected readonly entityName = 'کتاب';
 
-  constructor(
-    private http: HttpClient,
-    private alertService: AlertService,
-    private errorHandler: ErrorHandlerService
-  ) {}
+  books = this.items;
+  book = this.item;
 
-  books = new BehaviorSubject<BookAllData[]>([]);
-  book = new BehaviorSubject<BookAllData>({} as BookAllData);
-  pagination = new BehaviorSubject<BPaginationInfo>({
-    pageNumber: 1,
-    pageSize: 20,
-    totalCount: 0,
-    totalPages: 1,
-  });
-  createErrors = signal<string[]>([]);
-  updateErrors = signal<string[]>([]);
-  created = signal<boolean>(false);
-  updated = signal<boolean>(false);
+  constructor() {
+    super({
+      pageNumber: 1,
+      pageSize: 20,
+      totalCount: 0,
+      totalPages: 1,
+    });
+  }
 
   getBooks(pageNumber: number = 1, pageSize: number = 20, search: string = '') {
-    const params = new HttpParams()
-      .set('PageNumber', pageNumber.toString())
-      .set('PageSize', pageSize.toString())
-      .set('Search', search);
-    this.http
-      .get<ApiResponse<BookListResponse>>(`${this.apiUrl}`, { params })
-      .subscribe({
-        next: (response) => {
-          this.books.next([...(response.data?.books ?? [])]);
-          this.pagination.next(response.data?.pagination!);
-        },
-        error: (err) => {
-          this.errorHandler.handleError(err);
-          console.log(err);
-        },
-      });
+    this.getAll(pageNumber, pageSize, search);
   }
 
-  getById(id: number) {
-    this.http.get<ApiResponse<BookAllData>>(`${this.apiUrl}/${id}`).subscribe({
-      next: (res) => {
-        this.book.next(res.data!);
-      },
-      error: (err) => {
-        this.errorHandler.handleError(err);
-      },
-    });
+  protected getItemsFromResponse(
+    response: BookListResponse
+  ): BookAllData[] | undefined {
+    return response.books;
   }
 
-  create(book: FormData) {
-    this.http
-      .post<ApiResponse<BookAllData>>(`${this.apiUrl}`, book )
-      .subscribe({
-        next: (res) => {
-          this.books.next([res.data!, ...this.books.value]);
-          this.createErrors.set([]); // clear errors
-          this.created.set(true); // emit created book
-          this.alertService.show('کتاب با موفقیت ایجاد شد', 'success');
-        },
-        error: (err) => {
-          this.created.set(false);
-          this.createErrors.set(this.errorHandler.handleError(err));
-        },
-      });
-  }
-
-  update(book: UpdateBookRequest, id: number) {
-    this.http
-      .put<ApiResponse<BookAllData>>(`${this.apiUrl}/${id}`, book)
-      .subscribe({
-        next: (res) => {
-          this.books.next(
-            this.books.value.map((a) => (a.id === res.data!.id ? res.data! : a))
-          );
-          this.updateErrors.set([]); // clear errors
-          this.updated.set(true); // emit updated book
-          this.alertService.show('کتاب با موفقیت به‌روزرسانی شد', 'success');
-        },
-        error: (err) => {
-          this.updated.set(false);
-          this.updateErrors.set(this.errorHandler.handleError(err));
-        },
-      });
-  }
-
-  delete(id: number) {
-    this.http.delete<null>(`${this.apiUrl}/${id}`).subscribe({
-      next: () => {
-        this.books.next(this.books.value.filter((a) => a.id !== id));
-        this.alertService.show('کتاب با موفقیت حذف شد', 'success');
-      },
-      error: (err) => {
-        this.errorHandler.handleError(err);
-      },
-    });
+  protected getPaginationFromResponse(
+    response: BookListResponse
+  ): BPaginationInfo | undefined {
+    return response.pagination;
   }
 
   toggleRecomended(id: number) {
     return this.http
       .post<ApiResponse<BookAllData>>(`${this.apiUrl}/recommended/${id}`, null)
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (res) => {
-          this.books.next(
-            this.books.value.map((a) => (a.id === res.data!.id ? res.data! : a))
-          );
-          this.alertService.show('وضعیت پیشنهاد کتاب با موفقیت تغییر کرد', 'success');
-          
+          if (res.data) {
+            this.itemsSig.update((val) =>
+              val.map((a) => (a.id === res.data!.id ? res.data! : a))
+            );
+            this.alertService.show(
+              'وضعیت پیشنهاد کتاب با موفقیت تغییر کرد',
+              'success'
+            );
+          }
         },
         error: (err) => {
           this.errorHandler.handleError(err);

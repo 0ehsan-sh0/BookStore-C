@@ -1,4 +1,4 @@
-import { Component, effect, output, viewChild } from '@angular/core';
+import { Component, effect, output, viewChild, inject } from '@angular/core';
 import { Category, UpdateCategoryRequest } from '../../../models/category';
 import { NgForm } from '@angular/forms';
 import { CategoryService } from '../../../services/admin/category.service';
@@ -16,12 +16,14 @@ export class UpdateCategoryComponent {
   form = viewChild<NgForm>('form');
   category: Category = {} as Category;
 
-  constructor(private categoryService: CategoryService) {
-    this.categoryService.categories.subscribe((categories) => {
-      this.categories = categories;
+  private categoryService = inject(CategoryService);
+
+  constructor() {
+    effect(() => {
+      this.categories = this.categoryService.categories();
     });
-    this.categoryService.category.subscribe((category) => {
-      this.category = category;
+    effect(() => {
+      this.category = this.categoryService.category();
     });
     // reactively track errors
     effect(() => {

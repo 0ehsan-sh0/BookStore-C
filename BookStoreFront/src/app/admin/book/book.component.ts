@@ -1,9 +1,8 @@
-import { Component, viewChild } from '@angular/core';
+import { Component, viewChild, inject } from '@angular/core';
 import { BookAllData, BPaginationInfo } from '../../models/book';
 import { ModalComponent } from '../../ui-service/modal/modal.component';
 import { BookService } from '../../services/admin/book.service';
 import { ImageService } from '../../services/image.service';
-
 
 @Component({
   selector: 'app-book',
@@ -12,15 +11,12 @@ import { ImageService } from '../../services/image.service';
   styleUrl: './book.component.css',
 })
 export class BookComponent {
-  books: BookAllData[] = [];
-  book: BookAllData = {} as BookAllData;
+  bookService = inject(BookService);
+  imageService = inject(ImageService);
+  books = this.bookService.books;
+  book = this.bookService.book;
   deleteId: number = 0;
-  pagination: BPaginationInfo = {
-    pageNumber: 1,
-    pageSize: 20,
-    totalCount: 0,
-    totalPages: 1,
-  };
+  pagination = this.bookService.pagination;
   createBookModal = viewChild<ModalComponent>('createBook');
   updateBookModal = viewChild<ModalComponent>('updateBook');
   deleteBookModal = viewChild<ModalComponent>('deleteBook');
@@ -30,23 +26,13 @@ export class BookComponent {
   bookImages = viewChild<ModalComponent>('bookImages');
   searchText: string = '';
 
-  constructor(
-    public bookService: BookService,
-    public imageService: ImageService
-  ) {
-    this.bookService.books.subscribe((books) => {
-      this.books = books;
-    });
-    this.bookService.pagination.subscribe((pagination) => {
-      this.pagination = pagination;
-    });
-  }
+  constructor() {}
 
   ngOnInit() {
     // Fetch books
     this.bookService.getBooks(
-      this.pagination.pageNumber,
-      this.pagination.pageSize
+      this.pagination().pageNumber,
+      this.pagination().pageSize
     );
   }
 
@@ -68,26 +54,26 @@ export class BookComponent {
     this.bookService.delete(this.deleteId);
     this.closeDialog('deleteBookModal');
   }
-  
+
   onSearch() {
     this.bookService.getBooks(
-      this.pagination.pageNumber,
-      this.pagination.pageSize,
+      this.pagination().pageNumber,
+      this.pagination().pageSize,
       this.searchText
     );
   }
 
-  showCategories(id : number) {
+  showCategories(id: number) {
     this.bookService.getById(id);
     this.bookCategories()!.open();
   }
 
-  showTranslators(id : number) {
+  showTranslators(id: number) {
     this.bookService.getById(id);
     this.bookTranslators()!.open();
   }
 
-  showTags(id : number) {
+  showTags(id: number) {
     this.bookService.getById(id);
     this.bookTags()!.open();
   }
@@ -98,14 +84,14 @@ export class BookComponent {
   }
 
   changePage(page: number) {
-    if (page !== this.pagination.pageNumber) {
-      this.bookService.getBooks(page, this.pagination.pageSize);
+    if (page !== this.pagination().pageNumber) {
+      this.bookService.getBooks(page, this.pagination().pageSize);
     }
   }
 
   getPageArray(): number[] {
-    const total = this.pagination.totalPages;
-    const current = this.pagination.pageNumber;
+    const total = this.pagination().totalPages;
+    const current = this.pagination().pageNumber;
 
     const pages: number[] = [];
 

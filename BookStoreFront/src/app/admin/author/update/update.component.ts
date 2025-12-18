@@ -1,4 +1,11 @@
-import { Component, effect, input, output, viewChild } from '@angular/core';
+import {
+  Component,
+  effect,
+  input,
+  output,
+  viewChild,
+  inject,
+} from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AuthorService } from '../../../services/admin/author.service';
 import { Author, UpdateAuthorRequest } from '../../../models/author';
@@ -14,11 +21,11 @@ export class UpdateComponent {
   errors: string[] = [];
   form = viewChild<NgForm>('form');
   author: Author = {} as Author;
+  private authorService = inject(AuthorService);
 
-  constructor(private authorService: AuthorService) {
-
-    this.authorService.author.subscribe((author) => {
-      this.author = author;
+  constructor() {
+    effect(() => {
+      this.author = this.authorService.author();
     });
     // reactively track errors
     effect(() => {

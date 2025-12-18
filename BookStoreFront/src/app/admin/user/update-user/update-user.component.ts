@@ -1,4 +1,4 @@
-import { Component, effect, output, viewChild } from '@angular/core';
+import { Component, effect, output, viewChild, inject } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { UserService } from '../../../services/admin/user.service';
 import { User, UpdateUserRequest, UserRole } from '../../../models/user';
@@ -7,7 +7,7 @@ import { User, UpdateUserRequest, UserRole } from '../../../models/user';
   selector: 'app-update-user',
   standalone: false,
   templateUrl: './update-user.component.html',
-  styleUrl: './update-user.component.css'
+  styleUrl: './update-user.component.css',
 })
 export class UpdateUserComponent {
   updated = output();
@@ -16,9 +16,11 @@ export class UpdateUserComponent {
   user: User = {} as User;
   userRole = UserRole; // Expose enum to the template
 
-  constructor(private userService: UserService) {
-    this.userService.user.subscribe((user) => {
-      this.user = user;
+  private userService = inject(UserService);
+
+  constructor() {
+    effect(() => {
+      this.user = this.userService.user();
     });
 
     // Reactively track errors
@@ -45,7 +47,7 @@ export class UpdateUserComponent {
     const user: UpdateUserRequest = {
       name: form.value.name,
       lastName: form.value.lastName,
-      role: Number(form.value.role)
+      role: Number(form.value.role),
     };
 
     this.userService.update(user, this.user.id);

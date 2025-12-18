@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, effect } from '@angular/core';
 import { Category } from '../../../models/category';
 import { CategoryService } from '../../../services/admin/category.service';
 import { BookService } from '../../../services/admin/book.service';
@@ -14,7 +14,8 @@ export class BookCategoryComponent {
   mainCategoryMap: Record<number, string> = {};
 
   constructor(public bookService: BookService) {
-    this.bookService.book.subscribe((book) => {
+    effect(() => {
+      const book = this.bookService.book();
       this.categories = book.categories ?? [];
       this.mainCategoryMap = {};
       this.categories.forEach((c) => {

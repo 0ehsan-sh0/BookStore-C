@@ -1,4 +1,4 @@
-import { Component, OnInit, viewChild } from '@angular/core';
+import { Component, OnInit, viewChild, inject } from '@angular/core';
 import { UPaginationInfo, User } from '../../models/user';
 import { UserService } from '../../services/admin/user.service';
 import { ModalComponent } from '../../ui-service/modal/modal.component';
@@ -10,37 +10,25 @@ import { ModalComponent } from '../../ui-service/modal/modal.component';
   styleUrl: './user.component.css',
 })
 export class UserComponent implements OnInit {
-  users: User[] = [];
-  pagination: UPaginationInfo = {
-    pageNumber: 1,
-    pageSize: 20,
-    totalCount: 0,
-    totalPages: 1,
-  };
+  userService = inject(UserService);
+  users = this.userService.users;
+  pagination = this.userService.pagination;
   deleteId: number = 0;
   createUserModal = viewChild<ModalComponent>('createUser');
   updateUserModal = viewChild<ModalComponent>('updateUser');
   deleteUserModal = viewChild<ModalComponent>('deleteUser');
   searchText = '';
 
-  constructor(public userService: UserService) {}
+  constructor() {}
 
   ngOnInit() {
-    this.userService.users.subscribe((users) => {
-      this.users = users;
-    });
-
-    this.userService.pagination.subscribe((pagination) => {
-      this.pagination = pagination;
-    });
-
     this.fetchUsers();
   }
 
   fetchUsers() {
     this.userService.getUsers(
-      this.pagination.pageNumber,
-      this.pagination.pageSize,
+      this.pagination().pageNumber,
+      this.pagination().pageSize,
       this.searchText
     );
   }
@@ -65,20 +53,22 @@ export class UserComponent implements OnInit {
   }
 
   onSearch() {
-    this.pagination.pageNumber = 1;
     this.fetchUsers();
   }
 
   changePage(page: number) {
-    if (page >= 1 && page <= this.pagination.totalPages) {
-      this.pagination.pageNumber = page;
-      this.fetchUsers();
+    if (page >= 1 && page <= this.pagination().totalPages) {
+      this.userService.getUsers(
+        page,
+        this.pagination().pageSize,
+        this.searchText
+      );
     }
   }
 
   getPageArray(): number[] {
-    const total = this.pagination.totalPages;
-    const current = this.pagination.pageNumber;
+    const total = this.pagination().totalPages;
+    const current = this.pagination().pageNumber;
     const pages: number[] = [];
 
     if (total <= 7) {

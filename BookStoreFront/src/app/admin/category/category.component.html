@@ -4,7 +4,8 @@
 </button>
 
 <div class="flex space-x-4  mb-5">
-    <input type="text" [(ngModel)]="searchText" class="input input-lg flex-8 pr-5" placeholder="جستجو در دسته بندی ها ..." />
+    <input type="text" [(ngModel)]="searchText" class="input input-lg flex-8 pr-5"
+        placeholder="جستجو در دسته بندی ها ..." />
     <button class="btn btn-lg btn-accent flex-1" (click)="onSearch()">جستجو</button>
 </div>
 
@@ -25,7 +26,7 @@
             </tr>
         </thead>
         <tbody>
-            @for (category of this.categories; track category.id) {
+            @for (category of categories(); track category.id) {
             <!-- row  -->
             <tr>
                 <th class="font-bold text-lg">
@@ -38,12 +39,12 @@
                     <div class="badge badge-accent w-auto h-auto">{{category.url}}</div>
                 </td>
                 <td class="text-lg">
-                    @if(category.mainCategoryId && mainCategoryMap[category.mainCategoryId!]){
-                        {{ category.mainCategoryId }} - {{ mainCategoryMap[category.mainCategoryId!]  }} 
-                    } @else if (category.mainCategoryId && !mainCategoryMap[category.mainCategoryId!]) {
-                        {{ category.mainCategoryId }} - دسته بندی پاک شده  
+                    @if(category.mainCategoryId && mainCategoryMap()[category.mainCategoryId!]){
+                    {{ category.mainCategoryId }} - {{ mainCategoryMap()[category.mainCategoryId!] }}
+                    } @else if (category.mainCategoryId && !mainCategoryMap()[category.mainCategoryId!]) {
+                    {{ category.mainCategoryId }} - دسته بندی پاک شده
                     } @else {
-                        - - - - - - -
+                    - - - - - - -
                     }
                 </td>
                 <td class="text-lg">
@@ -80,16 +81,16 @@
 
 </div>
 
-<div class="flex flex-wrap justify-center my-5" *ngIf="pagination.totalPages > 1">
-    <button class="btn btn-md sm:btn-lg" [disabled]="pagination.pageNumber === 1"
-        (click)="changePage(pagination.pageNumber - 1)">
+<div class="flex flex-wrap justify-center my-5" *ngIf="pagination().totalPages > 1">
+    <button class="btn btn-md sm:btn-lg" [disabled]="pagination().pageNumber === 1"
+        (click)="changePage(pagination().pageNumber - 1)">
         قبلی
     </button>
 
     <ng-container *ngFor="let page of getPageArray()">
         <button class="btn btn-md sm:btn-lg" [ngClass]="{
     'btn-disabled': page === -1,
-    'btn-primary' : page === pagination.pageNumber,
+    'btn-primary' : page === pagination().pageNumber,
   }" (click)="changePage(page)">
             @if (page === -1) {
             ...
@@ -99,8 +100,8 @@
         </button>
     </ng-container>
 
-    <button class="btn btn-md sm:btn-lg" [disabled]="pagination.pageNumber === pagination.totalPages"
-        (click)="changePage(pagination.pageNumber + 1)">
+    <button class="btn btn-md sm:btn-lg" [disabled]="pagination().pageNumber === pagination().totalPages"
+        (click)="changePage(pagination().pageNumber + 1)">
         بعدی
     </button>
 </div>

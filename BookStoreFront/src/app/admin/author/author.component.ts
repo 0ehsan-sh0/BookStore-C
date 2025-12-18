@@ -1,4 +1,4 @@
-import { Component, effect, viewChild } from '@angular/core';
+import { Component, effect, viewChild, inject } from '@angular/core';
 import { AuthorService } from '../../services/admin/author.service';
 import { APaginationInfo, Author } from '../../models/author';
 import { ModalComponent } from '../../ui-service/modal/modal.component';
@@ -10,34 +10,23 @@ import { ModalComponent } from '../../ui-service/modal/modal.component';
   styleUrl: './author.component.css',
 })
 export class AuthorComponent {
-  authors: Author[] = [];
-  author: Author = {} as Author;
+  authorService = inject(AuthorService);
+  authors = this.authorService.authors;
+  author = this.authorService.author;
   deleteId: number = 0;
-  pagination: APaginationInfo = {
-    pageNumber: 1,
-    pageSize: 20,
-    totalCount: 0,
-    totalPages: 1,
-  };
+  pagination = this.authorService.pagination;
   createAuthorModal = viewChild<ModalComponent>('createAuthor');
   updateAuthorModal = viewChild<ModalComponent>('updateAuthor');
   deleteAuthorModal = viewChild<ModalComponent>('deleteAuthor');
   searchText = '';
 
-  constructor(public authorService: AuthorService) {
-    this.authorService.authors.subscribe((authors) => {
-      this.authors = authors;
-    });
-    this.authorService.pagination.subscribe((pagination) => {
-      this.pagination = pagination;
-    });
-  }
+  constructor() {}
 
   ngOnInit() {
     // Fetch authors
     this.authorService.getAuthors(
-      this.pagination.pageNumber,
-      this.pagination.pageSize
+      this.pagination().pageNumber,
+      this.pagination().pageSize
     );
   }
 
@@ -65,14 +54,14 @@ export class AuthorComponent {
   }
 
   changePage(page: number) {
-    if (page !== this.pagination.pageNumber) {
-      this.authorService.getAuthors(page, this.pagination.pageSize);
+    if (page !== this.pagination().pageNumber) {
+      this.authorService.getAuthors(page, this.pagination().pageSize);
     }
   }
 
   getPageArray(): number[] {
-    const total = this.pagination.totalPages;
-    const current = this.pagination.pageNumber;
+    const total = this.pagination().totalPages;
+    const current = this.pagination().pageNumber;
 
     const pages: number[] = [];
 

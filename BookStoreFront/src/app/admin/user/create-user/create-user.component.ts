@@ -1,4 +1,4 @@
-import { Component, effect, output, viewChild } from '@angular/core';
+import { Component, effect, output, viewChild, inject } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { CreateUserRequest, UserRole } from '../../../models/user';
 import { UserService } from '../../../services/admin/user.service';
@@ -7,7 +7,7 @@ import { UserService } from '../../../services/admin/user.service';
   selector: 'app-create-user',
   standalone: false,
   templateUrl: './create-user.component.html',
-  styleUrl: './create-user.component.css'
+  styleUrl: './create-user.component.css',
 })
 export class CreateUserComponent {
   created = output();
@@ -15,7 +15,9 @@ export class CreateUserComponent {
   form = viewChild<NgForm>('form');
   userRole = UserRole; // Expose enum to the template
 
-  constructor(private userService: UserService) {
+  private userService = inject(UserService);
+
+  constructor() {
     // Reactively track errors
     effect(() => {
       this.errors = this.userService.createErrors();
@@ -42,7 +44,7 @@ export class CreateUserComponent {
       lastName: form.value.lastName,
       mobile: form.value.mobile,
       password: form.value.password,
-      role: Number(form.value.role)
+      role: Number(form.value.role),
     };
     this.userService.create(user);
   }

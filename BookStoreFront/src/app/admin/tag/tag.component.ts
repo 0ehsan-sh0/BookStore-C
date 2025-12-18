@@ -1,4 +1,4 @@
-import { Component, viewChild } from '@angular/core';
+import { Component, viewChild, inject } from '@angular/core';
 import { Tag, TagPaginationInfo } from '../../models/tag';
 import { ModalComponent } from '../../ui-service/modal/modal.component';
 import { TagService } from '../../services/admin/tag.service';
@@ -10,34 +10,23 @@ import { TagService } from '../../services/admin/tag.service';
   styleUrl: './tag.component.css',
 })
 export class TagComponent {
-  tags: Tag[] = [];
-  tag: Tag = {} as Tag;
+  tagService = inject(TagService);
+  tags = this.tagService.tags;
+  tag = this.tagService.tag;
   deleteId: number = 0;
-  pagination: TagPaginationInfo = {
-    pageNumber: 1,
-    pageSize: 20,
-    totalCount: 0,
-    totalPages: 1,
-  };
+  pagination = this.tagService.pagination;
   createTagModal = viewChild<ModalComponent>('createTag');
   updateTagModal = viewChild<ModalComponent>('updateTag');
   deleteTagModal = viewChild<ModalComponent>('deleteTag');
   searchText: string = '';
 
-  constructor(public tagService: TagService) {
-    this.tagService.tags.subscribe((tags) => {
-      this.tags = tags;
-    });
-    this.tagService.pagination.subscribe((pagination) => {
-      this.pagination = pagination;
-    });
-  }
+  constructor() {}
 
   ngOnInit() {
     // Fetch authors
     this.tagService.getTags(
-      this.pagination.pageNumber,
-      this.pagination.pageSize
+      this.pagination().pageNumber,
+      this.pagination().pageSize
     );
   }
 
@@ -65,14 +54,14 @@ export class TagComponent {
   }
 
   changePage(page: number) {
-    if (page !== this.pagination.pageNumber) {
-      this.tagService.getTags(page, this.pagination.pageSize);
+    if (page !== this.pagination().pageNumber) {
+      this.tagService.getTags(page, this.pagination().pageSize);
     }
   }
 
   getPageArray(): number[] {
-    const total = this.pagination.totalPages;
-    const current = this.pagination.pageNumber;
+    const total = this.pagination().totalPages;
+    const current = this.pagination().pageNumber;
 
     const pages: number[] = [];
 
@@ -83,7 +72,6 @@ export class TagComponent {
         pages.push(-1); // use -1 as ellipsis
       }
     }
-    pages;
 
     return [...new Set(pages)];
   }

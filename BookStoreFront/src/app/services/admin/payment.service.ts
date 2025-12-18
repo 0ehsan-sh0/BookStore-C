@@ -1,49 +1,46 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AlertService } from '../../ui-service/alert.service';
-import { ErrorHandlerService } from '../error-handler.service';
-import { BehaviorSubject } from 'rxjs';
-import { Payment, PaymentListResponse, PaymentPaginationInfo } from '../../models/payment';
-import { ApiResponse } from '../../models/apiResponse';
+import {
+  Payment,
+  PaymentListResponse,
+  PaymentPaginationInfo,
+} from '../../models/payment';
+import { BaseAdminService } from './base-admin.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class PaymentService {
+export class PaymentService extends BaseAdminService<
+  Payment,
+  PaymentListResponse,
+  PaymentPaginationInfo
+> {
+  protected readonly apiUrl = 'api/admin/payment';
+  protected readonly entityName = 'پرداخت';
 
-  private readonly apiUrl = 'api/admin/payment';
+  payments = this.items;
 
-  constructor(
-    private http: HttpClient,
-    private alertService: AlertService,
-    private errorHandler: ErrorHandlerService
-  ) {}
-
-  payments = new BehaviorSubject<Payment[]>([]);
-  pagination = new BehaviorSubject<PaymentPaginationInfo>({
-    pageNumber: 1,
-    pageSize: 20,
-    totalCount: 0,
-    totalPages: 1,
-  });
+  constructor() {
+    super({
+      pageNumber: 1,
+      pageSize: 20,
+      totalCount: 0,
+      totalPages: 1,
+    });
+  }
 
   getPayments(pageNumber: number, pageSize: number, search: string) {
-    // Implementation for fetching payments would go here
-    const params = new HttpParams()
-      .set('PageNumber', pageNumber.toString())
-      .set('PageSize', pageSize.toString())
-      .set('Search', search);
+    this.getAll(pageNumber, pageSize, search);
+  }
 
-    this.http
-      .get<ApiResponse<PaymentListResponse>>(`${this.apiUrl}`, { params })
-      .subscribe({
-        next: (response) => {
-          this.payments.next(response.data?.payments as Payment[]);
-          this.pagination.next(response.data?.pagination as PaymentPaginationInfo);
-        },
-        error: (err) => {
-          this.errorHandler.handleError(err);
-        },
-      });
+  protected getItemsFromResponse(
+    response: PaymentListResponse
+  ): Payment[] | undefined {
+    return response.payments;
+  }
+
+  protected getPaginationFromResponse(
+    response: PaymentListResponse
+  ): PaymentPaginationInfo | undefined {
+    return response.pagination;
   }
 }

@@ -1,4 +1,4 @@
-import { Component, viewChild } from '@angular/core';
+import { Component, viewChild, inject, computed } from '@angular/core';
 import { Category, CPaginationInfo } from '../../models/category';
 import { ModalComponent } from '../../ui-service/modal/modal.component';
 import { CategoryService } from '../../services/admin/category.service';
@@ -10,39 +10,32 @@ import { CategoryService } from '../../services/admin/category.service';
   styleUrl: './category.component.css',
 })
 export class CategoryComponent {
-  categories: Category[] = [];
-  category: Category = {} as Category;
-  mainCategoryMap: Record<number, string> = {};
+  categoryService = inject(CategoryService);
+  categories = this.categoryService.categories;
+  category = this.categoryService.category;
+
+  mainCategoryMap = computed(() => {
+    const map: Record<number, string> = {};
+    this.categories().forEach((c) => {
+      map[c.id] = c.url;
+    });
+    return map;
+  });
+
   deleteId: number = 0;
-  pagination: CPaginationInfo = {
-    pageNumber: 1,
-    pageSize: 20,
-    totalCount: 0,
-    totalPages: 1,
-  };
+  pagination = this.categoryService.pagination;
   createCategoryModal = viewChild<ModalComponent>('createCategory');
   updateCategoryModal = viewChild<ModalComponent>('updateCategory');
   deleteCategoryModal = viewChild<ModalComponent>('deleteCategory');
   searchText = '';
 
-  constructor(public categoryService: CategoryService) {
-    this.categoryService.categories.subscribe((categories) => {
-      this.categories = categories;
-      this.mainCategoryMap = {};
-      this.categories.forEach((c) => {
-        this.mainCategoryMap[c.id] = c.url;
-      });
-    });
-    this.categoryService.pagination.subscribe((pagination) => {
-      this.pagination = pagination;
-    });
-  }
+  constructor() {}
 
   ngOnInit() {
     // Fetch authors
     this.categoryService.getCategories(
-      this.pagination.pageNumber,
-      this.pagination.pageSize
+      this.pagination().pageNumber,
+      this.pagination().pageSize
     );
   }
 
@@ -70,14 +63,14 @@ export class CategoryComponent {
   }
 
   changePage(page: number) {
-    if (page !== this.pagination.pageNumber) {
-      this.categoryService.getCategories(page, this.pagination.pageSize);
+    if (page !== this.pagination().pageNumber) {
+      this.categoryService.getCategories(page, this.pagination().pageSize);
     }
   }
 
   getPageArray(): number[] {
-    const total = this.pagination.totalPages;
-    const current = this.pagination.pageNumber;
+    const total = this.pagination().totalPages;
+    const current = this.pagination().pageNumber;
 
     const pages: number[] = [];
 
@@ -88,7 +81,6 @@ export class CategoryComponent {
         pages.push(-1); // use -1 as ellipsis
       }
     }
-    (pages);
 
     return [...new Set(pages)];
   }

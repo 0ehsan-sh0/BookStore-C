@@ -1,4 +1,4 @@
-import { Component, effect, output, viewChild } from '@angular/core';
+import { Component, effect, output, viewChild, inject } from '@angular/core';
 import { Tag, UpdateTagRequest } from '../../../models/tag';
 import { NgForm } from '@angular/forms';
 import { TagService } from '../../../services/admin/tag.service';
@@ -15,9 +15,11 @@ export class UpdateTagComponent {
   form = viewChild<NgForm>('form');
   tag: Tag = {} as Tag;
 
-  constructor(private tagService: TagService) {
-    this.tagService.tag.subscribe((tag) => {
-      this.tag = tag;
+  private tagService = inject(TagService);
+
+  constructor() {
+    effect(() => {
+      this.tag = this.tagService.tag();
     });
     // reactively track errors
     effect(() => {
@@ -36,10 +38,10 @@ export class UpdateTagComponent {
     });
   }
   onSubmit(form: NgForm) {
-    let category: UpdateTagRequest = {
+    let tag: UpdateTagRequest = {
       name: form.value.name,
       url: form.value.url,
     };
-    this.tagService.update(category, this.tag.id);
+    this.tagService.update(tag, this.tag.id);
   }
 }

@@ -9,6 +9,7 @@ using BookStoreApi.BusinessLogicLayer.LogicLayers.UserPanel;
 using BookStoreApi.Database.Interfaces;
 using BookStoreApi.Database.Repositories;
 using BookStoreApi.Services;
+using BookStoreApi.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -112,6 +113,15 @@ builder.Services.AddScoped<IBLLUserAddress, BLLUserAddress>();
 // -------------------------
 // JWT service
 // -------------------------
+// -------------------------
+// JWT service
+// -------------------------
+builder.Services.Configure<ImageServiceOptions>(options =>
+{
+    // These could come from builder.Configuration
+});
+builder.Services.AddScoped<IImageService, ImageService>();
+
 builder.Services.AddScoped<JWTService>();
 builder.Services.AddAuthentication(options =>
 {

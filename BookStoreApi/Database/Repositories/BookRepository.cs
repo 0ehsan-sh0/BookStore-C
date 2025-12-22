@@ -9,276 +9,278 @@ using Dapper;
 using System.Data;
 using System.Text.Json;
 
+using BookStoreApi.Services.Interfaces;
+
 namespace BookStoreApi.Database.Repositories
 {
-    public class BookRepository(DapperUtility dapperUtility) : IBookRepository
+    public class BookRepository(DapperUtility dapperUtility, IImageService imageService) : IBookRepository
     {
         public async Task<int> CreateAsync(Book book, List<ImageInfo> imageInfos, List<int>? translators, List<int> categories, List<int> tags)
+    {
+        var sql = "Book_Insert";
+
+        // making images table
+        var imagesTable = DataTables.ImageInfoTypeTable(imageInfos);
+
+        //translator ids become a table here
+        DataTable translatorIds = translators is not null
+             ? DataTables.IntListTable(translators)
+             : DataTables.IntListTable([]); // empty but correct schema
+
+        //Categoriy ids become a table here
+        var categoryIds = DataTables.IntListTable(categories);
+
+        //Tag ids become a table here
+        var tagIds = DataTables.IntListTable(tags);
+
+        // making the parameters for Store procejure
+        var parameters = new
         {
-            var sql = "Book_Insert";
+            book.Name,
+            EnglishName = string.IsNullOrWhiteSpace(book.EnglishName) ? null : book.EnglishName,
+            Description = string.IsNullOrWhiteSpace(book.Description) ? null : book.Description,
+            book.Price,
+            book.PrintSeries,
+            book.ISBN,
+            CoverType = string.IsNullOrWhiteSpace(book.CoverType) ? null : book.CoverType,
+            Format = string.IsNullOrWhiteSpace(book.Format) ? null : book.Format,
+            book.Pages,
+            book.PublishYear,
+            Publisher = string.IsNullOrWhiteSpace(book.Publisher) ? null : book.Publisher,
+            book.AuthorId,
+            Images = imagesTable.AsTableValuedParameter("ImageInfoType"),
+            TranslatorIds = translatorIds.AsTableValuedParameter("IntList"),
+            CategoryIds = categoryIds.AsTableValuedParameter("IntList"),
+            TagIds = tagIds.AsTableValuedParameter("IntList"),
+            IsRecommended = false,
+            book.Stock
 
-            // making images table
-            var imagesTable = DataTables.ImageInfoTypeTable(imageInfos);
+        };
 
-            //translator ids become a table here
-            DataTable translatorIds = translators is not null
-                 ? DataTables.IntListTable(translators)
-                 : DataTables.IntListTable([]); // empty but correct schema
-
-            //Categoriy ids become a table here
-            var categoryIds = DataTables.IntListTable(categories);
-
-            //Tag ids become a table here
-            var tagIds = DataTables.IntListTable(tags);
-
-            // making the parameters for Store procejure
-            var parameters = new
-            {
-                book.Name,
-                EnglishName = string.IsNullOrWhiteSpace(book.EnglishName) ? null : book.EnglishName,
-                Description = string.IsNullOrWhiteSpace(book.Description) ? null : book.Description,
-                book.Price,
-                book.PrintSeries,
-                book.ISBN,
-                CoverType = string.IsNullOrWhiteSpace(book.CoverType) ? null : book.CoverType,
-                Format = string.IsNullOrWhiteSpace(book.Format) ? null : book.Format,
-                book.Pages,
-                book.PublishYear,
-                Publisher = string.IsNullOrWhiteSpace(book.Publisher) ? null : book.Publisher,
-                book.AuthorId,
-                Images = imagesTable.AsTableValuedParameter("ImageInfoType"),
-                TranslatorIds = translatorIds.AsTableValuedParameter("IntList"),
-                CategoryIds = categoryIds.AsTableValuedParameter("IntList"),
-                TagIds = tagIds.AsTableValuedParameter("IntList"),
-                IsRecommended = false,
-                book.Stock
-
-            };
-
-            // Database call and inserting the book and relationships
-            try
-            {
-                using var connection = dapperUtility.GetConnection();
-                int insertedId = await connection.ExecuteScalarAsync<int>(sql, parameters, commandType: CommandType.StoredProcedure);
-                return insertedId;
-            }
-            catch (Exception)
-            {
-                // if anything goes wrong the images must be deleted
-                if (imageInfos.Count > 0)
-                {
-                    List<string> relativePaths = [];
-                    foreach (var imageInfo in imageInfos)
-                    {
-                        string relativePath = imageInfo.RelativePath.Trim() + imageInfo.StoredFileName.Trim();
-                        relativePaths.Add(relativePath);
-                    }
-                    ImageService.DeleteImages(relativePaths);
-                }
-                return 0;
-            }
-        }
-
-        public async Task<bool> DeleteAsync(int id)
+        // Database call and inserting the book and relationships
+        try
         {
-            string sql = "Update B set DeletedAt = GETDATE() FROM Books B WHERE Id = @id";
             using var connection = dapperUtility.GetConnection();
-            int result = await connection.ExecuteAsync(sql, new { id });
-            if (result == 1) return true;
-            return false;
+            int insertedId = await connection.ExecuteScalarAsync<int>(sql, parameters, commandType: CommandType.StoredProcedure);
+            return insertedId;
         }
-
-        public async Task<bool> ToggleIsRecommended(int id)
+        catch (Exception)
         {
-            const string sql = @"UPDATE Books
+            // if anything goes wrong the images must be deleted
+            if (imageInfos.Count > 0)
+            {
+                List<string> relativePaths = [];
+                foreach (var imageInfo in imageInfos)
+                {
+                    string relativePath = imageInfo.RelativePath.Trim() + imageInfo.StoredFileName.Trim();
+                    relativePaths.Add(relativePath);
+                }
+                imageService.DeleteImages(relativePaths);
+            }
+            return 0;
+        }
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        string sql = "Update B set DeletedAt = GETDATE() FROM Books B WHERE Id = @id";
+        using var connection = dapperUtility.GetConnection();
+        int result = await connection.ExecuteAsync(sql, new { id });
+        if (result == 1) return true;
+        return false;
+    }
+
+    public async Task<bool> ToggleIsRecommended(int id)
+    {
+        const string sql = @"UPDATE Books
                          SET IsRecommended = 1 - IsRecommended
                          WHERE Id = @id";
 
-            using var connection = dapperUtility.GetConnection();
-            int result = await connection.ExecuteAsync(sql, new { id });
+        using var connection = dapperUtility.GetConnection();
+        int result = await connection.ExecuteAsync(sql, new { id });
 
-            return result == 1;
-        }
-
-        public async Task<(List<BookAllData>? books, BPaginationInfo info)> GetAllAsync(QBookGetAll query)
-        {
-            using var connection = dapperUtility.GetConnection();
-            await connection.OpenAsync();
-
-            using var multi = await connection.QueryMultipleAsync(
-                "Book_Get_All_JSON",
-                new { query.PageNumber, query.PageSize, query.Search },
-                commandType: CommandType.StoredProcedure
-            );
-
-            // First result: JSON string
-            var booksJson = await multi.ReadFirstOrDefaultAsync<string>();
-            List<BookAllData> books = [];
-            if (booksJson is not null)
-                books = JsonSerializer.Deserialize<List<BookAllData>>(booksJson)!;
-
-            var paginationJson = await multi.ReadFirstOrDefaultAsync<string>();
-            var pagination = JsonSerializer.Deserialize<BPaginationInfo>(paginationJson!);
-
-            return (books, pagination!);
-        }
-
-        public async Task<BookAllData?> GetByIdAsync(int id)
-        {
-            using var connection = dapperUtility.GetConnection();
-            await connection.OpenAsync();
-
-            using var multi = await connection.QueryMultipleAsync(
-                "Book_Get_One",
-                new { id },
-                commandType: CommandType.StoredProcedure
-            );
-
-            BookAllData data = new();
-
-            // First result: Book info
-            var book = await multi.ReadFirstOrDefaultAsync<Book>();
-            if (book == null) return null;
-
-            data.Id = book.Id;
-            data.Name = book.Name;
-            data.EnglishName = book.EnglishName;
-            data.Description = book.Description;
-            data.Price = book.Price;
-            data.PrintSeries = book.PrintSeries;
-            data.ISBN = book.ISBN;
-            data.CoverType = book.CoverType;
-            data.Format = book.Format;
-            data.Pages = book.Pages;
-            data.PublishYear = book.PublishYear;
-            data.Publisher = book.Publisher;
-            data.IsRecommended = book.IsRecommended;
-            data.Stock = book.Stock;
-            data.AuthorId = book.AuthorId;
-            data.CreatedAt = book.CreatedAt;
-            data.UpdatedAt = book.UpdatedAt;
-
-            // Second result: Author info
-            data.Author = await multi.ReadFirstOrDefaultAsync<Author>();
-
-            // Third result: Translators
-            data.Translators = (await multi.ReadAsync<Translator>()).ToList();
-
-            // Fourth result: Categories
-            data.Categories = (await multi.ReadAsync<Category>()).ToList();
-
-
-            // Fifth result: Tags
-            data.Tags = (await multi.ReadAsync<Tag>()).ToList();
-
-            // Sixth result : Images
-            data.Images = (await multi.ReadAsync<Image>()).ToList();
-
-            return data;
-        }
-
-        public async Task<Book?> GetByISBNAsync(string isbn)
-        {
-            string sql = "Book_Get_By_ISBN";
-            using var connection = dapperUtility.GetConnection();
-            var result = await connection.QueryFirstOrDefaultAsync<Book>(sql, new { isbn }, commandType: CommandType.StoredProcedure);
-            return result;
-        }
-
-        public async Task<(List<BookAllData>? books, BPPaginationInfo info)> GetNewAsync(int pageSize = 20, int pageNumber = 1, bool isRecommended = false)
-        {
-            using var connection = dapperUtility.GetConnection();
-            await connection.OpenAsync();
-
-            using var multi = await connection.QueryMultipleAsync(
-                "Book_Get_New_JSON",
-                new { PageSize = pageSize, PageNumber = pageNumber, IsRecommended = isRecommended },
-                commandType: CommandType.StoredProcedure
-            );
-
-            // First result: JSON string
-            var booksJson = await multi.ReadFirstOrDefaultAsync<string>();
-            List<BookAllData> books = [];
-            if (booksJson is not null)
-                books = JsonSerializer.Deserialize<List<BookAllData>>(booksJson)!;
-
-            var paginationJson = await multi.ReadFirstOrDefaultAsync<string>();
-            var pagination = JsonSerializer.Deserialize<BPPaginationInfo>(paginationJson!);
-
-            return (books, pagination!);
-        }
-
-        public async Task<BookAllData?> UpdateAsync(Book bookWithId, List<int>? translators, List<int> categories, List<int> tags)
-        {
-            var sql = "Book_Update";
-
-            //translator ids become a table here
-            DataTable translatorIds = translators is not null
-                 ? DataTables.IntListTable(translators)
-                 : DataTables.IntListTable([]); // empty but correct schema
-
-            //Categoriy ids become a table here
-            var categoryIds = DataTables.IntListTable(categories);
-
-            //Tag ids become a table here
-            var tagIds = DataTables.IntListTable(tags);
-
-            // making the parameters for Store procejure
-            var parameters = new
-            {
-                bookWithId.Id,
-                bookWithId.Name,
-                EnglishName = string.IsNullOrWhiteSpace(bookWithId.EnglishName) ? null : bookWithId.EnglishName,
-                Description = string.IsNullOrWhiteSpace(bookWithId.Description) ? null : bookWithId.Description,
-                bookWithId.Price,
-                bookWithId.PrintSeries,
-                bookWithId.ISBN,
-                CoverType = string.IsNullOrWhiteSpace(bookWithId.CoverType) ? null : bookWithId.CoverType,
-                Format = string.IsNullOrWhiteSpace(bookWithId.Format) ? null : bookWithId.Format,
-                bookWithId.Pages,
-                bookWithId.PublishYear,
-                Publisher = string.IsNullOrWhiteSpace(bookWithId.Publisher) ? null : bookWithId.Publisher,
-                bookWithId.AuthorId,
-                TranslatorIds = translatorIds.AsTableValuedParameter("IntList"),
-                CategoryIds = categoryIds.AsTableValuedParameter("IntList"),
-                TagIds = tagIds.AsTableValuedParameter("IntList"),
-                bookWithId.Stock
-            };
-
-            // Database call and inserting the book and relationships
-            try
-            {
-                using var connection = dapperUtility.GetConnection();
-                int result = await connection.ExecuteScalarAsync<int>(sql, parameters, commandType: CommandType.StoredProcedure);
-                if (result == 1)
-                    return await GetByIdAsync(bookWithId.Id);
-                return null;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
-
-        public async Task<bool> DecreaseStockBulkAsync(List<(int BookId, int Count)> items)
-        {
-            var dt = DataTables.BookStockDecreaseTable(items);
-
-            var parameters = new
-            {
-                Items = dt.AsTableValuedParameter("BookStockDecreaseList")
-            };
-
-            using var cn = dapperUtility.GetConnection();
-
-            int affected = await cn.ExecuteAsync(
-                "Books_DecreaseStockBulk",
-                parameters,
-                commandType: CommandType.StoredProcedure
-            );
-
-            return affected > 0;
-        }
-
+        return result == 1;
     }
+
+    public async Task<(List<BookAllData>? books, BPaginationInfo info)> GetAllAsync(QBookGetAll query)
+    {
+        using var connection = dapperUtility.GetConnection();
+        await connection.OpenAsync();
+
+        using var multi = await connection.QueryMultipleAsync(
+            "Book_Get_All_JSON",
+            new { query.PageNumber, query.PageSize, query.Search },
+            commandType: CommandType.StoredProcedure
+        );
+
+        // First result: JSON string
+        var booksJson = await multi.ReadFirstOrDefaultAsync<string>();
+        List<BookAllData> books = [];
+        if (booksJson is not null)
+            books = JsonSerializer.Deserialize<List<BookAllData>>(booksJson)!;
+
+        var paginationJson = await multi.ReadFirstOrDefaultAsync<string>();
+        var pagination = JsonSerializer.Deserialize<BPaginationInfo>(paginationJson!);
+
+        return (books, pagination!);
+    }
+
+    public async Task<BookAllData?> GetByIdAsync(int id)
+    {
+        using var connection = dapperUtility.GetConnection();
+        await connection.OpenAsync();
+
+        using var multi = await connection.QueryMultipleAsync(
+            "Book_Get_One",
+            new { id },
+            commandType: CommandType.StoredProcedure
+        );
+
+        BookAllData data = new();
+
+        // First result: Book info
+        var book = await multi.ReadFirstOrDefaultAsync<Book>();
+        if (book == null) return null;
+
+        data.Id = book.Id;
+        data.Name = book.Name;
+        data.EnglishName = book.EnglishName;
+        data.Description = book.Description;
+        data.Price = book.Price;
+        data.PrintSeries = book.PrintSeries;
+        data.ISBN = book.ISBN;
+        data.CoverType = book.CoverType;
+        data.Format = book.Format;
+        data.Pages = book.Pages;
+        data.PublishYear = book.PublishYear;
+        data.Publisher = book.Publisher;
+        data.IsRecommended = book.IsRecommended;
+        data.Stock = book.Stock;
+        data.AuthorId = book.AuthorId;
+        data.CreatedAt = book.CreatedAt;
+        data.UpdatedAt = book.UpdatedAt;
+
+        // Second result: Author info
+        data.Author = await multi.ReadFirstOrDefaultAsync<Author>();
+
+        // Third result: Translators
+        data.Translators = (await multi.ReadAsync<Translator>()).ToList();
+
+        // Fourth result: Categories
+        data.Categories = (await multi.ReadAsync<Category>()).ToList();
+
+
+        // Fifth result: Tags
+        data.Tags = (await multi.ReadAsync<Tag>()).ToList();
+
+        // Sixth result : Images
+        data.Images = (await multi.ReadAsync<Image>()).ToList();
+
+        return data;
+    }
+
+    public async Task<Book?> GetByISBNAsync(string isbn)
+    {
+        string sql = "Book_Get_By_ISBN";
+        using var connection = dapperUtility.GetConnection();
+        var result = await connection.QueryFirstOrDefaultAsync<Book>(sql, new { isbn }, commandType: CommandType.StoredProcedure);
+        return result;
+    }
+
+    public async Task<(List<BookAllData>? books, BPPaginationInfo info)> GetNewAsync(int pageSize = 20, int pageNumber = 1, bool isRecommended = false)
+    {
+        using var connection = dapperUtility.GetConnection();
+        await connection.OpenAsync();
+
+        using var multi = await connection.QueryMultipleAsync(
+            "Book_Get_New_JSON",
+            new { PageSize = pageSize, PageNumber = pageNumber, IsRecommended = isRecommended },
+            commandType: CommandType.StoredProcedure
+        );
+
+        // First result: JSON string
+        var booksJson = await multi.ReadFirstOrDefaultAsync<string>();
+        List<BookAllData> books = [];
+        if (booksJson is not null)
+            books = JsonSerializer.Deserialize<List<BookAllData>>(booksJson)!;
+
+        var paginationJson = await multi.ReadFirstOrDefaultAsync<string>();
+        var pagination = JsonSerializer.Deserialize<BPPaginationInfo>(paginationJson!);
+
+        return (books, pagination!);
+    }
+
+    public async Task<BookAllData?> UpdateAsync(Book bookWithId, List<int>? translators, List<int> categories, List<int> tags)
+    {
+        var sql = "Book_Update";
+
+        //translator ids become a table here
+        DataTable translatorIds = translators is not null
+             ? DataTables.IntListTable(translators)
+             : DataTables.IntListTable([]); // empty but correct schema
+
+        //Categoriy ids become a table here
+        var categoryIds = DataTables.IntListTable(categories);
+
+        //Tag ids become a table here
+        var tagIds = DataTables.IntListTable(tags);
+
+        // making the parameters for Store procejure
+        var parameters = new
+        {
+            bookWithId.Id,
+            bookWithId.Name,
+            EnglishName = string.IsNullOrWhiteSpace(bookWithId.EnglishName) ? null : bookWithId.EnglishName,
+            Description = string.IsNullOrWhiteSpace(bookWithId.Description) ? null : bookWithId.Description,
+            bookWithId.Price,
+            bookWithId.PrintSeries,
+            bookWithId.ISBN,
+            CoverType = string.IsNullOrWhiteSpace(bookWithId.CoverType) ? null : bookWithId.CoverType,
+            Format = string.IsNullOrWhiteSpace(bookWithId.Format) ? null : bookWithId.Format,
+            bookWithId.Pages,
+            bookWithId.PublishYear,
+            Publisher = string.IsNullOrWhiteSpace(bookWithId.Publisher) ? null : bookWithId.Publisher,
+            bookWithId.AuthorId,
+            TranslatorIds = translatorIds.AsTableValuedParameter("IntList"),
+            CategoryIds = categoryIds.AsTableValuedParameter("IntList"),
+            TagIds = tagIds.AsTableValuedParameter("IntList"),
+            bookWithId.Stock
+        };
+
+        // Database call and inserting the book and relationships
+        try
+        {
+            using var connection = dapperUtility.GetConnection();
+            int result = await connection.ExecuteScalarAsync<int>(sql, parameters, commandType: CommandType.StoredProcedure);
+            if (result == 1)
+                return await GetByIdAsync(bookWithId.Id);
+            return null;
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+    }
+
+    public async Task<bool> DecreaseStockBulkAsync(List<(int BookId, int Count)> items)
+    {
+        var dt = DataTables.BookStockDecreaseTable(items);
+
+        var parameters = new
+        {
+            Items = dt.AsTableValuedParameter("BookStockDecreaseList")
+        };
+
+        using var cn = dapperUtility.GetConnection();
+
+        int affected = await cn.ExecuteAsync(
+            "Books_DecreaseStockBulk",
+            parameters,
+            commandType: CommandType.StoredProcedure
+        );
+
+        return affected > 0;
+    }
+
+}
 }

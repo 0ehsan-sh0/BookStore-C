@@ -6,7 +6,7 @@ import { Address } from '../../models/address';
 import { HttpClient } from '@angular/common/http';
 import { ErrorHandlerService } from '../error-handler.service';
 import { ApiResponse } from '../../models/apiResponse';
-import { CreateInvoiceRequest } from '../../models/invoice';
+import { CreateInvoiceRequest, PurchaseResponse } from '../../models/invoice';
 import { toObservable, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Injectable({
@@ -35,7 +35,7 @@ export class UserCartService {
     this._itemCountSig.set(count);
   }
 
-  purchase(): Observable<ApiResponse<any>> {
+  purchase(): Observable<ApiResponse<PurchaseResponse>> {
     const address = this.getAddress();
     const cartItems = this.getCart();
 
@@ -52,19 +52,21 @@ export class UserCartService {
       counts: cartItems.map((item) => item.quantity),
     };
 
-    return this.http.post<ApiResponse<any>>(this.apiUrl, payload).pipe(
-      tap((response) => {
-        if (response.data) {
-          this.clearCart();
-          this.clearAddress();
-        }
-      }),
-      catchError((err) => {
-        this.errorHandler.handleError(err);
-        return throwError(() => err);
-      }),
-      takeUntilDestroyed(this.destroyRef)
-    );
+    return this.http
+      .post<ApiResponse<PurchaseResponse>>(this.apiUrl, payload)
+      .pipe(
+        tap((response) => {
+          if (response.data) {
+            this.clearCart();
+            this.clearAddress();
+          }
+        }),
+        catchError((err) => {
+          this.errorHandler.handleError(err);
+          return throwError(() => err);
+        }),
+        takeUntilDestroyed(this.destroyRef)
+      );
   }
 
   private loadCart() {

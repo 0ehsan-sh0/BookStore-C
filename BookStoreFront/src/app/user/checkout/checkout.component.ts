@@ -64,9 +64,16 @@ export class CheckoutComponent {
         // 5. On success...
         this.isPurchasing = false; // Stop loading
 
-        this.alertService.show('سفارش شما با موفقیت ثبت شد', 'success');
-
-        this.router.navigate(['/purchase/invoice', response.data.id]);
+        if (response.data?.paymentUrl) {
+          this.alertService.show(
+            response.message || 'در حال انتقال به درگاه پرداخت...',
+            'success'
+          );
+          // Redirect the user to ZarinPal
+          window.location.href = response.data.paymentUrl;
+        } else {
+          this.alertService.show('خطا در دریافت لینک پرداخت', 'error');
+        }
       },
       error: (err) => {
         // 6. On error...

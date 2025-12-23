@@ -1,9 +1,9 @@
-import { Address } from "./address";
-import { PaginationInfo } from "./apiResponse";
-import { BookAllData } from "./book";
-import { InvoiceStatus, PaymentStatus } from "./enum";
-import { Payment } from "./payment";
-import { User } from "./user";
+import { Address } from './address';
+import { PaginationInfo } from './apiResponse';
+import { BookAllData } from './book';
+import { InvoiceStatus, PaymentStatus } from './enum';
+import { Payment } from './payment';
+import { User } from './user';
 
 export interface Invoice {
   id: number;
@@ -40,4 +40,9 @@ export interface InvoicePaginationInfo extends PaginationInfo {}
 export interface InvoiceListResponse {
   invoices: Invoice[];
   pagination: InvoicePaginationInfo;
+}
+
+export interface PurchaseResponse {
+  invoice: Invoice;
+  paymentUrl: string;
 }

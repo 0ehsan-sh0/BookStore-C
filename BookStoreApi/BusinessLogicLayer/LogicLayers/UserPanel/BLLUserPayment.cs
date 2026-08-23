@@ -1,11 +1,9 @@
-﻿using BookStoreApi.BusinessLogicLayer.Interfaces.UserPanel;
+using BookStoreApi.BusinessLogicLayer.Interfaces.UserPanel;
 using BookStoreApi.Database.Interfaces;
 using BookStoreApi.Database.Models;
 using BookStoreApi.Enums;
-using ZarinPal;
+using ZarinPal.Interfaces;
 using ZarinPal.Models;
-using Microsoft.Extensions.Configuration;
-using System.Text.Json;
 
 namespace BookStoreApi.BusinessLogicLayer.LogicLayers.UserPanel
 {
@@ -13,15 +11,9 @@ namespace BookStoreApi.BusinessLogicLayer.LogicLayers.UserPanel
         IPaymentRepository repo,
         IInvoiceRepository invoiceRepository,
         IBookRepository bookRepository,
-        IConfiguration configuration
+        IZarinPal zarinPal
         ) : IBLLUserPayment
     {
-        private readonly ZarinPal.ZarinPal _zarinPal = new(new Config
-        {
-            MerchantId = configuration["ZarinPal:MerchantId"]!,
-            Sandbox = bool.Parse(configuration["ZarinPal:Sandbox"] ?? "false")
-        });
-
     public async Task<(string message, string? paymentUrl, int status)> InitiatePurchaseAsync(int invoiceId, string callbackUrl)
     {
         var invoice = await invoiceRepository.GetByIdAsync(invoiceId);
@@ -30,17 +22,16 @@ namespace BookStoreApi.BusinessLogicLayer.LogicLayers.UserPanel
 
         var paymentRequest = new PaymentRequest
         {
-            Amount = (int)invoice.FinalTotalPrice, // Amount in Toman/Rial depending on SDK implementation (README says Rials, but usually ZarinPal is Toman or configurable)
+            Amount = invoice.FinalTotalPrice,
             CallbackUrl = callbackUrl,
             Description = $"پرداخت فاکتور شماره {invoiceId}",
         };
 
         try
         {
-            var response = await _zarinPal.Payments.CreateAsync(paymentRequest);
-            var authority = response.GetProperty("data").GetProperty("authority").GetString();
+            var response = await zarinPal.CreateAsync(paymentRequest);
 
-            if (string.IsNullOrEmpty(authority))
+            if (string.IsNullOrEmpty(response.Authority))
                 return ("خطا در دریافت کد پرداخت از زرین پال.", null, 500);
 
             var payment = new Payment
@@ -50,7 +41,7 @@ namespace BookStoreApi.BusinessLogicLayer.LogicLayers.UserPanel
                 Price = invoice.FinalTotalPrice,
                 PaymentGateway = "زرین پال",
                 Status = PaymentStatus.Initiated,
-                TransactionCode = authority,
+                TransactionCode = response.Authority,
             };
 
             int paymentId = await repo.CreateAsync(payment);
@@ -59,7 +50,7 @@ namespace BookStoreApi.BusinessLogicLayer.LogicLayers.UserPanel
 
             await invoiceRepository.UpdatePaymentStatusAsync(invoiceId, PaymentStatus.Initiated);
 
-            var paymentUrl = _zarinPal.GetBaseUrl() + "/pg/StartPay/" + authority;
+            var paymentUrl = zarinPal.GetRedirectUrl(response.Authority);
             return ("درخواست پرداخت با موفقیت ثبت شد.", paymentUrl, 201);
         }
         catch (Exception ex)
@@ -76,29 +67,17 @@ namespace BookStoreApi.BusinessLogicLayer.LogicLayers.UserPanel
 
         var verificationRequest = new VerificationRequest
         {
-            Amount = (int)invoice.FinalTotalPrice,
+            Amount = invoice.FinalTotalPrice,
             Authority = authority
         };
 
         try
         {
-            var response = await _zarinPal.Verifications.VerifyAsync(verificationRequest);
-            var code = response.GetProperty("data").GetProperty("code").GetInt32();
+            var response = await zarinPal.VerifyAsync(verificationRequest);
 
-            if (code == 100 || code == 101)
+            if (response.Code == 100 || response.Code == 101)
             {
-                // Success
-                // Success
-                string refId;
-                var refIdProp = response.GetProperty("data").GetProperty("ref_id");
-                if (refIdProp.ValueKind == JsonValueKind.Number)
-                {
-                    refId = refIdProp.GetInt64().ToString();
-                }
-                else
-                {
-                    refId = refIdProp.GetString() ?? "";
-                }
+                string refId = response.RefId?.ToString() ?? "";
 
                 // 1. Get invoice books
                 var (books, _) = await invoiceRepository.GetBooksOfInvoiceAsync(invoiceId);
@@ -106,19 +85,13 @@ namespace BookStoreApi.BusinessLogicLayer.LogicLayers.UserPanel
                     return ("کتاب‌های فاکتور پیدا نشد.", null, 404);
 
                 // 2. Create payment record (or update existing one)
-                // In this flow, we should find the initiated payment and update it.
-                // For simplicity, let's create a completion record or update status.
-                // Assuming we want to update the existing initiated payment:
-                // But IPaymentRepository only has Create and GetById.
-                // Let's create a new payment record with Success status.
-
                 var payment = new Payment
                 {
                     InvoiceId = invoiceId,
                     GatewayId = "ZarinPal",
                     Price = invoice.FinalTotalPrice,
                     PaymentGateway = "زرین پال",
-                    ResponseCode = code.ToString(),
+                    ResponseCode = response.Code.ToString(),
                     Message = "پرداخت با موفقیت انجام شد",
                     Status = PaymentStatus.Completed,
                     TransactionCode = refId,

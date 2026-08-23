@@ -15,6 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Security.Claims;
 using System.Text;
+using ZarinPal.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -173,6 +174,15 @@ builder.Services.AddHttpClient<ISmsIrService, SmsIrService>(client =>
 {
     // Optional: default request headers or timeout
     client.Timeout = TimeSpan.FromSeconds(30);
+});
+
+// -------------------------
+// ZarinPal Payment Gateway
+// -------------------------
+builder.Services.AddZarinPal(config =>
+{
+    config.MerchantId = builder.Configuration["ZarinPal:MerchantId"] ?? "00000000-0000-0000-0000-000000000000";
+    config.Sandbox = bool.Parse(builder.Configuration["ZarinPal:Sandbox"] ?? "true");
 });
 
 // -------------------------

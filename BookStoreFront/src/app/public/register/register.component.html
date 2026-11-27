@@ -110,9 +110,8 @@
             [(ngModel)]="code"
             #codeRef="ngModel"
             required
-            minlength="8"
-            pattern="^[0-9]{8}$"
-            placeholder="کد تأیید ۸ رقمی"
+            pattern="^[0-9]{6}(?:[0-9]{2})?$"
+            placeholder="کد تأیید ۶ یا ۸ رقمی"
             class="input input-bordered w-full text-center tracking-widest"
           />
 
@@ -122,7 +121,7 @@
                 <div>کد تأیید الزامی است</div>
               }
               @if (codeRef.errors?.['pattern']) {
-                <div>کد باید هشت رقم باشد</div>
+                <div>کد باید ۶ یا ۸ رقم باشد</div>
               }
             </div>
           }

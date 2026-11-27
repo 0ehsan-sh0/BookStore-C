@@ -5,6 +5,8 @@ using BookStoreApi.Services;
 using BookStoreApi.Services.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
+using System.Security.Cryptography;
 
 namespace BookStoreApi.Controllers
 {
@@ -14,7 +16,8 @@ namespace BookStoreApi.Controllers
         ISmsIrService smsService,
         JWTService jWTService,
         IBLLAuth bLLAuth,
-        IWebHostEnvironment env
+        IWebHostEnvironment env,
+        IConfiguration configuration
     ) : ApiResponseHelper
     {
         private readonly bool _isDev = env.IsDevelopment();
@@ -38,15 +41,26 @@ namespace BookStoreApi.Controllers
             if (request.IsRegister && await bLLAuth.UserExist(request.Mobile))
                 return BadRequest("درخواست نامعتبر");
 
-            var response = await smsService.SendVerificationAsync(request.Mobile);
+            var useConsole = _isDev && configuration.GetValue<bool>("Otp:UseConsole");
+            string code;
+            if (useConsole)
+            {
+                code = RandomNumberGenerator.GetInt32(100_000, 1_000_000)
+                    .ToString(CultureInfo.InvariantCulture);
+            }
+            else
+            {
+                var response = await smsService.SendVerificationAsync(request.Mobile);
+                if (response == null || response.Status != 1)
+                    return StatusCode(500, "خطا در ارسال کد");
 
-            if (response == null || response.Status != 1)
-                return StatusCode(500, "خطا در ارسال کد");
+                code = response.Data?.MessageId.ToString() ?? "000000";
+            }
 
-            var code = response.Data?.MessageId.ToString() ?? "000000";
             VerificationStore.Codes[request.Mobile] = code;
 
-            Console.WriteLine($"[DEBUG] Verification code for {request.Mobile}: {code}");
+            if (useConsole)
+                Console.WriteLine($"[DEBUG] Verification code for {request.Mobile}: {code}");
 
             return SuccessResponse("کد تایید ارسال شد", null, 201);
         }

@@ -12,8 +12,6 @@ namespace BookStoreApi.Services
 
     public class SmsIrService(HttpClient httpClient, IConfiguration configuration) : ISmsIrService
     {
-        private readonly string _apiKey = configuration["SmsIr:SandboxApiKey"]
-                      ?? throw new Exception("SmsIr Sandbox API Key is not configured.");
         private static readonly JsonSerializerOptions _jsonOptions = new()
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
@@ -22,6 +20,8 @@ namespace BookStoreApi.Services
 
         public async Task<VerifyMessageResponse?> SendVerificationAsync(string mobile)
         {
+            var apiKey = configuration["SmsIr:SandboxApiKey"]
+                ?? throw new InvalidOperationException("SmsIr Sandbox API Key is not configured.");
             var request = new VerifyMessageRequest { Mobile = mobile };
             var json = JsonSerializer.Serialize(request, _jsonOptions);
             using var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -29,7 +29,7 @@ namespace BookStoreApi.Services
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
-            httpClient.DefaultRequestHeaders.Add("x-api-key", _apiKey);
+            httpClient.DefaultRequestHeaders.Add("x-api-key", apiKey);
 
             var response = await httpClient.PostAsync(BaseUrl, content);
             var body = await response.Content.ReadAsStringAsync();
